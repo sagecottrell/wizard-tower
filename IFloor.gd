@@ -33,6 +33,18 @@ var size_right: float = 1;
 var width: int:
 	get:
 		return int(size_right + size_left);
+
+func _ready():
+	# start out at the right size, we don't spawn in at the default size
+	var w = size_right + size_left;
+	current_left = size_left;
+	current_right = size_right;
+	background.scale.x = w;
+	var mat: StandardMaterial3D = background.get_active_material(0);
+	mat = mat.duplicate_deep(Resource.DEEP_DUPLICATE_ALL);
+	background.set_surface_override_material(0, mat);
+	mat.uv1_scale.x = w;
+	background.position.x = (size_right - size_left) / 2;
 		
 func _process(delta: float) -> void:
 	if current_right != size_right or current_left != size_left:

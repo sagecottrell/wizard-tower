@@ -12,6 +12,8 @@ material = SubResource("StandardMaterial3D_i5q6k")
 
 [node name="BasicFloor" type="Node3D"]
 script = ExtResource("1_i5q6k")
+width_left = 1
+width_right = 1
 
 [node name="background" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_i5ei3")

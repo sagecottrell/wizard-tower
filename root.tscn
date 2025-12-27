@@ -9,9 +9,6 @@
 [node name="Root" type="Node3D"]
 script = ExtResource("1_pyidc")
 
-[node name="Hotel1" parent="." instance=ExtResource("1_pq8q7")]
-unique_name_in_owner = true
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
 environment = SubResource("Environment_pq8q7")
@@ -23,6 +20,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.284138)
 sky_mode = 1
 
 [node name="BasicFloor" parent="." instance=ExtResource("3_vvh5c")]
-grow_time = 1.0
-width_left = 1
-width_right = 3
+width_left = 6
+width_right = 5
+
+[node name="Hotel1" parent="." instance=ExtResource("1_pq8q7")]
+unique_name_in_owner = true
