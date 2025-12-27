@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://c44mfvxlaireo"]
+
+[ext_resource type="Texture2D" uid="uid://bm1c15xrjy36v" path="res://floors/basic-floor-bg.png" id="1_4pnrk"]
+[ext_resource type="Script" uid="uid://b2dxsa3y802ra" path="res://IFloor.gd" id="1_i5q6k"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5q6k"]
+albedo_texture = ExtResource("1_4pnrk")
+texture_filter = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_i5ei3"]
+material = SubResource("StandardMaterial3D_i5q6k")
+
+[node name="BasicFloor" type="Node3D"]
+script = ExtResource("1_i5q6k")
+
+[node name="background" type="MeshInstance3D" parent="."]
+mesh = SubResource("QuadMesh_i5ei3")

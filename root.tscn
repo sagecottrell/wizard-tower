@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://bxa4wivphl7rl"]
+
+[ext_resource type="PackedScene" uid="uid://chn4rti55n71q" path="res://rooms/Hotel1.tscn" id="1_pq8q7"]
+[ext_resource type="Script" uid="uid://b12iv07qhmcvk" path="res://root.gd" id="1_pyidc"]
+[ext_resource type="PackedScene" uid="uid://c44mfvxlaireo" path="res://floors/basic-floor.tscn" id="3_vvh5c"]
+
+[sub_resource type="Environment" id="Environment_pq8q7"]
+
+[node name="Root" type="Node3D"]
+script = ExtResource("1_pyidc")
+
+[node name="Hotel1" parent="." instance=ExtResource("1_pq8q7")]
+unique_name_in_owner = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+environment = SubResource("Environment_pq8q7")
+projection = 1
+size = 20.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.284138)
+sky_mode = 1
+
+[node name="BasicFloor" parent="." instance=ExtResource("3_vvh5c")]
+grow_time = 1.0
+width_left = 1
+width_right = 3
