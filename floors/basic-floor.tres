@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="FloorDef" load_steps=6 format=3 uid="uid://bdtgoy84ruxx7"]
+
+[ext_resource type="PackedScene" uid="uid://c44mfvxlaireo" path="res://floors/basic-floor.tscn" id="1_46d5e"]
+[ext_resource type="Script" uid="uid://bojvm2scn044a" path="res://custom_godot_resources/FloorDef.gd" id="1_yn3vs"]
+[ext_resource type="Script" uid="uid://b4pkam1mm3jjj" path="res://custom_godot_resources/ItemDef.gd" id="2_ox3bt"]
+[ext_resource type="Script" uid="uid://duagddfdrkt8c" path="res://custom_godot_resources/ItemContainer.gd" id="3_n7u4j"]
+
+[sub_resource type="Resource" id="Resource_u5jjp"]
+script = ExtResource("3_n7u4j")
+metadata/_custom_type_script = "uid://duagddfdrkt8c"
+
+[resource]
+script = ExtResource("1_yn3vs")
+name = "Basic Floor"
+background = ExtResource("1_46d5e")
+cost_to_build = SubResource("Resource_u5jjp")
+metadata/_custom_type_script = "uid://bojvm2scn044a"
