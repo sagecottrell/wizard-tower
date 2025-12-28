@@ -1,9 +1,9 @@
 @tool
-@icon("res://custom_godot_resources/floor-icon.svg")
-class_name FloorData
+@icon("res://custom_godot_resources/floor-state-icon.svg")
+class_name FloorState
 extends Resource
 
-@export var id: FloorId;
+@export var id: int;
 @export var kind: FloorDef;
 
 @export var size_left: int = 1;

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="RoomState" load_steps=5 format=3 uid="uid://bso01brbh11c5"]
+
+[ext_resource type="Script" uid="uid://crw3ssu7mmu8b" path="res://custom_godot_resources/RoomState.gd" id="1_hw01t"]
+[ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="2_xwd56"]
+[ext_resource type="Script" uid="uid://wl5tc6oeh5po" path="res://custom_godot_resources/WorkerDef.gd" id="3_3e2o0"]
+
+[sub_resource type="GDScript" id="GDScript_o8wh3"]
+
+[resource]
+script = ExtResource("1_hw01t")
+id = 1
+kind = ExtResource("2_xwd56")
+bottom_floor = 1
+metadata/_custom_type_script = "uid://crw3ssu7mmu8b"

@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://c75plrkn8hxvp"]
+
+[ext_resource type="Script" uid="uid://bip18dwvfmmyq" path="res://ctx/buildingctx.gd" id="1_7f4hj"]
+[ext_resource type="Script" uid="uid://c7snfa8kexidy" path="res://UIs/build-menu/build_menu.gd" id="1_qo73e"]
+
+[node name="BuildMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qo73e")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="buildingname" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="building wallet" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="building wallet" type="VBoxContainer" parent="VBoxContainer/building wallet"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="buildingctx" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("1_7f4hj")

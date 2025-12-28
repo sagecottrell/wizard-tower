@@ -1,18 +1,18 @@
 @tool
-@icon("res://custom_godot_resources/worker-icon.svg")
-class_name WorkerData
+@icon("res://custom_godot_resources/worker-state-icon.svg")
+class_name WorkerState
 extends Resource
 
-@export var id: WorkerId;
+@export var id: int;
 @export var kind: WorkerDef;
-@export var room_start: RoomId;
-@export var room_end: RoomId;
-@export var floor_id: FloorId;
+@export var room_start: int;
+@export var room_end: int;
+@export var floor_id: int;
 @export var h_pos: int;
 
 # used if the destination is on a different floor
 @export var next_step_pos: int;
-@export var next_step_floor: FloorId;
+@export var next_step_floor: int;
 
 @export var capacity: int;
 @export var payload_kind: ItemDef;

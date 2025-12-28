@@ -1,14 +1,17 @@
 @tool
-@icon("res://custom_godot_resources/building-icon.svg")
-class_name BuildingData
+@icon("res://custom_godot_resources/building-state-icon.svg")
+class_name BuildingState
 extends Resource
 
 @export var building_name: String;
 @export var alive: bool;
-@export var floors: Dictionary[FloorId, FloorData] = {};
-@export var rooms: Dictionary[RoomId, RoomData] = {};
-@export var transports: Dictionary[TransportId, TransportData] = {};
-@export var workers: Dictionary[WorkerId, WorkerData] = {};
+@export var floors: Dictionary[int, FloorState];
+@export var rooms: Dictionary[int, RoomState];
+@export var transports: Dictionary[int, TransportState];
+@export var workers: Dictionary[int, WorkerState];
+
+# what research has been completed, and how many times (will usually be 1)
+@export var research_completed: Dictionary[ResearchDef, int];
 
 @export var room_id_counter: int;
 @export var worker_id_counter: int;
@@ -28,5 +31,5 @@ extends Resource
 @export var new_things_acked: Dictionary;
 
 @export var time_seconds: float;
-@export var time_per_day_seconds: float = 5 * 60;
+@export var time_per_day_seconds: float;
 @export var day_started: bool;

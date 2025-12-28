@@ -3,7 +3,7 @@ class_name BaseFloorScript
 extends Node3D
 
 @onready var background: MeshInstance3D = $background;
-@export var data: FloorData;
+@export var data: FloorState;
 
 @export var easing: float = 0.5;
 @export var grow_time: float = 0.75;
@@ -41,6 +41,8 @@ func _ready():
 	background.set_surface_override_material(0, mat);
 	mat.uv1_scale.x = w;
 	background.position.x = float(data.size_right - data.size_left) / 2;
+	
+	position.y = -data.id * constants.ROOM_HEIGHT;
 		
 func _process(delta: float) -> void:
 	if current_right != data.size_right or current_left != data.size_left:
