@@ -1,6 +1,7 @@
 @tool
-class_name ITransport
-extends Node3D
+@icon("res://custom_godot_resources/transport-icon.svg")
+class_name TransportData
+extends Resource
 
 @export var kind: TransportDef;
 @export var custom_name: String;
@@ -10,4 +11,4 @@ extends Node3D
 @export var bottom_floor: FloorId;
 
 @export var height: int;
-@export var occupancy: Array[IWorker];
+@export var occupancy: Array[WorkerData];

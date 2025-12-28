@@ -1,6 +1,6 @@
 extends Node3D
 
-@onready var hotel: IRoom = $Hotel1;
+@onready var hotel: BaseRoomScript = $Hotel1;
 
 func _ready():
 	var aabb = hotel.background();

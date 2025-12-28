@@ -1,12 +1,14 @@
-class_name Building
-extends Node3D
+@tool
+@icon("res://custom_godot_resources/building-icon.svg")
+class_name BuildingData
+extends Resource
 
 @export var building_name: String;
 @export var alive: bool;
-@export var floors: Dictionary[FloorId, IFloor] = {};
-@export var rooms: Dictionary[RoomId, IRoom] = {};
-@export var transports: Dictionary[TransportId, ITransport] = {};
-@export var workers: Dictionary[WorkerId, IWorker] = {};
+@export var floors: Dictionary[FloorId, FloorData] = {};
+@export var rooms: Dictionary[RoomId, RoomData] = {};
+@export var transports: Dictionary[TransportId, TransportData] = {};
+@export var workers: Dictionary[WorkerId, WorkerData] = {};
 
 @export var room_id_counter: int;
 @export var worker_id_counter: int;

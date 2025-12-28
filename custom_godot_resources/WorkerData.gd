@@ -1,6 +1,7 @@
 @tool
-class_name IWorker
-extends Node3D
+@icon("res://custom_godot_resources/worker-icon.svg")
+class_name WorkerData
+extends Resource
 
 @export var id: WorkerId;
 @export var kind: WorkerDef;

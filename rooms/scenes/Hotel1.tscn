@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://chn4rti55n71q"]
 
-[ext_resource type="Script" uid="uid://crw3ssu7mmu8b" path="res://IRoom.gd" id="1_bmw8p"]
+[ext_resource type="Script" uid="uid://yx8i1370pt0w" path="res://BaseRoomScript.gd" id="1_a1xdm"]
 [ext_resource type="Texture2D" uid="uid://c5hrcohsek5fk" path="res://rooms/images/hotel1-background.png" id="2_a1xdm"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bmw8p"]
@@ -14,7 +14,7 @@ stencil_flags = 2
 material = SubResource("StandardMaterial3D_bmw8p")
 
 [node name="Hotel1" type="Node3D"]
-script = ExtResource("1_bmw8p")
+script = ExtResource("1_a1xdm")
 
 [node name="background" type="MeshInstance3D" parent="."]
 mesh = SubResource("QuadMesh_k2r5n")

@@ -1,7 +1,7 @@
 class_name SaveFile
 extends Node3D
 
-@export var buildings: Array[Building];
+@export var buildings: Array[BuildingData];
 
 @export var wallet: ItemContainer;
 
