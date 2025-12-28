@@ -5,5 +5,7 @@
 
 [resource]
 script = ExtResource("1_527q1")
+display_name = "Coin"
+readme = "coin"
 sprite = ExtResource("2_527q1")
 metadata/_custom_type_script = "uid://b4pkam1mm3jjj"

@@ -1,7 +1,9 @@
 @tool
+class_name IFloor
 extends Node3D
 
 @onready var background: MeshInstance3D = $background;
+@export var id: FloorId;
 
 @export var easing: float = 0.5;
 @export var grow_time: float = 0.75;

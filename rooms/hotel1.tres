@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RoomDef" load_steps=9 format=3 uid="uid://dgywvojheeuxe"]
+
+[ext_resource type="Script" uid="uid://bkl2r6iej1x6r" path="res://custom_godot_resources/RoomDef.gd" id="1_ix648"]
+[ext_resource type="Texture2D" uid="uid://dwur7kaj1v6tf" path="res://rooms/images/room-hotel-basic-small-empty.png" id="1_rcq2y"]
+[ext_resource type="Script" uid="uid://duagddfdrkt8c" path="res://custom_godot_resources/ItemContainer.gd" id="2_5iwn4"]
+[ext_resource type="PackedScene" uid="uid://chn4rti55n71q" path="res://rooms/scenes/Hotel1.tscn" id="2_rcq2y"]
+[ext_resource type="Script" uid="uid://b4pkam1mm3jjj" path="res://custom_godot_resources/ItemDef.gd" id="2_tlh4u"]
+[ext_resource type="Script" uid="uid://wl5tc6oeh5po" path="res://custom_godot_resources/WorkerDef.gd" id="3_rcq2y"]
+
+[sub_resource type="Resource" id="Resource_hj88f"]
+script = ExtResource("2_5iwn4")
+metadata/_custom_type_script = "uid://duagddfdrkt8c"
+
+[sub_resource type="Resource" id="Resource_tlh4u"]
+script = ExtResource("2_5iwn4")
+metadata/_custom_type_script = "uid://duagddfdrkt8c"
+
+[resource]
+script = ExtResource("1_ix648")
+display_name = "Basic Hotel Room "
+readme = "crazy? I was crazy once"
+width = 2
+sprite_active = ExtResource("2_rcq2y")
+sprite_empty = ExtResource("2_rcq2y")
+sprite_active_night = ExtResource("2_rcq2y")
+sprite_empty_night = ExtResource("2_rcq2y")
+build_thumb = ExtResource("1_rcq2y")
+cost_to_build = SubResource("Resource_hj88f")
+production = SubResource("Resource_tlh4u")
+produce_to_wallet = true
+metadata/_custom_type_script = "uid://bkl2r6iej1x6r"

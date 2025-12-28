@@ -3,5 +3,6 @@
 class_name ItemDef
 extends Resource
 
-@export var sprite: Texture2D;
 @export var display_name: String;
+@export var readme: String;
+@export var sprite: Texture2D;

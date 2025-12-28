@@ -12,7 +12,7 @@ extends Resource
 @export var sprite_empty: PackedScene;
 @export var sprite_active_night: PackedScene;
 @export var sprite_empty_night: PackedScene;
-@export var build_thumb: PackedScene;
+@export var build_thumb: Texture2D;
 @export var cost_to_build: ItemContainer;
 @export var category: String;
 

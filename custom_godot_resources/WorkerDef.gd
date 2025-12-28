@@ -4,6 +4,7 @@ class_name WorkerDef
 extends Resource
 
 @export var display_name: String;
+@export var readme: String;
 @export var sprite_moving: PackedScene;
 @export var sprite_stationary: PackedScene;
 @export var portrait: Texture2D;

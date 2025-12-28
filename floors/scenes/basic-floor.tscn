@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://c44mfvxlaireo"]
+
+[ext_resource type="Script" uid="uid://b2dxsa3y802ra" path="res://IFloor.gd" id="1_vn6wp"]
+[ext_resource type="Texture2D" uid="uid://bm1c15xrjy36v" path="res://floors/images/basic-floor-bg.png" id="2_cd3si"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5q6k"]
+albedo_texture = ExtResource("2_cd3si")
+texture_filter = 2
+stencil_flags = 1
+stencil_color = Color(0, 1, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_i5ei3"]
+material = SubResource("StandardMaterial3D_i5q6k")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_vn6wp"]
+load_path = "res://.godot/imported/basic-floor-bg.png-b5edfc84a3d4cd78ef7eba4531893c07.s3tc.ctex"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cd3si"]
+albedo_texture = SubResource("CompressedTexture2D_vn6wp")
+uv1_scale = Vector3(2, 1, 1)
+texture_filter = 2
+
+[node name="BasicFloor" type="Node3D"]
+script = ExtResource("1_vn6wp")
+width_left = 1
+width_right = 1
+
+[node name="background" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("QuadMesh_i5ei3")
+surface_material_override/0 = SubResource("StandardMaterial3D_cd3si")

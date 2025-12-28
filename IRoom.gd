@@ -1,10 +1,42 @@
+class_name IRoom;
 extends Node3D
 
-class_name IRoom;
+@onready var bg: MeshInstance3D = $background;
+
+@export var id: RoomId;
+
+@export var floor_position: int;
+@export var kind: RoomDef;
+
+@export var bottom_floor: FloorId;
+
+@export var resources_needs: ItemContainer;
+@export var waiting_since: float;
+@export var working: bool;
+
+@export var storage: ItemContainer;
+
+@export var total_produced: ItemContainer;
+@export var workers: Dictionary[WorkerDef, int];
+@export var workers_delivering_out: Dictionary[WorkerDef, int];
+
+enum OutputPrio {
+	Prio,
+	Never,
+}
+@export var output_priorities: Dictionary[RoomId, OutputPrio];
+@export var output_strategy: RoomOutputStrategy;
+
+class Commit extends Resource:
+	# use this class to get around the limitation on generic dictionaries
+	@export var workers: Dictionary[WorkerId, int];
+@export var produced_workers_committed: Dictionary[RoomId, Commit];
+
+@export var times_produced_today: int;
+@export var pending_deliveries_in: ItemContainer;
 
 func background() -> AABB:
-	var node = find_child("background");
-	return get_node_aabb(node);
+	return get_node_aabb(bg);
 
 
 func get_node_aabb(node : Node, exclude_top_level_transform: bool = true) -> AABB:
