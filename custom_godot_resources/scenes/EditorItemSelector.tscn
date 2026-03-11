@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://bvutrtokg8sk1"]
+
+[ext_resource type="Script" uid="uid://88yh107pitm5" path="res://custom_godot_resources/helpers/EditorItemSelector.cs" id="1_wmwf0"]
+[ext_resource type="Texture2D" uid="uid://cbmpgqpxp1v3h" path="res://custom_godot_resources/item-icon.svg" id="2_wmwf0"]
+
+[node name="EditorItemSelector" type="HBoxContainer" unique_id=488729890]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 64.0
+grow_horizontal = 2
+script = ExtResource("1_wmwf0")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1676369055]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("2_wmwf0")
+
+[node name="Label" type="Label" parent="." unique_id=411028237]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "asdfaseraser"
+
+[node name="SpinBox" type="SpinBox" parent="." unique_id=1460462529]
+unique_name_in_owner = true
+layout_mode = 2
+allow_greater = true
+
+[connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]

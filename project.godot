@@ -8,11 +8,15 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="wizard-tower"
 run/main_scene="uid://bxa4wivphl7rl"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 
 [display]
 
@@ -27,10 +31,6 @@ project/assembly_name="wizard-tower"
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/auto-resource-signal/plugin.cfg")
 
 [gui]
 

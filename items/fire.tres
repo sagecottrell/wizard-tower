@@ -1,11 +1,10 @@
-[gd_resource type="Resource" script_class="ItemDef" load_steps=3 format=3 uid="uid://pq32jmna4frf"]
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://pq32jmna4frf"]
 
-[ext_resource type="Script" uid="uid://b4pkam1mm3jjj" path="res://custom_godot_resources/ItemDef.gd" id="1_yvs2u"]
-[ext_resource type="Texture2D" uid="uid://xuov5jbdn8uj" path="res://items/images/fire.png" id="2_yvs2u"]
+[ext_resource type="Texture2D" uid="uid://xuov5jbdn8uj" path="res://items/images/fire.png" id="1_yvs2u"]
+[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://custom_godot_resources/ItemDefinition.cs" id="2_xtfbq"]
 
 [resource]
-script = ExtResource("1_yvs2u")
-display_name = "Fire"
-readme = "fire?"
-sprite = ExtResource("2_yvs2u")
-metadata/_custom_type_script = "uid://b4pkam1mm3jjj"
+script = ExtResource("2_xtfbq")
+ItemName = "Fire"
+Description = "Fire"
+Icon = ExtResource("1_yvs2u")
