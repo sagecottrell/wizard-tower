@@ -3,4 +3,4 @@
 /android/
 
 # ignore visual studio files
-/.vs/wizard-tower
+/.vs

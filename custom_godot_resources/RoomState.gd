@@ -1,6 +1,6 @@
 @tool
 @icon("res://custom_godot_resources/room-state-icon.svg")
-class_name RoomState;
+class_name RoomState
 extends Resource
 
 @export var id: int;
@@ -20,17 +20,13 @@ extends Resource
 @export var workers: Dictionary[WorkerDef, int];
 @export var workers_delivering_out: Dictionary[WorkerDef, int];
 
-enum OutputPrio {
-	Prio,
-	Never,
-}
-@export var output_priorities: Dictionary[int, OutputPrio];
+@export var output_priorities: Dictionary[int, OutputPrio.OutputPrio];
 @export var output_strategy: RoomOutputStrategy;
 
-class Commit extends Resource:
-	# use this class to get around the limitation on generic dictionaries
-	@export var workers: Dictionary[int, int];
 @export var produced_workers_committed: Dictionary[int, Commit];
 
 @export var times_produced_today: int;
 @export var pending_deliveries_in: ItemContainer;
+
+func _save():
+	print("saved room state")

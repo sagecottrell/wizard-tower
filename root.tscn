@@ -1,24 +1,84 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxa4wivphl7rl"]
+[gd_scene format=3 uid="uid://bxa4wivphl7rl"]
 
-[ext_resource type="Script" uid="uid://b12iv07qhmcvk" path="res://root.gd" id="1_pyidc"]
 [ext_resource type="PackedScene" uid="uid://b0marluvmam1p" path="res://SaveFile.tscn" id="2_pyidc"]
-[ext_resource type="Script" uid="uid://bagxk1imtcftn" path="res://custom_godot_resources/BuildingState.gd" id="3_vvh5c"]
-[ext_resource type="Resource" uid="uid://hr400ui4wmfw" path="res://test_data/building1.tres" id="4_28aoi"]
+[ext_resource type="Script" uid="uid://bagxk1imtcftn" path="res://custom_godot_resources/BuildingState.gd" id="2_vvh5c"]
+[ext_resource type="Script" uid="uid://b2dxsa3y802ra" path="res://custom_godot_resources/FloorState.gd" id="3_qwhpj"]
+[ext_resource type="Resource" uid="uid://bdtgoy84ruxx7" path="res://floors/basic-floor.tres" id="4_qt76e"]
+[ext_resource type="Script" uid="uid://1gtuybi87eqd" path="res://custom_godot_resources/ResearchDef.gd" id="5_sq7yr"]
+[ext_resource type="Script" uid="uid://crw3ssu7mmu8b" path="res://custom_godot_resources/RoomState.gd" id="6_r3r3k"]
+[ext_resource type="Texture2D" uid="uid://dwur7kaj1v6tf" path="res://rooms/images/room-hotel-basic-small-empty.png" id="7_blcw0"]
+[ext_resource type="Script" uid="uid://bkl2r6iej1x6r" path="res://custom_godot_resources/RoomDef.gd" id="8_50g4q"]
+[ext_resource type="PackedScene" uid="uid://chn4rti55n71q" path="res://rooms/scenes/Hotel1.tscn" id="9_3dlgs"]
+[ext_resource type="Script" uid="uid://ceogpmpvt4n2v" path="res://custom_godot_resources/ItemContainer.cs" id="10_vte5o"]
+[ext_resource type="Script" uid="uid://wl5tc6oeh5po" path="res://custom_godot_resources/WorkerDef.gd" id="11_po8fv"]
+[ext_resource type="Script" uid="uid://dut1nhnbaipna" path="res://custom_godot_resources/Commit.gd" id="12_ub8w1"]
+[ext_resource type="Script" uid="uid://46naatn52k3v" path="res://custom_godot_resources/TransportState.gd" id="13_ynlg5"]
+[ext_resource type="Script" uid="uid://bynl2otkt66xh" path="res://custom_godot_resources/WorkerState.gd" id="14_ab83r"]
+
+[sub_resource type="GDScript" id="GDScript_pyidc"]
+script/source = "extends Node
+"
 
 [sub_resource type="Environment" id="Environment_pq8q7"]
 
-[node name="Root" type="Node3D"]
-script = ExtResource("1_pyidc")
+[sub_resource type="Resource" id="Resource_1xb4a"]
+script = ExtResource("3_qwhpj")
+id = 1
+kind = ExtResource("4_qt76e")
+size_left = 3
+size_right = 3
+metadata/_custom_type_script = "uid://b2dxsa3y802ra"
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[sub_resource type="Resource" id="Resource_0dnjj"]
+script = ExtResource("8_50g4q")
+display_name = "Basic Hotel Room "
+readme = "crazy? I was crazy once"
+width = 2
+sprite_active = ExtResource("9_3dlgs")
+sprite_empty = ExtResource("9_3dlgs")
+sprite_active_night = ExtResource("9_3dlgs")
+sprite_empty_night = ExtResource("9_3dlgs")
+build_thumb = ExtResource("7_blcw0")
+produce_to_wallet = true
+metadata/_custom_type_script = "uid://bkl2r6iej1x6r"
+
+[sub_resource type="Resource" id="Resource_uwexw"]
+script = ExtResource("6_r3r3k")
+id = 1
+floor_position = 1
+kind = SubResource("Resource_0dnjj")
+bottom_floor = 1
+output_priorities = Dictionary[int, int]({
+1: 0
+})
+metadata/_custom_type_script = "uid://crw3ssu7mmu8b"
+
+[sub_resource type="Resource" id="Resource_8pgb7"]
+script = ExtResource("2_vvh5c")
+alive = true
+floors = Dictionary[int, ExtResource("3_qwhpj")]({
+1: SubResource("Resource_1xb4a")
+})
+rooms = Dictionary[int, ExtResource("6_r3r3k")]({
+1: SubResource("Resource_uwexw")
+})
+room_id_counter = 1
+top_floor = 1
+metadata/_custom_type_script = "uid://bagxk1imtcftn"
+
+[node name="Root" type="Node" unique_id=1458617641]
+script = SubResource("GDScript_pyidc")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=369862051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
 environment = SubResource("Environment_pq8q7")
 projection = 1
+current = true
 size = 20.0
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=619940948]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.284138)
 sky_mode = 1
 
-[node name="SaveFile" parent="." instance=ExtResource("2_pyidc")]
-buildings = Array[ExtResource("3_vvh5c")]([ExtResource("4_28aoi")])
+[node name="SaveFile" parent="." unique_id=642456101 instance=ExtResource("2_pyidc")]
+buildings = Array[ExtResource("2_vvh5c")]([SubResource("Resource_8pgb7")])
