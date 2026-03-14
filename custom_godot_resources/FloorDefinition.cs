@@ -1,6 +1,5 @@
 using Godot;
 using System.Collections.Generic;
-using wizardtower.custom_godot_resources.containers;
 
 namespace wizardtower.custom_godot_resources;
 
@@ -25,7 +24,7 @@ public partial class FloorDefinition : Resource, INamedResource
     public PackedScene? FloorScene { get; set; }
 
     [Export]
-    public ItemContainer? CostToBuildPerUnit { get; set; }
+    public NumericDict<ItemDefinition, int>? CostToBuildPerUnit { get; set; }
 
     [DefinitionLoader]
     public static Dictionary<string, FloorDefinition> AllDefinitions => LoadDefs.LoadAll<FloorDefinition>("res://floors/", r => r.Name);

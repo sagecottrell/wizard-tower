@@ -12,14 +12,14 @@ var current_building: Node:
 			current_building = value;
 			on_change_building();
 
-@export var wallet: ItemContainer;
+@export var wallet: Node;
 
 @export var rooms_seen: Array[RoomDefinition];
 @export var floors_seen: Array[Node];
 @export var transports_seen: Array[TransportDefinition];
 
 func _ready():
-	if current_building == null:
+	if current_building == null and buildings.size() > 0:
 		current_building = buildings[0];
 	on_change_building();
 

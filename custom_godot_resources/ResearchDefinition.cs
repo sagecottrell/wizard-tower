@@ -1,6 +1,5 @@
 using Godot;
 using Godot.Collections;
-using wizardtower.custom_godot_resources.containers;
 
 namespace wizardtower.custom_godot_resources;
 
@@ -22,7 +21,7 @@ public partial class ResearchDefinition : Resource, INamedResource
     public string? Description { get; set; }
 
     [Export]
-    public ItemContainer? CostToResearch { get; set; }
+    public NumericDict<ItemDefinition, int>? CostToResearch { get; set; }
 
     [Export]
     public Array<ResearchDefinition> Prerequisites { get; set; } = [];

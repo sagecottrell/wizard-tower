@@ -6,18 +6,27 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using wizardtower.custom_godot_resources;
+using wizardtower.custom_godot_resources.helpers;
 
-namespace wizardtower.custom_godot_resources.containers;
+namespace wizardtower;
 
+/// <summary>
+/// IMPORTANT: Make sure you supply a default value for the Data property, otherwise the editor will not be able to create a value. The default value will not be used at runtime, so it can be an empty dictionary or contain dummy data.
+/// 
+/// When using this as an [Export]ed property, the keys will be stored as strings in the exported data, and converted to TKey at runtime using the LoadKey method. This allows for using Resource types as keys, which can't be directly exported as dictionary keys in Godot.
+/// </summary>
+/// <typeparam name="TKey"></typeparam>
+/// <typeparam name="TValue"></typeparam>
 [Tool]
-public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
+public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
         IDictionary<TKey, TValue>,
-        IComparisonOperators<GenericNumericContainer<TSelf, TKey, TValue>, TSelf, bool>,
-        IAdditionOperators<GenericNumericContainer<TSelf, TKey, TValue>, TSelf, TSelf>,
-        ISubtractionOperators<GenericNumericContainer<TSelf, TKey, TValue>, TSelf, TSelf>,
-        IMultiplyOperators<GenericNumericContainer<TSelf, TKey, TValue>, TSelf, TSelf>,
-        IUnaryNegationOperators<GenericNumericContainer<TSelf, TKey, TValue>, TSelf>,
-        IAdditiveIdentity<GenericNumericContainer<TSelf, TKey, TValue>, TSelf>
+        IComparisonOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, bool>,
+        IAdditionOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
+        ISubtractionOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
+        IMultiplyOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
+        IUnaryNegationOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
+        IAdditiveIdentity<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>
     where TKey : Resource, INamedResource
     where TValue : notnull,
         IComparisonOperators<TValue, TValue, bool>,
@@ -26,7 +35,6 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         IMultiplyOperators<TValue, TValue, TValue>,
         IUnaryNegationOperators<TValue, TValue>,
         IAdditiveIdentity<TValue, TValue>
-    where TSelf : GenericNumericContainer<TSelf, TKey, TValue>, new()
 {
     private Godot.Collections.Dictionary<TKey, TValue>? runtimeData;
 
@@ -85,19 +93,19 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
 
     public Dictionary<TKey, TValue> ToDictionary() => new(RuntimeData);
 
-    public static TSelf AdditiveIdentity => new();
+    public static NumericDict<TKey, TValue> AdditiveIdentity => new();
 
-    public TSelf RemoveZeroes()
+    public NumericDict<TKey, TValue> RemoveZeroes()
     {
         foreach (var (key, value) in RuntimeData)
         {
             if (value == TValue.AdditiveIdentity)
                 Remove(key);
         }
-        return (TSelf)this;
+        return (NumericDict<TKey, TValue>)this;
     }
 
-    public bool TrySubtract(TSelf other, out TSelf result)
+    public bool TrySubtract(NumericDict<TKey, TValue> other, out NumericDict<TKey, TValue> result)
     {
         if (this >= other)
         {
@@ -109,7 +117,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return false;
     }
 
-    public TSelf Added(GenericNumericContainer<TSelf, TKey, TValue> b)
+    public NumericDict<TKey, TValue> Added(NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in b)
         {
@@ -122,10 +130,10 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
                 this[kvp.Key] = kvp.Value;
             }
         }
-        return (TSelf)this;
+        return (NumericDict<TKey, TValue>)this;
     }
 
-    public TSelf Subtracted(GenericNumericContainer<TSelf, TKey, TValue> b)
+    public NumericDict<TKey, TValue> Subtracted(NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in b)
         {
@@ -138,10 +146,10 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
                 this[kvp.Key] = -kvp.Value;
             }
         }
-        return (TSelf)this;
+        return (NumericDict<TKey, TValue>)this;
     }
 
-    public TSelf MultipliedComponentwise(GenericNumericContainer<TSelf, TKey, TValue> b)
+    public NumericDict<TKey, TValue> MultipliedComponentwise(NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in b)
         {
@@ -154,19 +162,19 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
                 Remove(kvp.Key);
             }
         }
-        return (TSelf)this;
+        return (NumericDict<TKey, TValue>)this;
     }
 
-    public TSelf MultipliedByScalar(TValue scalar)
+    public NumericDict<TKey, TValue> MultipliedByScalar(TValue scalar)
     {
         foreach (var key in Keys)
         {
             this[key] *= scalar;
         }
-        return (TSelf)this;
+        return (NumericDict<TKey, TValue>)this;
     }
 
-    public bool ContentsEqual(GenericNumericContainer<TSelf, TKey, TValue>? other)
+    public bool ContentsEqual(NumericDict<TKey, TValue>? other)
     {
         if (other is null) return false;
         if (ReferenceEquals(this, other)) return true;
@@ -181,9 +189,9 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return true;
     }
 
-    public TSelf Clone()
+    public NumericDict<TKey, TValue> Clone()
     {
-        var clone = new TSelf();
+        var clone = new NumericDict<TKey, TValue>();
         foreach (var kvp in this)
         {
             clone[kvp.Key] = kvp.Value;
@@ -191,23 +199,23 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return clone;
     }
 
-    public static TSelf operator +(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b) => a.Clone().Added(b);
+    public static NumericDict<TKey, TValue> operator +(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => a.Clone().Added(b);
 
-    public static TSelf operator -(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b) => a.Clone().Subtracted(b);
+    public static NumericDict<TKey, TValue> operator -(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => a.Clone().Subtracted(b);
 
-    public static TSelf operator -(GenericNumericContainer<TSelf, TKey, TValue> value) => new TSelf().Subtracted(value);
+    public static NumericDict<TKey, TValue> operator -(NumericDict<TKey, TValue> value) => new NumericDict<TKey, TValue>().Subtracted(value);
 
-    public static TSelf operator *(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b) => a.Clone().MultipliedComponentwise(b);
+    public static NumericDict<TKey, TValue> operator *(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => a.Clone().MultipliedComponentwise(b);
 
-    public static TSelf operator *(GenericNumericContainer<TSelf, TKey, TValue> a, TValue scalar) => a.Clone().MultipliedByScalar(scalar);
+    public static NumericDict<TKey, TValue> operator *(NumericDict<TKey, TValue> a, TValue scalar) => a.Clone().MultipliedByScalar(scalar);
 
-    public static TSelf operator *(TValue scalar, GenericNumericContainer<TSelf, TKey, TValue> a) => a.Clone().MultipliedByScalar(scalar);
+    public static NumericDict<TKey, TValue> operator *(TValue scalar, NumericDict<TKey, TValue> a) => a.Clone().MultipliedByScalar(scalar);
 
-    public static bool operator ==(GenericNumericContainer<TSelf, TKey, TValue>? a, TSelf? b) => a?.ContentsEqual(b) ?? b is null;
+    public static bool operator ==(NumericDict<TKey, TValue>? a, NumericDict<TKey, TValue>? b) => a?.ContentsEqual(b) ?? b is null;
 
-    public static bool operator !=(GenericNumericContainer<TSelf, TKey, TValue>? a, TSelf? b) => !(a == b);
+    public static bool operator !=(NumericDict<TKey, TValue>? a, NumericDict<TKey, TValue>? b) => !(a == b);
 
-    public static bool operator >(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b)
+    public static bool operator >(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in a)
         {
@@ -219,7 +227,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return true;
     }
 
-    public static bool operator <(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b)
+    public static bool operator <(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in a)
         {
@@ -231,7 +239,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return true;
     }
 
-    public static bool operator >=(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b)
+    public static bool operator >=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in a)
         {
@@ -243,7 +251,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         return true;
     }
 
-    public static bool operator <=(GenericNumericContainer<TSelf, TKey, TValue> a, TSelf b)
+    public static bool operator <=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         foreach (var kvp in a)
         {
@@ -267,7 +275,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
             return false;
         }
 
-        return obj is GenericNumericContainer<TSelf, TKey, TValue> other && this == (TSelf)other;
+        return obj is NumericDict<TKey, TValue> other && this == (NumericDict<TKey, TValue>)other;
     }
 
     public override int GetHashCode() => Data.GetHashCode();
@@ -389,7 +397,7 @@ public abstract partial class GenericNumericContainer<TSelf, [MustBeVariant] TKe
         _editorWindow = new();
         _editorWindow.CloseRequested += () => _editorWindow.QueueFree();
         EditorInterface.Singleton.PopupDialog(_editorWindow, new(50, 50, 500, 500));
-        var editor = ResourceLoader.Load<PackedScene>("res://custom_godot_resources/scenes/EditorItemWindow.tscn").Instantiate<helpers.EditorItemWindow>();
+        var editor = ResourceLoader.Load<PackedScene>("res://custom_godot_resources/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
         _loadDefinitions();
         editor.Setup(RuntimeData, _keyCache);
         editor.OnSave += _saveItems;

@@ -1,6 +1,6 @@
 using Godot;
 using Godot.Collections;
-using wizardtower.custom_godot_resources.containers;
+
 using wizardtower.enums;
 
 namespace wizardtower.custom_godot_resources;
@@ -35,7 +35,7 @@ public partial class RoomDefinition : Resource, INamedResource
     public PackedScene? RoomScene { get; set; }
 
     [Export]
-    public ItemContainer? CostToBuildPerUnit { get; set; }
+    public NumericDict<ItemDefinition, int>? CostToBuildPerUnit { get; set; } = [];
 
     [Export]
     public Array<FloorDefinition> AllowedFloors { get; set; } = [];
