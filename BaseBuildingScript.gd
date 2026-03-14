@@ -2,7 +2,7 @@
 class_name BaseBuildingScript
 extends Node3D
 
-@export var data: BuildingState:
+@export var data: Node:
 	set(value):
 		data = value;
 		on_set_data();

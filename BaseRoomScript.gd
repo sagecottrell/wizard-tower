@@ -2,7 +2,7 @@
 class_name BaseRoomScript
 extends Node3D
 
-@export var room: RoomState;
+@export var room: Node;
 
 
 @onready var bg: MeshInstance3D = $background;

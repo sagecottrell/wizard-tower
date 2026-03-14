@@ -5,6 +5,6 @@
 
 [resource]
 script = ExtResource("2_xtfbq")
-ItemName = "Fire"
+Name = "Fire"
 Description = "Fire"
 Icon = ExtResource("1_yvs2u")

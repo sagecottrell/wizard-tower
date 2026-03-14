@@ -5,6 +5,6 @@
 
 [resource]
 script = ExtResource("1_2jpt2")
-ItemName = "Coin"
+Name = "Coin"
 Description = "Coin"
 Icon = ExtResource("2_527q1")

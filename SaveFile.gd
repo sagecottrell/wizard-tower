@@ -4,9 +4,9 @@ extends Node3D
 
 @onready var building_scene = preload("res://building.tscn");
 
-@export var buildings: Array[BuildingState];
+@export var buildings: Array[Node];
 
-var current_building: BuildingState:
+var current_building: Node:
 	set(value):
 		if value != current_building:
 			current_building = value;
@@ -14,9 +14,9 @@ var current_building: BuildingState:
 
 @export var wallet: ItemContainer;
 
-@export var rooms_seen: Array[RoomDef];
-@export var floors_seen: Array[FloorDef];
-@export var transports_seen: Array[TransportDef];
+@export var rooms_seen: Array[RoomDefinition];
+@export var floors_seen: Array[Node];
+@export var transports_seen: Array[TransportDefinition];
 
 func _ready():
 	if current_building == null:

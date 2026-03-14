@@ -1,31 +1,40 @@
 using Godot;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace wizardtower.custom_godot_resources;
 
 public static class LoadDefs
 {
-    public static Dictionary<string, T> LoadAll<[MustBeVariant] T>(ref Dictionary<string, T>? _allDefinitions, string ResourcePathFormat, Func<T, string> map, string? extension = "res") where T : class
-    {
-        if (_allDefinitions != null && !Engine.IsEditorHint())
-            return _allDefinitions;
-        _allDefinitions = [];
-        var resourceLoader = ResourceLoader.Singleton;
+    private static readonly Dictionary<Type, IDictionary> _allDefinitionsForEachType = [];
 
-        foreach (var fileName in DirAccess.GetFilesAt(ResourcePathFormat))
+    public static Dictionary<string, T> LoadAll<[MustBeVariant] T>(string ResourcePathFormat, Func<T, string?> map, string? extension = "res") where T : class
+    {
+        if (!_allDefinitionsForEachType.TryGetValue(typeof(T), out var allDefinitions))
         {
-            if (!string.IsNullOrWhiteSpace(extension) && !fileName.EndsWith(extension))                 
-                continue;
-            var resourcePath = ResourcePathFormat + fileName;
-            if (resourceLoader.Load(resourcePath) is T resource)
+            var d = new Dictionary<string, T>();
+            var resourceLoader = ResourceLoader.Singleton;
+
+            foreach (var fileName in DirAccess.GetFilesAt(ResourcePathFormat))
             {
-                var id = map(resource);
-                if (string.IsNullOrWhiteSpace(id))
+                if (!string.IsNullOrWhiteSpace(extension) && !fileName.EndsWith(extension))
                     continue;
-                _allDefinitions[id] = resource;
+                var resourcePath = ResourcePathFormat + fileName;
+                if (resourceLoader.Load(resourcePath) is T resource)
+                {
+                    var id = map(resource);
+                    if (string.IsNullOrWhiteSpace(id))
+                        continue;
+                    d[id] = resource;
+                }
             }
+
+            if (!Engine.IsEditorHint())
+                _allDefinitionsForEachType[typeof(T)] = d;
+
+            return d;
         }
-        return _allDefinitions;
+        return (Dictionary<string, T>)allDefinitions;
     }
 }

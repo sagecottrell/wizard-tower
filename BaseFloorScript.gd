@@ -3,7 +3,7 @@ class_name BaseFloorScript
 extends Node3D
 
 @onready var background: MeshInstance3D = $background;
-@export var data: FloorState;
+@export var data: Node;
 
 @export var easing: float = 0.5;
 @export var grow_time: float = 0.75;

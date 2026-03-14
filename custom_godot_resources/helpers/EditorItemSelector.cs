@@ -6,17 +6,20 @@ namespace wizardtower.custom_godot_resources.helpers;
 [GlobalClass]
 public partial class EditorItemSelector : Control
 {
-    private ItemDefinition? _itemDef;
+    private Resource? _itemDef;
 
     [Signal]
-    public delegate void OnAmountChangedEventHandler(ItemDefinition def, int value);
+    public delegate void OnAmountChangedEventHandler(Resource def, int value);
 
-    public void SetItemDefinition(ItemDefinition def, int amount)
+    public void SetItemDefinition(Resource def, int amount)
     {
-        _itemDef = def;
-        GetNode<SpinBox>("SpinBox").Value = amount;
-        GetNode<Label>("Label").Text = def.ItemName;
-        GetNode<TextureRect>("TextureRect").Texture = def.Icon;
+        if (def is INamedResource namedDef)
+        {
+            _itemDef = def;
+            GetNode<SpinBox>("SpinBox").Value = amount;
+            GetNode<Label>("Label").Text = namedDef.Name;
+            GetNode<TextureRect>("TextureRect").Texture = namedDef.Icon;
+        }
     }
 
     public override void _Ready()

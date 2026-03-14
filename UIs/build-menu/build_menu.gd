@@ -1,7 +1,7 @@
 extends Control
 
 
-var building: BuildingState:
+var building: Node:
 	get:
 		return %buildingctx.building;
 

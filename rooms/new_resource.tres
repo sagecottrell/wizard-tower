@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="RoomDefinition" format=3 uid="uid://dfdmq3uyrrjac"]
+
+[ext_resource type="Script" uid="uid://bvnb52cp723ar" path="res://custom_godot_resources/FloorDefinition.cs" id="1_sci1g"]
+[ext_resource type="Script" uid="uid://cejghn2xfxsmd" path="res://custom_godot_resources/containers/ItemContainer.cs" id="2_3hkgl"]
+[ext_resource type="Script" uid="uid://cp0ef0br3tlgx" path="res://custom_godot_resources/RoomDefinition.cs" id="2_28l8s"]
+
+[sub_resource type="Resource" id="Resource_880s5"]
+script = ExtResource("2_3hkgl")
+Data = Dictionary[Variant, int]({
+"Coin": 3,
+"Fire": 1
+})
+metadata/_custom_type_script = "uid://cejghn2xfxsmd"
+
+[resource]
+script = ExtResource("2_28l8s")
+CostToBuildPerUnit = SubResource("Resource_880s5")
+metadata/_custom_type_script = "uid://cp0ef0br3tlgx"

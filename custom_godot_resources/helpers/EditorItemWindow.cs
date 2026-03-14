@@ -1,5 +1,6 @@
 using Godot;
-using System.Collections.Generic;
+using Godot.Collections;
+using System;
 
 namespace wizardtower.custom_godot_resources.helpers;
 
@@ -8,29 +9,36 @@ namespace wizardtower.custom_godot_resources.helpers;
 public partial class EditorItemWindow : Control
 {
     [Signal]
-    public delegate void OnSaveEventHandler(Godot.Collections.Dictionary<ItemDefinition, int> data);
+    public delegate void OnSaveEventHandler(Dictionary data);
 
-    public Dictionary<ItemDefinition, int> EditedData = [];
+    public Dictionary EditedData = [];
 
     public override void _Ready()
     {
         GetNode<LineEdit>("%filter").TextChanged += _onFilterSubmitted;
         GetNode<Button>("%save").Pressed += _onSaveButtonPressed;
-        foreach (var (name, def) in ItemDefinition.AllDefinitions)
+    }
+
+    public void Setup<[MustBeVariant] T, [MustBeVariant] TKey>(Dictionary<T, TKey> data, System.Collections.Generic.Dictionary<string, T> definitions) 
+        where T : Resource
+    {
+        EditedData = (Dictionary)data.Duplicate();
+        foreach (var (name, def) in definitions)
         {
             var itemSelector = ResourceLoader.Load<PackedScene>("res://custom_godot_resources/scenes/EditorItemSelector.tscn").Instantiate<EditorItemSelector>();
             itemSelector.OnAmountChanged += _onAmountChanged;
-            var value = EditedData.GetValueOrDefault(def, 0);
+            var value = Convert.ToInt32(data.TryGetValue(def, out var v) ? v : 0);
             itemSelector.SetItemDefinition(def, value);
             GetNode("%sources").AddChild(itemSelector);
 
-            if (value > 0) {
-                _updateLabel(def, EditedData.GetValueOrDefault(def, 0));
+            if (value > 0)
+            {
+                _updateLabel(def, value);
             }
         }
     }
 
-    private void _onAmountChanged(ItemDefinition def, int value)
+    private void _onAmountChanged(Resource def, int value)
     {
         if (value > 0)
         {
@@ -43,9 +51,11 @@ public partial class EditorItemWindow : Control
         _updateLabel(def, value);
     }
 
-    private void _updateLabel(ItemDefinition def, int value)
+    private void _updateLabel(Resource def, int value)
     {
-        if (GetNode("%selected").FindChild(def.ItemName, owned: false) is Label label)
+        if (def is not INamedResource named)
+            return;
+        if (GetNode("%selected").FindChild(named.Name, owned: false) is Label label)
         {
             if (value <= 0)
                 label.QueueFree();
@@ -56,13 +66,13 @@ public partial class EditorItemWindow : Control
         {
             GetNode("%selected").AddChild(new Label()
             {
-                Name = def.ItemName,
+                Name = named.Name ?? "--",
                 Text = _formatLabel(def, value),
             });
         }
     }
 
-    private static string _formatLabel(ItemDefinition def, int amount) => $"{def.ItemName}: {amount}";
+    private static string _formatLabel(Resource def, int amount) => $"{(def as INamedResource)?.Name}: {amount}";
 
     private void _onFilterSubmitted(string value)
     {
@@ -75,6 +85,6 @@ public partial class EditorItemWindow : Control
 
     private void _onSaveButtonPressed()
     {
-        EmitSignalOnSave(new(EditedData));
+        EmitSignalOnSave(EditedData);
     }
 }

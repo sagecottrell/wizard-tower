@@ -1,7 +1,7 @@
 class_name BuildingContext
 extends Node
 
-var building: BuildingState;
+var building: Node;
 
 func _ready():
 	# search up tree for a building context provider

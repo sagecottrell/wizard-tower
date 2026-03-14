@@ -4,7 +4,7 @@ namespace wizardtower.custom_godot_resources;
 
 public interface INamedResource
 {
-    public string ItemName { get; }
+    public string? Name { get; }
 
     public Texture2D? Icon { get; }
 }
