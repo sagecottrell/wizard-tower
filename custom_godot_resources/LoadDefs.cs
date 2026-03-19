@@ -9,7 +9,7 @@ public static class LoadDefs
 {
     private static readonly Dictionary<Type, IDictionary> _allDefinitionsForEachType = [];
 
-    public static Dictionary<string, T> LoadAll<[MustBeVariant] T>(string ResourcePathFormat, Func<T, string?> map, string? extension = "res") where T : class
+    public static Dictionary<string, T> LoadAll<[MustBeVariant] T>(string ResourcePathFormat, string? extension = "res") where T : class
     {
         if (!_allDefinitionsForEachType.TryGetValue(typeof(T), out var allDefinitions))
         {
@@ -23,9 +23,7 @@ public static class LoadDefs
                 var resourcePath = ResourcePathFormat + fileName;
                 if (resourceLoader.Load(resourcePath) is T resource)
                 {
-                    var id = map(resource);
-                    if (string.IsNullOrWhiteSpace(id))
-                        continue;
+                    var id = fileName[..^(fileName.GetExtension().Length + 1)];
                     d[id] = resource;
                 }
             }

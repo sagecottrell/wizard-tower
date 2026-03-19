@@ -4,27 +4,43 @@
 [ext_resource type="Texture2D" uid="uid://cbmpgqpxp1v3h" path="res://custom_godot_resources/item-icon.svg" id="2_wmwf0"]
 
 [node name="EditorItemSelector" type="HBoxContainer" unique_id=488729890]
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 64.0
+anchors_preset = -1
+anchor_right = 0.18800001
+anchor_bottom = 0.036000002
+offset_right = 0.3999939
+offset_bottom = -0.40000153
 grow_horizontal = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 script = ExtResource("1_wmwf0")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1676369055]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 4
 texture = ExtResource("2_wmwf0")
+expand_mode = 1
 
 [node name="Label" type="Label" parent="." unique_id=411028237]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "asdfaseraser"
+text = "Label"
 
 [node name="SpinBox" type="SpinBox" parent="." unique_id=1460462529]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
+size_flags_vertical = 4
 allow_greater = true
+
+[node name="Button" type="Button" parent="." unique_id=1962369640]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Edit"
 
 [connection signal="value_changed" from="SpinBox" to="." method="_on_spin_box_value_changed"]

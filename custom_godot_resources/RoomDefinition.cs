@@ -8,7 +8,7 @@ namespace wizardtower.custom_godot_resources;
 [Tool]
 [Icon("res://custom_godot_resources/room-icon.svg")]
 [GlobalClass]
-public partial class RoomDefinition : Resource, INamedResource
+public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>
 {
     [Export]
     public string? Name { get; set; }
@@ -35,14 +35,14 @@ public partial class RoomDefinition : Resource, INamedResource
     public PackedScene? RoomScene { get; set; }
 
     [Export]
-    public NumericDict<ItemDefinition, int>? CostToBuildPerUnit { get; set; } = [];
+    public NumericDict<ItemDefinition, uint>? CostToBuildPerUnit { get; set; } = [];
 
     [Export]
     public Array<FloorDefinition> AllowedFloors { get; set; } = [];
 
     [Export]
-    public Array<RoomDefinition> Upgrades { get; set; } = [];
+    public NumericDict<RoomDefinition, NumericDict<ItemDefinition, uint>> Upgrades { get; set; } = [];
 
     [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, RoomDefinition> AllDefinitions => LoadDefs.LoadAll<RoomDefinition>("res://rooms/", r => r.Name);
+    public static System.Collections.Generic.Dictionary<string, RoomDefinition> AllDefinitions => LoadDefs.LoadAll<RoomDefinition>("res://rooms/");
 }

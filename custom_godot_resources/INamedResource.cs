@@ -4,7 +4,16 @@ namespace wizardtower.custom_godot_resources;
 
 public interface INamedResource
 {
-    public string? Name { get; }
+    string? Name { get; }
 
-    public Texture2D? Icon { get; }
+    Texture2D? Icon { get; }
+
+    string? IconUid => ResourceUid.PathToUid(Icon?.ResourcePath);
+
+    string? IconPathOrName => Icon?.ResourcePath ?? Name;
+}
+
+public interface INamedResource<TSelf> : INamedResource
+{
+
 }

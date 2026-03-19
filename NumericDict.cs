@@ -11,6 +11,19 @@ using wizardtower.custom_godot_resources.helpers;
 
 namespace wizardtower;
 
+public interface IReadonlyNumericDict { }
+
+public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
+        IComparisonOperators<TSelf, TSelf, bool>,
+        IAdditionOperators<TSelf, TSelf, TSelf>,
+        ISubtractionOperators<TSelf, TSelf, TSelf>,
+        IMultiplyOperators<TSelf, TSelf, TSelf>,
+        IUnaryNegationOperators<TSelf, TSelf>,
+        IAdditiveIdentity<TSelf, TSelf>,
+        IReadonlyNumericDict
+    where TSelf : IReadonlyNumericDict<TSelf, TKey, TValue>
+{ }
+
 /// <summary>
 /// IMPORTANT: Make sure you supply a default value for the Data property, otherwise the editor will not be able to create a value. The default value will not be used at runtime, so it can be an empty dictionary or contain dummy data.
 /// 
@@ -19,14 +32,10 @@ namespace wizardtower;
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TValue"></typeparam>
 [Tool]
-public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
-        IDictionary<TKey, TValue>,
-        IComparisonOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, bool>,
-        IAdditionOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
-        ISubtractionOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
-        IMultiplyOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
-        IUnaryNegationOperators<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>,
-        IAdditiveIdentity<NumericDict<TKey, TValue>, NumericDict<TKey, TValue>>
+public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
+        IDictionary<TKey, TValue>, 
+        IReadonlyNumericDict<NumericDict<TKey, TValue>, TKey, TValue>,
+        IToBBCode
     where TKey : Resource, INamedResource
     where TValue : notnull,
         IComparisonOperators<TValue, TValue, bool>,
@@ -34,7 +43,8 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
         ISubtractionOperators<TValue, TValue, TValue>,
         IMultiplyOperators<TValue, TValue, TValue>,
         IUnaryNegationOperators<TValue, TValue>,
-        IAdditiveIdentity<TValue, TValue>
+        IAdditiveIdentity<TValue, TValue>,
+        new()
 {
     private Godot.Collections.Dictionary<TKey, TValue>? runtimeData;
 
@@ -50,7 +60,7 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
                 runtimeData = [];
                 foreach (var (key, value) in Data)
                 {
-                    var v = LoadKey(key);
+                    var v = _loadKey(key);
                     if (v is not null)
                         runtimeData[v] = value;
                 }
@@ -60,12 +70,10 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
     }
 
     private bool _loaded = false;
-    private Dictionary<string, TKey> _keyCache = [];
-    protected virtual TKey? LoadKey(Variant variant)
+    private PropertyInfo? _keyCache;
+    private TKey? _loadKey(Variant variant)
     {
-        if (!_loaded)
-            _loadDefinitions();
-        return _keyCache.TryGetValue(variant.ToString(), out var result) ? result : null;
+        return _getResources().TryGetValue(variant.ToString(), out var result) ? result : null;
     }
 
     private void _loadDefinitions()
@@ -85,15 +93,30 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
             GD.PushError($"DefinitionLoaderAttribute on {typeof(TKey)}.{prop.Name} is not of type DefinitionLoaderAttribute");
             return;
         }
-        if (prop.GetValue(null) is Dictionary<string, TKey> d)
-            _keyCache = d;
+        _keyCache = prop;
+    }
+
+    private Dictionary<string, TKey> _getResources()
+    {
+        _loadDefinitions();
+        if (_keyCache?.GetValue(null) is Dictionary<string, TKey> d)
+            return d;
+        return [];
     }
 
     #region Operators
 
-    public Dictionary<TKey, TValue> ToDictionary() => new(RuntimeData);
+    public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(RuntimeData);
 
-    public static NumericDict<TKey, TValue> AdditiveIdentity => new();
+    private static NumericDict<TKey, TValue> _additiveIdentity = [];
+
+    public static NumericDict<TKey, TValue> AdditiveIdentity { get
+        {
+            if (_additiveIdentity.Count != 0)
+                // just in case someone modifies the additive identity, we want to be able to recreate it
+                _additiveIdentity = [];
+            return _additiveIdentity;
+        } }
 
     public NumericDict<TKey, TValue> RemoveZeroes()
     {
@@ -274,8 +297,10 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
         {
             return false;
         }
+        if (obj is int i && i == 0)
+            return this == AdditiveIdentity;
 
-        return obj is NumericDict<TKey, TValue> other && this == (NumericDict<TKey, TValue>)other;
+        return obj is NumericDict<TKey, TValue> other && this == other;
     }
 
     public override int GetHashCode() => Data.GetHashCode();
@@ -298,6 +323,7 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
         {
             RuntimeData[key] = value;
             Data[key.Name] = value;
+            EmitSignalOnChanged();
         }
     }
 
@@ -305,6 +331,7 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
     {
         ((IDictionary<TKey, TValue>)RuntimeData).Add(key, value);
         Data.Add(key.Name, value);
+        EmitSignalOnChanged();
     }
 
     public bool ContainsKey(TKey key)
@@ -315,6 +342,7 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
     public bool Remove(TKey key)
     {
         Data.Remove(key.Name);
+        EmitSignalOnChanged();
         return ((IDictionary<TKey, TValue>)RuntimeData).Remove(key);
     }
 
@@ -327,12 +355,14 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
     {
         ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Add(item);
         Data.Add(item.Key.Name, item.Value);
+        EmitSignalOnChanged();
     }
 
     public void Clear()
     {
         ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Clear();
         Data.Clear();
+        EmitSignalOnChanged();
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
@@ -373,9 +403,11 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
     {
         _editorWindow?.QueueFree();
         _editorWindow = null;
+        GD.Print($"clear {typeof(TKey).FullName} - {typeof(TValue).FullName}\n\n{data}");
         Clear();
         foreach (var (key, value) in data)
         {
+            GD.Print($"Key {key}, Value {value}");
             if (key.As<TKey>() is not TKey typedKey)
             {
                 GD.PushError($"Invalid key type {key.GetType()} in edited data, expected {typeof(TKey)}");
@@ -399,12 +431,25 @@ public partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> :
         EditorInterface.Singleton.PopupDialog(_editorWindow, new(50, 50, 500, 500));
         var editor = ResourceLoader.Load<PackedScene>("res://custom_godot_resources/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
         _loadDefinitions();
-        editor.Setup(RuntimeData, _keyCache);
+        editor.Setup(ToGodotDictionary(), _getResources());
         editor.OnSave += _saveItems;
-        _editorWindow.AddChild(editor);
+        _editorWindow.AddChild(editor); 
     }
 
     #endregion
+
+    public override string ToString() => $"{{{string.Join(
+        ",",
+        RuntimeData.Select(x => $"{x.Key.Name}:{x.Value}")
+        )}}}";
+
+    public string ToStringBBCode() => $"{{{string.Join(
+        ",",
+        RuntimeData.Select(x => $"[img height=24]{x.Key.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
+        )}}}";
+
+    [Signal]
+    public delegate void OnChangedEventHandler();
 }
 
 [AttributeUsage(AttributeTargets.Property)]

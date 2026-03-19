@@ -21,6 +21,7 @@ size_flags_horizontal = 3
 placeholder_text = "Filter"
 keep_editing_on_text_submit = true
 right_icon = ExtResource("2_w6msg")
+icon_expand_mode = 1
 
 [node name="save" type="Button" parent="VBoxContainer" unique_id=1102337052]
 unique_name_in_owner = true

@@ -7,7 +7,7 @@ namespace wizardtower.custom_godot_resources;
 [Tool]
 [Icon("res://custom_godot_resources/tier-icon.svg")]
 [GlobalClass]
-public partial class TierDefinition : Resource, INamedResource
+public partial class TierDefinition : Resource, INamedResource<TierDefinition>
 {
     [Export]
     public string? Name { get; set; }
@@ -22,5 +22,5 @@ public partial class TierDefinition : Resource, INamedResource
     public Array<ResearchDefinition> ResearchUnlocked { get; set; } = [];
 
     [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, TierDefinition> AllDefinitions => LoadDefs.LoadAll<TierDefinition>("res://tiers/", r => r.Name);
+    public static System.Collections.Generic.Dictionary<string, TierDefinition> AllDefinitions => LoadDefs.LoadAll<TierDefinition>("res://tiers/");
 }

@@ -6,7 +6,7 @@ namespace wizardtower.custom_godot_resources;
 [Tool]
 [Icon("res://custom_godot_resources/item-icon.svg")]
 [GlobalClass]
-public partial class ItemDefinition : Resource, INamedResource
+public partial class ItemDefinition : Resource, INamedResource<ItemDefinition>
 {
     [Export]
     public string Name { get; set; } = "New Item";
@@ -16,5 +16,5 @@ public partial class ItemDefinition : Resource, INamedResource
     public Texture2D? Icon { get; set; }
 
     [DefinitionLoader]
-    public static Dictionary<string, ItemDefinition> AllDefinitions => LoadDefs.LoadAll<ItemDefinition>("res://items/", r => r.Name);
+    public static Dictionary<string, ItemDefinition> AllDefinitions => LoadDefs.LoadAll<ItemDefinition>("res://items/");
 }

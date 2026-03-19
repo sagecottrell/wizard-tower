@@ -6,7 +6,7 @@ namespace wizardtower.custom_godot_resources;
 [Tool]
 [Icon("res://custom_godot_resources/floor-icon.svg")]
 [GlobalClass]
-public partial class FloorDefinition : Resource, INamedResource
+public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
 {
     [Export]
     public string? Name { get; set; }
@@ -27,5 +27,5 @@ public partial class FloorDefinition : Resource, INamedResource
     public NumericDict<ItemDefinition, int>? CostToBuildPerUnit { get; set; }
 
     [DefinitionLoader]
-    public static Dictionary<string, FloorDefinition> AllDefinitions => LoadDefs.LoadAll<FloorDefinition>("res://floors/", r => r.Name);
+    public static Dictionary<string, FloorDefinition> AllDefinitions => LoadDefs.LoadAll<FloorDefinition>("res://floors/");
 }
