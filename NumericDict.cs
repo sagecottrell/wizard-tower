@@ -6,8 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using wizardtower.custom_godot_resources;
-using wizardtower.custom_godot_resources.helpers;
+using wizardtower.resource_types;
+using wizardtower.resource_types.helpers;
 
 namespace wizardtower;
 
@@ -123,8 +123,9 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         foreach (var (key, value) in RuntimeData)
         {
             if (value == TValue.AdditiveIdentity)
-                Remove(key);
+                _remove(key);
         }
+        EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
     }
 
@@ -142,49 +143,52 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public NumericDict<TKey, TValue> Added(NumericDict<TKey, TValue> b)
     {
-        foreach (var kvp in b)
+        foreach (var (key, value) in b)
         {
-            if (ContainsKey(kvp.Key))
+            if (ContainsKey(key))
             {
-                this[kvp.Key] += kvp.Value;
+                _set(key, this[key] + value);
             }
             else
             {
-                this[kvp.Key] = kvp.Value;
+                _set(key, value);
             }
         }
+        EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
     }
 
     public NumericDict<TKey, TValue> Subtracted(NumericDict<TKey, TValue> b)
     {
-        foreach (var kvp in b)
+        foreach (var (key, value) in b)
         {
-            if (ContainsKey(kvp.Key))
+            if (ContainsKey(key))
             {
-                this[kvp.Key] -= kvp.Value;
+                _set(key, this[key] - value);
             }
             else
             {
-                this[kvp.Key] = -kvp.Value;
+                _set(key, -value);
             }
         }
+        EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
     }
 
     public NumericDict<TKey, TValue> MultipliedComponentwise(NumericDict<TKey, TValue> b)
     {
-        foreach (var kvp in b)
+        foreach (var (key, value) in b)
         {
-            if (ContainsKey(kvp.Key))
+            if (ContainsKey(key))
             {
-                this[kvp.Key] *= kvp.Value;
+                _set(key, this[key] * value);
             }
             else
             {
-                Remove(kvp.Key);
+                _remove(key);
             }
         }
+        EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
     }
 
@@ -192,8 +196,9 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     {
         foreach (var key in Keys)
         {
-            this[key] *= scalar;
+            _set(key, this[key] * scalar);
         }
+        EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
     }
 
@@ -217,7 +222,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         var clone = new NumericDict<TKey, TValue>();
         foreach (var kvp in this)
         {
-            clone[kvp.Key] = kvp.Value;
+            clone._set(kvp.Key, kvp.Value);
         }
         return clone;
     }
@@ -317,12 +322,24 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).IsReadOnly;
 
+    private void _set(TKey key, TValue value)
+    {
+        RuntimeData[key] = value;
+        Data[key.Name] = value;
+    }
+
+    private bool _remove(TKey key)
+    {
+        Data.Remove(key.Name);
+        return ((IDictionary<TKey, TValue>)RuntimeData).Remove(key);
+    }
+
     public TValue this[TKey key]
     {
-        get => ((IDictionary<TKey, TValue>)RuntimeData)[key]; set
+        get => ((IDictionary<TKey, TValue>)RuntimeData)[key]; 
+        set
         {
-            RuntimeData[key] = value;
-            Data[key.Name] = value;
+            _set(key, value);
             EmitSignalOnChanged();
         }
     }
@@ -341,9 +358,12 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public bool Remove(TKey key)
     {
-        Data.Remove(key.Name);
-        EmitSignalOnChanged();
-        return ((IDictionary<TKey, TValue>)RuntimeData).Remove(key);
+        if (_remove(key))
+        {
+            EmitSignalOnChanged();
+            return true;
+        }
+        return false;
     }
 
     public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
@@ -375,11 +395,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         throw new NotImplementedException();
     }
 
-    public bool Remove(KeyValuePair<TKey, TValue> item)
-    {
-        Data.Remove(item.Key.Name);
-        return ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Remove(item);
-    }
+    public bool Remove(KeyValuePair<TKey, TValue> item) => Remove(item.Key);
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
@@ -403,11 +419,9 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     {
         _editorWindow?.QueueFree();
         _editorWindow = null;
-        GD.Print($"clear {typeof(TKey).FullName} - {typeof(TValue).FullName}\n\n{data}");
         Clear();
         foreach (var (key, value) in data)
         {
-            GD.Print($"Key {key}, Value {value}");
             if (key.As<TKey>() is not TKey typedKey)
             {
                 GD.PushError($"Invalid key type {key.GetType()} in edited data, expected {typeof(TKey)}");
@@ -429,7 +443,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         _editorWindow = new();
         _editorWindow.CloseRequested += () => _editorWindow.QueueFree();
         EditorInterface.Singleton.PopupDialog(_editorWindow, new(50, 50, 500, 500));
-        var editor = ResourceLoader.Load<PackedScene>("res://custom_godot_resources/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
+        var editor = ResourceLoader.Load<PackedScene>("res://resource_types/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
         _loadDefinitions();
         editor.Setup(ToGodotDictionary(), _getResources());
         editor.OnSave += _saveItems;
@@ -443,10 +457,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         RuntimeData.Select(x => $"{x.Key.Name}:{x.Value}")
         )}}}";
 
-    public string ToStringBBCode() => $"{{{string.Join(
+    public string ToStringBBCode() => typeof(TValue).IsAssignableTo(typeof(Resource)) ? $"{{{string.Join(
         ",",
         RuntimeData.Select(x => $"[img height=24]{x.Key.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
-        )}}}";
+        )}}}" : string.Join(" ", RuntimeData.Select(x => $"{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}[img height=24]{x.Key.IconPathOrName}[/img]"));
 
     [Signal]
     public delegate void OnChangedEventHandler();

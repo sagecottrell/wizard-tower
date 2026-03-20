@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bws0dw53s3cuh"]
+
+[ext_resource type="Texture2D" uid="uid://ci15q3k5grfmk" path="res://items/images/air.png" id="1_mrj7p"]
+[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://resource_types/ItemDefinition.cs" id="2_3t3t8"]
+
+[resource]
+script = ExtResource("2_3t3t8")
+Name = "Air"
+Description = "air"
+Icon = ExtResource("1_mrj7p")
+metadata/_custom_type_script = "uid://c01j7hpwt3hfa"

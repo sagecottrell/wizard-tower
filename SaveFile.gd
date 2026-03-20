@@ -4,7 +4,9 @@ extends Node3D
 
 @onready var building_scene = preload("res://building.tscn");
 
-@export var buildings: Array[Node];
+@export var towers: Array[TowerState] = []
+
+@export_custom(PROPERTY_HINT_EXPRESSION, "hi,there") var expr: String = ""
 
 var current_building: Node:
 	set(value):
@@ -19,8 +21,6 @@ var current_building: Node:
 @export var transports_seen: Array[TransportDefinition];
 
 func _ready():
-	if current_building == null and buildings.size() > 0:
-		current_building = buildings[0];
 	on_change_building();
 
 

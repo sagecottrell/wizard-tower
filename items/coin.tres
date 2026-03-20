@@ -1,10 +1,11 @@
 [gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://b1vk1lmtohm0h"]
 
-[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://custom_godot_resources/ItemDefinition.cs" id="1_2jpt2"]
-[ext_resource type="Texture2D" uid="uid://cjfxdbn5nq5lg" path="res://items/images/coin.png" id="2_527q1"]
+[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://resource_types/ItemDefinition.cs" id="1_2jpt2"]
+[ext_resource type="Texture2D" uid="uid://cjfxdbn5nq5lg" path="res://items/images/coin.png" id="1_527q1"]
 
 [resource]
 script = ExtResource("1_2jpt2")
 Name = "Coin"
 Description = "Coin"
-Icon = ExtResource("2_527q1")
+Icon = ExtResource("1_527q1")
+metadata/_custom_type_script = "uid://c01j7hpwt3hfa"

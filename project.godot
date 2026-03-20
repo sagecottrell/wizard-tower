@@ -18,6 +18,10 @@ config/name="wizard-tower"
 run/main_scene="uid://bxa4wivphl7rl"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 
+[autoload]
+
+PhantomCameraManager="*uid://duq6jhf6unyis"
+
 [display]
 
 window/size/viewport_width=1200
@@ -26,6 +30,28 @@ window/size/viewport_height=900
 [dotnet]
 
 project/assembly_name="wizard-tower"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/phantom_camera/plugin.cfg")
+
+[file_customization]
+
+folder_colors={
+"res://floors/": "blue",
+"res://floors/images/": "gray",
+"res://floors/scenes/": "gray",
+"res://items/": "purple",
+"res://items/images/": "gray",
+"res://research/": "green",
+"res://rooms/": "pink",
+"res://rooms/images/": "gray",
+"res://rooms/scenes/": "gray",
+"res://state/": "red",
+"res://tiers/": "yellow",
+"res://transports/": "orange",
+"res://workers/": "teal"
+}
 
 [gui]
 

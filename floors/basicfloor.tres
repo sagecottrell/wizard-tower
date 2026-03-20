@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FloorDefinition" format=3 uid="uid://3ugcey2cu281"]
+
+[ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="1_cd3qr"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="1_fk288"]
+
+[sub_resource type="Resource" id="Resource_cf1s2"]
+script = ExtResource("1_fk288")
+Data = Dictionary[Variant, int]({
+"Coin": 2
+})
+
+[resource]
+script = ExtResource("1_cd3qr")
+CostToBuildPerUnit = SubResource("Resource_cf1s2")
