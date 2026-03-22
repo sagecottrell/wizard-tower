@@ -1,9 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b0marluvmam1p"]
+[gd_scene format=3 uid="uid://b0marluvmam1p"]
 
 [ext_resource type="Script" uid="uid://dn6lvini6vh68" path="res://SaveFile.gd" id="1_58w82"]
-[ext_resource type="PackedScene" uid="uid://dbidjw1trp8wy" path="res://building.tscn" id="2_lggy7"]
 
-[node name="SaveFile" type="Node3D"]
+[node name="SaveFile" type="Node3D" unique_id=1628514532]
 script = ExtResource("1_58w82")
 
-[node name="Building" parent="." instance=ExtResource("2_lggy7")]
+[node name="Towers" type="Node3D" parent="." unique_id=1082885696]

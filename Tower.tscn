@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://dbidjw1trp8wy"]
+
+[ext_resource type="Script" uid="uid://ci454ep1jcx8d" path="res://BaseBuildingScript.gd" id="1_arn3v"]
+[ext_resource type="Script" uid="uid://dwclhk5owm6q8" path="res://FloorScript.cs" id="2_bn6qc"]
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="3_htvg3"]
+[ext_resource type="Script" uid="uid://c8vrsoc85mh81" path="res://state/FloorState.cs" id="4_coqsy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58w82"]
+albedo_color = Color(0.20392157, 0.12156863, 0.06666667, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_arn3v"]
+material = SubResource("StandardMaterial3D_58w82")
+size = Vector2(100, 100)
+center_offset = Vector3(0, 0, 50)
+
+[sub_resource type="Resource" id="Resource_htvg3"]
+script = ExtResource("4_coqsy")
+Definition = ExtResource("3_htvg3")
+Elevation = 1
+SizeLeft = 7
+SizeRight = 3
+
+[node name="Tower" type="Node3D" unique_id=1310180019]
+script = ExtResource("1_arn3v")
+
+[node name="Ground" type="Node3D" parent="." unique_id=780252224]
+
+[node name="GroundBGbacklayer" type="MeshInstance3D" parent="Ground" unique_id=1604875407]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("PlaneMesh_arn3v")
+skeleton = NodePath("../..")
+
+[node name="Floors" type="Node3D" parent="." unique_id=1001740931]
+
+[node name="FloorScript" type="Node3D" parent="Floors" unique_id=743758078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("2_bn6qc")
+State = SubResource("Resource_htvg3")
+metadata/_custom_type_script = "uid://dwclhk5owm6q8"
+
+[node name="Rooms" type="Node3D" parent="." unique_id=460020059]
+
+[node name="Workers" type="Node3D" parent="." unique_id=1568787616]

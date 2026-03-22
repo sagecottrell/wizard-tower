@@ -21,7 +21,7 @@ public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
     public string? Description { get; set; }
 
     [Export]
-    public PackedScene? FloorScene { get; set; }
+    public PackedScene? FloorBackgroundTileScene { get; set; }
 
     [Export]
     public NumericDict<ItemDefinition, uint>? CostToBuildPerUnit { get; set; } = [];
