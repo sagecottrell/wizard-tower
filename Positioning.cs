@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace wizardtower;
 
@@ -13,4 +14,38 @@ public static class Positioning
             np.Y = Y;
         return np;
     }
+
+    public static void SkyBackground(this Node3D node) 
+    { 
+        node.Position = node.Position with { Z = -100 };
+    }
+
+    public static void GroundBackground(this Node3D node)
+    {
+        node.Position = node.Position with { Z = -10 };
+    }
+
+    public static void FloorBackground(this FloorScript node)
+    {
+        node.Position = node.Position with { Z = node.State.Elevation * -0.1f };
+    }
+
+    public static void RoomBackground(this Node3D node) 
+    { 
+        node.Position = node.Position with { Z = 1 };
+    }
+}
+
+
+public enum RenderLayer
+{
+    SkyBackground = -100,
+    GroundBackground = -10,
+    FloorBackground = 0,
+    RoomBackground = 1,
+    RoomForeground = 2,
+    Workers = 3,
+    FloorForeground = 4,
+
+    UI = 100,
 }

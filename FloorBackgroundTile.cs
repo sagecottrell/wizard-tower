@@ -5,6 +5,8 @@ namespace wizardtower;
 [Tool]
 public partial class FloorBackgroundTile : Node3D
 {
+    public int Index;
+
     [Export(PropertyHint.ExpEasing)]
     public float EaseIn { get; set; }
 

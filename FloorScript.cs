@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using wizardtower.state;
 
@@ -18,8 +17,21 @@ public partial class FloorScript : Node3D
 
     public override void _Process(double delta)
     {
-        if (State.Definition is null || State.Definition.FloorBackgroundTileScene is null)
+        if (State is null || State.Definition is null || State.Definition.FloorBackgroundTileScene is null)
             return;
+
+        if (_tiles.Count == 0)
+            foreach (var child in GetChildren(false))
+            {
+                if (child.Owner is null)
+                {
+                    if (child is FloorBackgroundTile fbt)
+                        _tiles.Add(fbt.Index, fbt);
+                    else
+                        child.QueueFree();
+                }
+                    
+            }
 
         Position = Position.MoveToward(this.TowerCoordToNodePosition(y: State.Elevation), (float)delta);
 
@@ -32,13 +44,13 @@ public partial class FloorScript : Node3D
             for (uint i = State.SizeLeft + 1; i <= PreviousState.SizeLeft; i++)
                 _removeTile(-(int)i);
         if (State.SizeLeft > PreviousState.SizeLeft)
-            for (uint i = Math.Max(1, PreviousState.SizeLeft); i <= State.SizeLeft; i++)
+            for (uint i = 1; i <= State.SizeLeft; i++)
                 _addTile(-(int)i, scene);
         if (State.SizeRight < PreviousState.SizeRight)
             for (uint i = State.SizeRight + 1; i <= PreviousState.SizeRight; i++)
                 _removeTile((int)i);
         if (State.SizeRight > PreviousState.SizeRight)
-            for (uint i = Math.Max(1, PreviousState.SizeRight); i <= State.SizeRight; i++)
+            for (uint i = 1; i <= State.SizeRight; i++)
                 _addTile((int)i, scene);
 
         PreviousState = State.Copy();
@@ -56,9 +68,10 @@ public partial class FloorScript : Node3D
 
     private void _addTile(int i, PackedScene scene)
     {
-        if (scene.Instantiate() is FloorBackgroundTile fbt && _tiles.TryAdd(i, fbt))
+        if (!_tiles.ContainsKey(i) && scene.Instantiate() is FloorBackgroundTile fbt && _tiles.TryAdd(i, fbt))
         {
             AddChild(fbt);
+            fbt.Index = i;
             fbt.Position = fbt.TowerCoordToNodePosition(x: i);
             fbt.OnCreate();
         }

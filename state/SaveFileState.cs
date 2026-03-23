@@ -23,7 +23,9 @@ public partial class SaveFileState : Resource
     [Export]
     public Array<TowerState>? DeadTowers { get; set; }
 
-
     [Export]
     public EncyclopediaProgress? EncyclopediaProgress { get; set; }
+
+    [Export]
+    public NumericDict<ResearchDefinition, uint> Research { get; set; } = [];
 }

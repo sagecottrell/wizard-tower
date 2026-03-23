@@ -5,7 +5,7 @@ namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class FloorState : Resource
+public partial class FloorState : Resource, ICopy<FloorState>
 {
     public FloorState Copy() => new()
     {
