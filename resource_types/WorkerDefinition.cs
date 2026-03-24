@@ -6,6 +6,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/worker-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://workers/")]
 public partial class WorkerDefinition : Resource, INamedResource<WorkerDefinition>
 {
     [Export]
@@ -31,8 +32,4 @@ public partial class WorkerDefinition : Resource, INamedResource<WorkerDefinitio
 
     [Export]
     public uint CarryCapacity { get; set; } = 2;
-
-
-    [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, WorkerDefinition> AllDefinitions => LoadDefs.LoadAll<WorkerDefinition>("res://workers/");
 }

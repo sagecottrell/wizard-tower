@@ -9,17 +9,23 @@
 
 [sub_resource type="Resource" id="Resource_i2gvq"]
 script = ExtResource("2_rcq2y")
+Data = Dictionary[String, Variant]({
+"res://items/coin.tres": 2,
+"res://items/fire.tres": 1
+})
 
-[sub_resource type="Resource" id="Resource_rcq2y"]
+[sub_resource type="Resource" id="Resource_tlh4u"]
 script = ExtResource("2_rcq2y")
-Data = Dictionary[Variant, int]({
-"Air": 2
+Data = Dictionary[String, int]({
+"res://items/air.tres": 3,
+"res://items/coin.tres": 1,
+"res://items/fire.tres": 1
 })
 
 [sub_resource type="Resource" id="Resource_wq5xc"]
 script = ExtResource("3_tlh4u")
-Data = Dictionary[Variant, ExtResource("2_rcq2y")]({
-"Hotel 1": SubResource("Resource_rcq2y")
+Data = Dictionary[String, Variant]({
+"res://rooms/room2.tres": SubResource("Resource_tlh4u")
 })
 
 [resource]

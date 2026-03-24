@@ -6,6 +6,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/room-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://rooms/")]
 public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>
 {
     [Export]
@@ -37,7 +38,4 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>
 
     [Export]
     public NumericDict<RoomDefinition, NumericDict<ItemDefinition, uint>> Upgrades { get; set; } = [];
-
-    [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, RoomDefinition> AllDefinitions => LoadDefs.LoadAll<RoomDefinition>("res://rooms/");
 }

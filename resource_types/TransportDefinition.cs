@@ -7,6 +7,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/transport-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://transports/")]
 public partial class TransportDefinition : Resource, INamedResource<TransportDefinition>
 {
     [Export]
@@ -32,8 +33,5 @@ public partial class TransportDefinition : Resource, INamedResource<TransportDef
 
     [Export]
     public Array<FloorDefinition> CanStopAtFloor { get; set; } = [];
-
-    [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, TransportDefinition> AllDefinitions => LoadDefs.LoadAll<TransportDefinition>("res://transports/");
 
 }

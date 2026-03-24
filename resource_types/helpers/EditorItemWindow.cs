@@ -20,7 +20,7 @@ public partial class EditorItemWindow : Control
         GetNode<Button>("%save").Pressed += _onSaveButtonPressed;
     }
 
-    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(Dictionary<TKey, TValue> data, System.Collections.Generic.Dictionary<string, TKey> definitions) 
+    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(Dictionary<TKey, TValue> data, System.Collections.Generic.IReadOnlyDictionary<string, TKey> definitions) 
         where TKey : Resource
         where TValue : new()
     {

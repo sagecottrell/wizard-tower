@@ -7,6 +7,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/tier-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://tiers/")]
 public partial class TierDefinition : Resource, INamedResource<TierDefinition>
 {
     [Export]
@@ -32,7 +33,4 @@ public partial class TierDefinition : Resource, INamedResource<TierDefinition>
     /// </summary>
     [Export]
     public NumericDict<ItemDefinition, uint> GiftForSaveFile { get;set; } = [];
-
-    [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, TierDefinition> AllDefinitions => LoadDefs.LoadAll<TierDefinition>("res://tiers/");
 }

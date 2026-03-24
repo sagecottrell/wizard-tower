@@ -35,7 +35,9 @@ public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
 public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
         IDictionary<TKey, TValue>, 
         IReadonlyNumericDict<NumericDict<TKey, TValue>, TKey, TValue>,
-        IToBBCode
+        IToBBCode,
+        ICopy<NumericDict<TKey, TValue>>,
+        IDeSerialize<NumericDict<TKey, TValue>>
     where TKey : Resource, INamedResource
     where TValue : notnull,
         IComparisonOperators<TValue, TValue, bool>,
@@ -46,67 +48,18 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         IAdditiveIdentity<TValue, TValue>,
         new()
 {
-    private Godot.Collections.Dictionary<TKey, TValue>? runtimeData;
+
+    [Signal]
+    public delegate void OnChangedEventHandler();
 
     [Export]
-    public Godot.Collections.Dictionary<Variant, TValue> Data { get; set; } = [];
+    private Godot.Collections.Dictionary<string, TValue> Data { get; set; } = [];
 
-    private Godot.Collections.Dictionary<TKey, TValue> RuntimeData
-    {
-        get
-        {
-            if (runtimeData == null)
-            {
-                runtimeData = [];
-                foreach (var (key, value) in Data)
-                {
-                    var v = _loadKey(key);
-                    if (v is not null)
-                        runtimeData[v] = value;
-                }
-            }
-            return runtimeData;
-        }
-    }
-
-    private bool _loaded = false;
-    private PropertyInfo? _keyCache;
-    private TKey? _loadKey(Variant variant)
-    {
-        return _getResources().TryGetValue(variant.ToString(), out var result) ? result : null;
-    }
-
-    private void _loadDefinitions()
-    {
-        if (!Engine.IsEditorHint() && _loaded)
-            return;
-        _loaded = true;
-        var prop = typeof(TKey).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
-            .FirstOrDefault(p => p.GetCustomAttributes(typeof(DefinitionLoaderAttribute), false).Length > 0);
-        if (prop is null)
-        {
-            GD.PushError($"No property with DefinitionLoaderAttribute found on {typeof(TKey)}");
-            return;
-        }
-        if (prop.GetCustomAttribute<DefinitionLoaderAttribute>(false) is not DefinitionLoaderAttribute attr)
-        {
-            GD.PushError($"DefinitionLoaderAttribute on {typeof(TKey)}.{prop.Name} is not of type DefinitionLoaderAttribute");
-            return;
-        }
-        _keyCache = prop;
-    }
-
-    private Dictionary<string, TKey> _getResources()
-    {
-        _loadDefinitions();
-        if (_keyCache?.GetValue(null) is Dictionary<string, TKey> d)
-            return d;
-        return [];
-    }
+    private static TKey? _loadKey(string variant) => ResourceLoader.Load<TKey>(variant);
 
     #region Operators
 
-    public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(RuntimeData);
+    public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(Data.ToDictionary(kvp => ResourceLoader.Load<TKey>(kvp.Key), kvp => kvp.Value));
 
     private static NumericDict<TKey, TValue> _additiveIdentity = [];
 
@@ -120,10 +73,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public NumericDict<TKey, TValue> RemoveZeroes()
     {
-        foreach (var (key, value) in RuntimeData)
+        foreach (var (key, value) in Data)
         {
             if (value == TValue.AdditiveIdentity)
-                _remove(key);
+                Data.Remove(key);
         }
         EmitSignalOnChanged();
         return (NumericDict<TKey, TValue>)this;
@@ -314,29 +267,27 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     #region IDictionary<TKey, TValue> implementation
 
-    public ICollection<TKey> Keys => ((IDictionary<TKey, TValue>)RuntimeData).Keys;
+    public ICollection<TKey> Keys => [..Data.Keys.Select(key => ResourceLoader.Load<TKey>(key))];
 
-    public ICollection<TValue> Values => ((IDictionary<TKey, TValue>)RuntimeData).Values;
+    public ICollection<TValue> Values => Data.Values;
 
-    public int Count => ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Count;
+    public int Count => Data.Count;
 
-    public bool IsReadOnly => ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).IsReadOnly;
+    public bool IsReadOnly => ((ICollection<KeyValuePair<string, TValue>>)Data).IsReadOnly;
 
     private void _set(TKey key, TValue value)
     {
-        RuntimeData[key] = value;
-        Data[key.Name] = value;
+        Data[key.ResourcePath] = value;
     }
 
     private bool _remove(TKey key)
     {
-        Data.Remove(key.Name);
-        return ((IDictionary<TKey, TValue>)RuntimeData).Remove(key);
+        return Data.Remove(key.ResourcePath);
     }
 
     public TValue this[TKey key]
     {
-        get => ((IDictionary<TKey, TValue>)RuntimeData)[key]; 
+        get => Data[key.ResourcePath]; 
         set
         {
             _set(key, value);
@@ -346,14 +297,13 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public void Add(TKey key, TValue value)
     {
-        ((IDictionary<TKey, TValue>)RuntimeData).Add(key, value);
-        Data.Add(key.Name, value);
+        Data.Add(key.ResourcePath, value);
         EmitSignalOnChanged();
     }
 
     public bool ContainsKey(TKey key)
     {
-        return ((IDictionary<TKey, TValue>)RuntimeData).ContainsKey(key);
+        return Data.ContainsKey(key.ResourcePath);
     }
 
     public bool Remove(TKey key)
@@ -368,26 +318,24 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
     {
-        return ((IDictionary<TKey, TValue>)RuntimeData).TryGetValue(key, out value);
+        return Data.TryGetValue(key.ResourcePath, out value);
     }
 
     public void Add(KeyValuePair<TKey, TValue> item)
     {
-        ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Add(item);
-        Data.Add(item.Key.Name, item.Value);
+        Data.Add(item.Key.ResourcePath, item.Value);
         EmitSignalOnChanged();
     }
 
     public void Clear()
     {
-        ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Clear();
         Data.Clear();
         EmitSignalOnChanged();
     }
 
     public bool Contains(KeyValuePair<TKey, TValue> item)
     {
-        return ((ICollection<KeyValuePair<TKey, TValue>>)RuntimeData).Contains(item);
+        return Data.TryGetValue(item.Key.ResourcePath, out var value) && value == item.Value;
     }
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -399,12 +347,12 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-        return ((IEnumerable<KeyValuePair<TKey, TValue>>)RuntimeData).GetEnumerator();
+        return Data.Select(kvp => new KeyValuePair<TKey, TValue>(ResourceLoader.Load<TKey>(kvp.Key), kvp.Value)).GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)RuntimeData).GetEnumerator();
+        return Data.GetEnumerator();
     }
 
     #endregion
@@ -444,29 +392,52 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         _editorWindow.CloseRequested += () => _editorWindow.QueueFree();
         EditorInterface.Singleton.PopupDialog(_editorWindow, new(50, 50, 500, 500));
         var editor = ResourceLoader.Load<PackedScene>("res://resource_types/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
-        _loadDefinitions();
-        editor.Setup(ToGodotDictionary(), _getResources());
+        editor.Setup(ToGodotDictionary(), LoadDefs.LoadAll<TKey>());
         editor.OnSave += _saveItems;
         _editorWindow.AddChild(editor); 
     }
 
     #endregion
 
-    public override string ToString() => $"{{{string.Join(
-        ",",
-        RuntimeData.Select(x => $"{x.Key.Name}:{x.Value}")
-        )}}}";
+    #region IToBBCode
 
     public string ToStringBBCode() => typeof(TValue).IsAssignableTo(typeof(Resource)) ? $"{{{string.Join(
         ",",
-        RuntimeData.Select(x => $"[img height=24]{x.Key.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
-        )}}}" : string.Join(" ", RuntimeData.Select(x => $"{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}[img height=24]{x.Key.IconPathOrName}[/img]"));
+        Data.Select(x => $"[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
+        )}}}" : string.Join(" ", Data.Select(x => $"{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]"));
 
-    [Signal]
-    public delegate void OnChangedEventHandler();
-}
+    #endregion
 
-[AttributeUsage(AttributeTargets.Property)]
-public class DefinitionLoaderAttribute : Attribute
-{
+    #region IDeSerialize
+
+    public Godot.Collections.Dictionary<string, Variant> Serialize() => new(Data.ToDictionary(
+        kvp => kvp.Key, 
+        kvp => kvp.Value is ISerialize serializable ? Variant.From(serializable.Serialize()) : Variant.From(kvp.Value)
+        ));
+
+    public NumericDict<TKey, TValue> Deserialize(Godot.Collections.Dictionary<string, Variant> dict)
+    {
+        Data = new(dict
+            .Where(kvp => kvp.Key is not null)
+            .ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value is IDeSerialize<TValue> ds ? ds.Deserialize(kvp.Value.AsGodotDictionary<string, Variant>()) : kvp.Value.As<TValue>()
+        ));
+        return this;
+    }
+
+    #endregion
+
+    #region ICopy
+
+    public NumericDict<TKey, TValue> Copy() => new() { 
+        Data = new(Data.ToDictionary()), 
+    };
+
+    #endregion
+
+    public override string ToString() => $"{{{string.Join(
+        ",",
+        Data.Select(x => $"{ResourceLoader.Load<TKey>(x.Key).Name}:{x.Value}")
+        )}}}";
 }

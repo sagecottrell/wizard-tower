@@ -6,6 +6,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/research-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://research/")]
 public partial class ResearchDefinition : Resource, INamedResource<ResearchDefinition>
 {
     [Export]
@@ -37,8 +38,4 @@ public partial class ResearchDefinition : Resource, INamedResource<ResearchDefin
 
     [Export]
     public uint MaxTimesResearchable { get; set; } = 1;
-
-
-    [DefinitionLoader]
-    public static System.Collections.Generic.Dictionary<string, ResearchDefinition> AllDefinitions => LoadDefs.LoadAll<ResearchDefinition>("res://research/");
 }

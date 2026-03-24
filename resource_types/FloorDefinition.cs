@@ -6,6 +6,7 @@ namespace wizardtower.resource_types;
 [Tool]
 [Icon("res://resource_types/floor-icon.svg")]
 [GlobalClass]
+[LoadDefinitions("res://floors/")]
 public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
 {
     [Export]
@@ -25,7 +26,4 @@ public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
 
     [Export]
     public NumericDict<ItemDefinition, uint>? CostToBuildPerUnit { get; set; } = [];
-
-    [DefinitionLoader]
-    public static Dictionary<string, FloorDefinition> AllDefinitions => LoadDefs.LoadAll<FloorDefinition>("res://floors/");
 }
