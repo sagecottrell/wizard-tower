@@ -2,38 +2,26 @@
 
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_pyidc"]
 [ext_resource type="PackedScene" uid="uid://b0marluvmam1p" path="res://SaveFile.tscn" id="2_pyidc"]
-[ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="2_vvh5c"]
-[ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="3_28aoi"]
-[ext_resource type="PackedScene" uid="uid://dbidjw1trp8wy" path="res://Tower.tscn" id="5_jnlp7"]
 
-[sub_resource type="GDScript" id="GDScript_pyidc"]
-script/source = "extends Node
-"
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vvh5c"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cdhmb"]
 
 [sub_resource type="Sky" id="Sky_28aoi"]
-sky_material = SubResource("ProceduralSkyMaterial_vvh5c")
+sky_material = SubResource("ProceduralSkyMaterial_cdhmb")
 
-[sub_resource type="Environment" id="Environment_jnlp7"]
-background_mode = 2
-sky = SubResource("Sky_28aoi")
-
-[sub_resource type="Resource" id="Resource_jnlp7"]
-script = ExtResource("3_28aoi")
-
-[sub_resource type="Environment" id="Environment_l8v81"]
+[sub_resource type="Environment" id="Environment_pyidc"]
 background_mode = 2
 sky = SubResource("Sky_28aoi")
 
 [node name="Root" type="Node3D" unique_id=1905936145]
-script = SubResource("GDScript_pyidc")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=369862051]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 top_level = true
-environment = SubResource("Environment_jnlp7")
+environment = SubResource("Environment_pyidc")
+projection = 1
 current = true
+size = 30.0
+far = 250.0
 
 [node name="PhantomCameraHost" type="Node" parent="Camera3D" unique_id=1577356244]
 process_priority = 300
@@ -42,18 +30,9 @@ script = ExtResource("1_pyidc")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=619940948]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15.284138)
+transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.70710677, 0, -0.70710677, 0.7071067, 0, 11.315495, 10.989061)
 sky_mode = 1
 
-[node name="PhantomCamera3D" type="Node3D" parent="." unique_id=735505707]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7)
-script = ExtResource("2_vvh5c")
-tween_resource = SubResource("Resource_jnlp7")
-environment = SubResource("Environment_l8v81")
-metadata/_custom_type_script = "uid://csjccrhj5wnx7"
-
 [node name="SaveFile" parent="." unique_id=1628514532 instance=ExtResource("2_pyidc")]
-
-[node name="Tower" parent="SaveFile/Towers" parent_id_path=PackedInt32Array(1628514532, 1082885696) index="0" unique_id=1310180019 instance=ExtResource("5_jnlp7")]
 
 [editable path="SaveFile"]

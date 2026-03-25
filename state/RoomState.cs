@@ -1,11 +1,12 @@
 using Godot;
+using Godot.Collections;
 using wizardtower.resource_types;
 
 namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class RoomState : Resource, ICopy<RoomState>
+public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomState>
 {
     [Export]
     public RoomDefinition? Definition { get; set; }
@@ -46,5 +47,16 @@ public partial class RoomState : Resource, ICopy<RoomState>
             FloorPosition = FloorPosition,
             Definition = Definition,
         };
+    }
+
+    public Dictionary<string, Variant> Serialize() => new()
+    {
+        { nameof(Definition), Definition?.ResourcePath ?? "" },
+    };
+
+    public RoomState Deserialize(Dictionary<string, Variant> dict)
+    {
+        Definition = LoadDefs.Get<RoomDefinition>(dict[nameof(Definition)].AsString());
+        return this;
     }
 }

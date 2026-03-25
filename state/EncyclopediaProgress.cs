@@ -6,17 +6,30 @@ namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class EncyclopediaProgress : Resource
+public partial class EncyclopediaProgress : Resource, ICopy<EncyclopediaProgress>, IDeSerialize<EncyclopediaProgress>
 {
     [Export]
-    public Array<RoomDefinition>? RoomsSeen { get; set; }
+    public NumericDict<RoomDefinition, int>? RoomsSeen { get; set; } = [];
 
     [Export]
-    public Array<TransportDefinition>? TransportsSeen { get; set; }
+    public NumericDict<TransportDefinition, int>? TransportsSeen { get; set; } = [];
 
     [Export]
-    public Array<FloorDefinition>? FloorsSeen { get; set; }
+    public NumericDict<FloorDefinition, int>? FloorsSeen { get; set; } = [];
 
     [Export]
-    public Array<ResearchDefinition>? ResearchDefinitionsSeen { get; set; }
+    public NumericDict<ResearchDefinition, int>? ResearchDefinitionsSeen { get; set; } = [];
+
+    public EncyclopediaProgress Copy() => new()
+    {
+        RoomsSeen = RoomsSeen?.Copy(),
+        TransportsSeen = TransportsSeen?.Copy(),
+        FloorsSeen = FloorsSeen?.Copy(),
+        ResearchDefinitionsSeen = ResearchDefinitionsSeen?.Copy(),
+    };
+
+    public Dictionary<string, Variant> Serialize() => [];
+
+    public EncyclopediaProgress Deserialize(Dictionary<string, Variant> dict) => this;
+
 }

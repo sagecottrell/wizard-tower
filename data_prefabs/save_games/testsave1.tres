@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="SaveFileState" format=3 uid="uid://bld4rsj3dhoy"]
+
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="1_5oluk"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ResearchDefinition,System.UInt32].cs" id="1_mqmhn"]
+[ext_resource type="Script" uid="uid://c8vrsoc85mh81" path="res://state/FloorState.cs" id="1_o476b"]
+[ext_resource type="Script" uid="uid://bdqiw4lswse2o" path="res://state/RoomState.cs" id="2_5oluk"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="2_s7lup"]
+[ext_resource type="Script" uid="uid://lmxutnady135" path="res://state/SaveFileState.cs" id="3_7qqru"]
+[ext_resource type="Script" uid="uid://b3s7iebxp5m14" path="res://state/TransportState.cs" id="3_w2bl2"]
+[ext_resource type="Script" uid="uid://c75dxx53npn8e" path="res://state/WorkerState.cs" id="4_0x1ro"]
+[ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_2qcrd"]
+
+[sub_resource type="Resource" id="Resource_bw1c6"]
+script = ExtResource("5_2qcrd")
+Floors = Dictionary[int, ExtResource("1_o476b")]({})
+DefaultAboveGroundFloorDefinition = ExtResource("1_5oluk")
+metadata/_custom_type_script = "uid://mv22mxallfm6"
+
+[sub_resource type="Resource" id="Resource_5jflc"]
+script = ExtResource("1_mqmhn")
+
+[sub_resource type="Resource" id="Resource_011gn"]
+script = ExtResource("2_s7lup")
+Data = Dictionary[String, int]({
+"res://items/air.tres": 1,
+"res://items/coin.tres": 1,
+"res://items/fire.tres": 2
+})
+
+[resource]
+script = ExtResource("3_7qqru")
+Wallet = SubResource("Resource_011gn")
+AliveTowers = Array[Object]([SubResource("Resource_bw1c6")])
+DeadTowers = []
+Research = SubResource("Resource_5jflc")
+metadata/_custom_type_script = "uid://lmxutnady135"

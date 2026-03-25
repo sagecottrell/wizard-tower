@@ -13,22 +13,31 @@ public partial class FloorBackgroundTile : Node3D
     [Export]
     public float InTime { get; set; }
 
+    [Signal]
+    public delegate void OnMouseEnteredEventHandler(FloorBackgroundTile sender);
+
+    [Signal]
+    public delegate void OnMouseExitedEventHandler(FloorBackgroundTile sender);
+
 
     // OnDestroy
 
-    // OnCreate
-
     public void OnCreate()
     {
+        Position = this.TowerCoordToNodePosition(y: -1);
         var lerp = new PosLerpHelper()
         {
             InTime = InTime,
             EaseIn = EaseIn,
-            Prev = this.TowerCoordToNodePosition(y: -1),
+            Prev = Position,
             Next = this.TowerCoordToNodePosition(y: 0),
         };
         AddChild(lerp);
         lerp.OnComplete += lerp.QueueFree;
     }
 
+
+    public void MouseEntered() => EmitSignalOnMouseEntered(this);
+
+    public void MouseExited() => EmitSignalOnMouseExited(this);
 }

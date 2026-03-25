@@ -1,28 +1,26 @@
 [gd_scene format=3 uid="uid://c44mfvxlaireo"]
 
 [ext_resource type="Script" uid="uid://bslk82lpsb6ak" path="res://FloorBackgroundTile.cs" id="1_vn6wp"]
-[ext_resource type="Texture2D" uid="uid://bm1c15xrjy36v" path="res://floors/images/basic-floor-bg.png" id="2_cd3si"]
+[ext_resource type="ArrayMesh" uid="uid://cgeciph81q4nk" path="res://floors/models/basic-floor.obj" id="2_vn6wp"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i5q6k"]
-albedo_texture = ExtResource("2_cd3si")
-texture_filter = 2
-stencil_flags = 1
-stencil_color = Color(0, 1, 0, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_i5ei3"]
-material = SubResource("StandardMaterial3D_i5q6k")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cd3si"]
-albedo_texture = ExtResource("2_cd3si")
-uv1_scale = Vector3(1, 0.5, 0.5)
-texture_filter = 2
+[sub_resource type="BoxShape3D" id="BoxShape3D_vn6wp"]
 
 [node name="BasicFloor" type="Node3D" unique_id=1087024591]
 script = ExtResource("1_vn6wp")
 EaseIn = 0.10809387
 InTime = 1.0
 
-[node name="background" type="MeshInstance3D" parent="." unique_id=1683242828]
+[node name="BasicFloor" type="MeshInstance3D" parent="." unique_id=1320184721]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+gi_mode = 2
+gi_lightmap_texel_scale = 2.0
+mesh = ExtResource("2_vn6wp")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=2103108605]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1595667154]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("QuadMesh_i5ei3")
-surface_material_override/0 = SubResource("StandardMaterial3D_cd3si")
+shape = SubResource("BoxShape3D_vn6wp")
+
+[connection signal="mouse_entered" from="Area3D" to="." method="MouseEntered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="MouseExited"]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dshus7l3ammh5"]
 
-[ext_resource type="Script" uid="uid://bkrngclqdro8p" path="res://custom_godot_resources/helpers/EditorItemWindow.cs" id="1_w6msg"]
-[ext_resource type="Texture2D" uid="uid://cbmpgqpxp1v3h" path="res://custom_godot_resources/item-icon.svg" id="2_w6msg"]
+[ext_resource type="Script" uid="uid://bkrngclqdro8p" path="res://resource_types/helpers/EditorItemWindow.cs" id="1_w6msg"]
+[ext_resource type="Texture2D" uid="uid://6iskssvv43uk" path="res://resource_types/item-icon.svg" id="2_58131"]
 
 [node name="EditorItemWindow" type="VBoxContainer" unique_id=1265699384]
 anchors_preset = 15
@@ -20,7 +20,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Filter"
 keep_editing_on_text_submit = true
-right_icon = ExtResource("2_w6msg")
+right_icon = ExtResource("2_58131")
 icon_expand_mode = 1
 
 [node name="save" type="Button" parent="VBoxContainer" unique_id=1102337052]

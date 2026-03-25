@@ -15,8 +15,15 @@ public partial class FloorScript : Node3D
 
     private readonly Dictionary<int, FloorBackgroundTile> _tiles = [];
 
+    public override void _Ready()
+    {
+        Position = this.TowerCoordToNodePosition(y: State.Elevation, z: -State.Elevation);
+    }
+
     public override void _Process(double delta)
     {
+        Name = $"Floor{State.Elevation}";
+
         if (State is null || State.Definition is null || State.Definition.FloorBackgroundTileScene is null)
             return;
 
@@ -33,7 +40,7 @@ public partial class FloorScript : Node3D
                     
             }
 
-        Position = Position.MoveToward(this.TowerCoordToNodePosition(y: State.Elevation), (float)delta);
+        Position = Position.MoveToward(this.TowerCoordToNodePosition(y: State.Elevation, z: -State.Elevation), (float)delta);
 
         if (State == PreviousState)
             return;
@@ -87,6 +94,11 @@ public partial class FloorScript : Node3D
             PreviousState.Elevation = State.Elevation - System.Math.Sign(State.Elevation);
         else
             PreviousState.Elevation = -1;
-        Position = this.TowerCoordToNodePosition(y: PreviousState.Elevation);
+        Position = this.TowerCoordToNodePosition(y: PreviousState.Elevation, z: -State.Elevation);
+    }
+
+    public void Destroy()
+    {
+        QueueFree();
     }
 }

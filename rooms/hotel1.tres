@@ -9,7 +9,7 @@
 
 [sub_resource type="Resource" id="Resource_i2gvq"]
 script = ExtResource("2_rcq2y")
-Data = Dictionary[String, Variant]({
+Data = Dictionary[String, int]({
 "res://items/coin.tres": 2,
 "res://items/fire.tres": 1
 })
@@ -24,7 +24,7 @@ Data = Dictionary[String, int]({
 
 [sub_resource type="Resource" id="Resource_wq5xc"]
 script = ExtResource("3_tlh4u")
-Data = Dictionary[String, Variant]({
+Data = Dictionary[String, ExtResource("2_rcq2y")]({
 "res://rooms/room2.tres": SubResource("Resource_tlh4u")
 })
 

@@ -11,10 +11,4 @@ public partial class RoomScript : Node3D
     public RoomState State { get; set; } = new();
 
     public RoomState PreviousState { get; set; } = new();
-
-    public override void _Ready()
-    {
-        if (State == PreviousState)
-            return;
-    }
 }

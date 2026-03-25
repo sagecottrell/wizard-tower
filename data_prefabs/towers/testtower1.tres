@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="TowerState" format=3 uid="uid://dgyunb4jt28yg"]
+
+[ext_resource type="Script" uid="uid://c8vrsoc85mh81" path="res://state/FloorState.cs" id="1_jji12"]
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="2_8sv8r"]
+[ext_resource type="Script" uid="uid://bdqiw4lswse2o" path="res://state/RoomState.cs" id="2_et7yl"]
+[ext_resource type="Script" uid="uid://b3s7iebxp5m14" path="res://state/TransportState.cs" id="3_8sv8r"]
+[ext_resource type="Script" uid="uid://c75dxx53npn8e" path="res://state/WorkerState.cs" id="4_h14h1"]
+[ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_oywi7"]
+
+[sub_resource type="Resource" id="Resource_et7yl"]
+script = ExtResource("1_jji12")
+Definition = ExtResource("2_8sv8r")
+SizeLeft = 10
+SizeRight = 10
+
+[sub_resource type="Resource" id="Resource_8sv8r"]
+script = ExtResource("1_jji12")
+Definition = ExtResource("2_8sv8r")
+Elevation = 1
+SizeLeft = 10
+SizeRight = 10
+
+[sub_resource type="Resource" id="Resource_h14h1"]
+script = ExtResource("1_jji12")
+Definition = ExtResource("2_8sv8r")
+Elevation = 2
+SizeLeft = 10
+SizeRight = 10
+
+[sub_resource type="Resource" id="Resource_oywi7"]
+script = ExtResource("1_jji12")
+Definition = ExtResource("2_8sv8r")
+Elevation = 3
+SizeLeft = 6
+SizeRight = 6
+
+[sub_resource type="Resource" id="Resource_oo7m3"]
+script = ExtResource("1_jji12")
+Definition = ExtResource("2_8sv8r")
+Elevation = 4
+SizeLeft = 3
+SizeRight = 3
+
+[resource]
+script = ExtResource("5_oywi7")
+Floors = Dictionary[int, ExtResource("1_jji12")]({
+0: SubResource("Resource_et7yl"),
+1: SubResource("Resource_8sv8r"),
+2: SubResource("Resource_h14h1"),
+3: SubResource("Resource_oywi7"),
+4: SubResource("Resource_oo7m3")
+})
+DefaultAboveGroundFloorDefinition = ExtResource("2_8sv8r")
+DefaultBasementFloorDefinition = ExtResource("2_8sv8r")
+HighestFloor = 4
+MaxHeight = 5
+MaxBasement = 5
+metadata/_custom_type_script = "uid://mv22mxallfm6"

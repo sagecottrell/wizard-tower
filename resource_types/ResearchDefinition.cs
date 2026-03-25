@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System;
 
 namespace wizardtower.resource_types;
 
@@ -38,4 +39,15 @@ public partial class ResearchDefinition : Resource, INamedResource<ResearchDefin
 
     [Export]
     public uint MaxTimesResearchable { get; set; } = 1;
+
+    [Export]
+    public AccountResearchApplicationTime AccountResearch { get; set; }
+}
+
+
+[Flags]
+public enum AccountResearchApplicationTime
+{
+    NewTowers = 1 << 1,
+    ExistingTowers = 1 << 2,
 }

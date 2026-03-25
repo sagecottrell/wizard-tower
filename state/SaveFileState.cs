@@ -6,7 +6,7 @@ namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class SaveFileState : Resource
+public partial class SaveFileState : Resource, IDeSerialize<SaveFileState>
 {
     [Export]
     public NumericDict<ItemDefinition, uint> Wallet { get; set; } = [];
@@ -28,4 +28,8 @@ public partial class SaveFileState : Resource
 
     [Export]
     public NumericDict<ResearchDefinition, uint> Research { get; set; } = [];
+
+    public SaveFileState Deserialize(Dictionary<string, Variant> dict) => this;
+
+    public Dictionary<string, Variant> Serialize() => [];
 }

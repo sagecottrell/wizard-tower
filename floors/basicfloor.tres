@@ -6,9 +6,6 @@
 
 [sub_resource type="Resource" id="Resource_cf1s2"]
 script = ExtResource("1_fk288")
-Data = Dictionary[Variant, int]({
-"Coin": 2
-})
 
 [resource]
 script = ExtResource("1_cd3qr")
