@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bvutrtokg8sk1"]
 
-[ext_resource type="Script" uid="uid://88yh107pitm5" path="res://custom_godot_resources/helpers/EditorItemSelector.cs" id="1_wmwf0"]
-[ext_resource type="Texture2D" uid="uid://cbmpgqpxp1v3h" path="res://custom_godot_resources/item-icon.svg" id="2_wmwf0"]
+[ext_resource type="Script" uid="uid://88yh107pitm5" path="res://resource_types/helpers/EditorItemSelector.cs" id="1_wmwf0"]
+[ext_resource type="Texture2D" uid="uid://6iskssvv43uk" path="res://resource_types/item-icon.svg" id="2_hpqf8"]
 
 [node name="EditorItemSelector" type="HBoxContainer" unique_id=488729890]
 anchors_preset = -1
@@ -20,7 +20,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-texture = ExtResource("2_wmwf0")
+texture = ExtResource("2_hpqf8")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="." unique_id=411028237]

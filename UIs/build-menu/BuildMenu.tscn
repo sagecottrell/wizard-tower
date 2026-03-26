@@ -1,25 +1,41 @@
 [gd_scene format=3 uid="uid://c75plrkn8hxvp"]
 
-[node name="BuildMenu" type="Control" unique_id=1778443641]
-layout_mode = 3
+[ext_resource type="Script" uid="uid://bloy1ji5feilm" path="res://UIs/build-menu/BuildMenu.cs" id="1_7f4hj"]
+
+[node name="BuildMenu" type="VBoxContainer" unique_id=240534824 node_paths=PackedStringArray("NodeTowerName", "NodeWallet", "NodeRooms", "NodeFloors", "NodeTransports")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_7f4hj")
+NodeTowerName = NodePath("towername")
+NodeWallet = NodePath("wallet")
+NodeRooms = NodePath("TabContainer/Rooms")
+NodeFloors = NodePath("TabContainer/Floors")
+NodeTransports = NodePath("TabContainer/Transports")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2054472017]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="buildingname" type="Label" parent="VBoxContainer" unique_id=156162907]
-unique_name_in_owner = true
+[node name="towername" type="Label" parent="." unique_id=156162907]
 layout_mode = 2
 
-[node name="building wallet" type="PanelContainer" parent="VBoxContainer" unique_id=1853416475]
+[node name="wallet" type="VBoxContainer" parent="." unique_id=1124535807]
 layout_mode = 2
 
-[node name="building wallet" type="VBoxContainer" parent="VBoxContainer/building wallet" unique_id=1124535807]
-unique_name_in_owner = true
+[node name="TabContainer" type="TabContainer" parent="." unique_id=256354587]
 layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Rooms" type="VBoxContainer" parent="TabContainer" unique_id=1820978117]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Floors" type="VBoxContainer" parent="TabContainer" unique_id=349656375]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="Transports" type="VBoxContainer" parent="TabContainer" unique_id=31218937]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2

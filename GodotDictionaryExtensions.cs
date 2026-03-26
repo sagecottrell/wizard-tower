@@ -23,4 +23,8 @@ public static class GodotDictionaryExtensions
         where TKey : notnull
         where TValue : IDeSerialize<TValue>, new()
         => new(dictionary.ToDictionary(kvp => keymap(kvp.Key), kvp => new TValue().Deserialize(kvp.Value.AsSaveFormatDict())));
+
+    public static Dictionary<TKey, TValue> ToGodotDictionary<[MustBeVariant] TKey, [MustBeVariant] TValue>(this System.Collections.Generic.Dictionary<TKey, TValue> dict)
+        where TKey : notnull
+        => new(dict);
 }

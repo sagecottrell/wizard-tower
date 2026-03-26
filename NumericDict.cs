@@ -440,4 +440,9 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         ",",
         Data.Select(x => $"{ResourceLoader.Load<TKey>(x.Key).Name}:{x.Value}")
         )}}}";
+
+    public string ToStringAsCost() => typeof(TValue).IsAssignableTo(typeof(Resource)) ? $"{{{string.Join(
+        " + ",
+        Data.Select(x => $"[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
+        )}}}" : string.Join(" + ", Data.Select(x => $"{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]"));
 }

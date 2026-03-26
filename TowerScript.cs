@@ -1,8 +1,8 @@
 using Godot;
-using PhantomCamera;
 using System;
 using System.Linq;
 using wizardtower.state;
+using wizardtower.UIs;
 
 namespace wizardtower;
 
@@ -33,6 +33,9 @@ public partial class TowerScript : Node3D
     [Export]
     public Node3D? Camera { get; set; }
 
+    [Export]
+    public BuildMenu? BuildMenu { get; set; }
+
     public override void _Ready()
     {
         State.EnsureGroundFloor();
@@ -46,6 +49,8 @@ public partial class TowerScript : Node3D
                 });
             }
         State.OnFloorAdd += OnFloorAdd;
+        BuildMenu?.SetTower(State);
+        this.Child<UIManager>()?.ShowUI();
     }
 
     public override void _Process(double delta)

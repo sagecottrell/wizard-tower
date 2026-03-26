@@ -1,5 +1,5 @@
 using Godot;
-
+using System.Diagnostics;
 
 namespace wizardtower.resource_types;
 
@@ -7,6 +7,7 @@ namespace wizardtower.resource_types;
 [Icon("res://resource_types/worker-icon.svg")]
 [GlobalClass]
 [LoadDefinitions("res://workers/")]
+[DebuggerDisplay("{Name}")]
 public partial class WorkerDefinition : Resource, INamedResource<WorkerDefinition>
 {
     [Export]

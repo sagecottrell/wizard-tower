@@ -1,5 +1,5 @@
 using Godot;
-using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace wizardtower.resource_types;
 
@@ -7,6 +7,7 @@ namespace wizardtower.resource_types;
 [Icon("res://resource_types/floor-icon.svg")]
 [GlobalClass]
 [LoadDefinitions("res://floors/")]
+[DebuggerDisplay("{Name}")]
 public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
 {
     [Export]

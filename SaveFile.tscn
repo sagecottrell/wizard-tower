@@ -1,9 +1,14 @@
 [gd_scene format=3 uid="uid://b0marluvmam1p"]
 
+[ext_resource type="Script" uid="uid://dc6qx5weqd838" path="res://SaveFileScript.cs" id="1_jnlyl"]
 [ext_resource type="Resource" uid="uid://dgyunb4jt28yg" path="res://data_prefabs/towers/testtower1.tres" id="2_jnlyl"]
 [ext_resource type="PackedScene" uid="uid://dbidjw1trp8wy" path="res://Tower.tscn" id="2_lggy7"]
+[ext_resource type="Script" uid="uid://lmxutnady135" path="res://state/SaveFileState.cs" id="2_x23q7"]
+[ext_resource type="Resource" uid="uid://bld4rsj3dhoy" path="res://data_prefabs/save_games/testsave1.tres" id="3_aa7kf"]
 
 [node name="SaveFile" type="Node3D" unique_id=1628514532]
+script = ExtResource("1_jnlyl")
+DeveloperAvailableSaveStates = Array[ExtResource("2_x23q7")]([ExtResource("3_aa7kf")])
 
 [node name="Towers" type="Node3D" parent="." unique_id=1082885696]
 

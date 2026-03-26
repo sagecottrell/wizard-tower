@@ -1,6 +1,6 @@
 using Godot;
 using Godot.Collections;
-
+using System.Diagnostics;
 
 namespace wizardtower.resource_types;
 
@@ -8,6 +8,7 @@ namespace wizardtower.resource_types;
 [Icon("res://resource_types/transport-icon.svg")]
 [GlobalClass]
 [LoadDefinitions("res://transports/")]
+[DebuggerDisplay("{Name}")]
 public partial class TransportDefinition : Resource, INamedResource<TransportDefinition>
 {
     [Export]

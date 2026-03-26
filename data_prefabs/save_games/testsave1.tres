@@ -9,11 +9,45 @@
 [ext_resource type="Script" uid="uid://b3s7iebxp5m14" path="res://state/TransportState.cs" id="3_w2bl2"]
 [ext_resource type="Script" uid="uid://c75dxx53npn8e" path="res://state/WorkerState.cs" id="4_0x1ro"]
 [ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_2qcrd"]
+[ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_bw1c6"]
+[ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_1jp0y"]
+[ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_8x4tw"]
+[ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="8_fqv5x"]
+
+[sub_resource type="Resource" id="Resource_w2bl2"]
+script = ExtResource("1_o476b")
+Definition = ExtResource("1_5oluk")
+SizeLeft = 3
+SizeRight = 3
+
+[sub_resource type="Resource" id="Resource_0x1ro"]
+script = ExtResource("1_o476b")
+Definition = ExtResource("1_5oluk")
+Elevation = 1
+SizeLeft = 3
+SizeRight = 3
+
+[sub_resource type="Resource" id="Resource_2qcrd"]
+script = ExtResource("1_o476b")
+Definition = ExtResource("1_5oluk")
+Elevation = 2
+SizeLeft = 3
+SizeRight = 3
+
+[sub_resource type="Resource" id="Resource_5oluk"]
+script = ExtResource("2_s7lup")
 
 [sub_resource type="Resource" id="Resource_bw1c6"]
 script = ExtResource("5_2qcrd")
-Floors = Dictionary[int, ExtResource("1_o476b")]({})
+Floors = Dictionary[int, ExtResource("1_o476b")]({
+0: SubResource("Resource_w2bl2"),
+1: SubResource("Resource_0x1ro"),
+2: SubResource("Resource_2qcrd")
+})
 DefaultAboveGroundFloorDefinition = ExtResource("1_5oluk")
+Wallet = SubResource("Resource_5oluk")
+UnlockedRooms = Array[ExtResource("6_1jp0y")]([ExtResource("7_8x4tw")])
+HighestFloor = 2
 metadata/_custom_type_script = "uid://mv22mxallfm6"
 
 [sub_resource type="Resource" id="Resource_5jflc"]

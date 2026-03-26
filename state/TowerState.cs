@@ -7,12 +7,15 @@ namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<TowerState>
+public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<TowerState>, IDebug
 {
     private uint maxWidth = 10;
 
     [Signal]
     public delegate void OnFloorAddEventHandler(FloorState floor);
+
+    [Export]
+    public string Name { get; set; } = "Tower";
 
     [Export]
     public Dictionary<int, FloorState> Floors { get; set; } = [];
@@ -39,6 +42,18 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public FloorDefinition? DefaultBasementFloorDefinition { get; set; }
 
     [Export]
+    public NumericDict<ItemDefinition, uint> Wallet { get; set; } = [];
+
+    [Export]
+    public Array<RoomDefinition> UnlockedRooms { get; set; } = [];
+
+    [Export]
+    public Array<FloorDefinition> UnlockedFloors { get; set; } = [];
+
+    [Export]
+    public Array<TransportDefinition> UnlockedTransports { get; set; } = [];
+
+    [Export]
     public uint RoomIdCounter { get; set; } = 0;
 
     [Export]
@@ -48,14 +63,15 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public uint HighestFloor { get; set; } = 0;
 
     [Export]
-    public uint MaxHeight { get; set; }
+    public uint MaxHeight { get; set; } = 5;
 
     [Export]
-    public uint MaxBasement { get; set; }
+    public uint MaxBasement { get; set; } = 0;
 
     [Export]
-    public uint MaxWidth { 
-        get => maxWidth; 
+    public uint MaxWidth
+    {
+        get => maxWidth;
         set
         {
             maxWidth = value;
@@ -122,13 +138,14 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         if (ReferenceEquals(this, obj)) return true;
         if (obj is null) return false;
         if (obj is not TowerState other) return false;
-        return RoomIdCounter == other.RoomIdCounter 
-            && LowestFloor == other.LowestFloor 
-            && HighestFloor == other.HighestFloor 
-            && Floors.Keys.SequenceEqual(other.Floors.Keys) 
+        return RoomIdCounter == other.RoomIdCounter
+            && LowestFloor == other.LowestFloor
+            && HighestFloor == other.HighestFloor
+            && Floors.Keys.SequenceEqual(other.Floors.Keys)
             && Rooms.Keys.SequenceEqual(other.Rooms.Keys)
             && Transports.Keys.SequenceEqual(other.Transports.Keys)
             && Workers.Keys.SequenceEqual(other.Workers.Keys)
+            && Wallet == other.Wallet
             && MaxBasement == other.MaxBasement
             && MaxHeight == other.MaxHeight
             && MaxWidth == other.MaxWidth;
@@ -148,6 +165,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         MaxBasement = MaxBasement,
         MaxHeight = MaxHeight,
         maxWidth = maxWidth,
+        Wallet = Wallet.Copy(),
     };
 
     public Dictionary<string, Variant> Serialize() => new()
@@ -162,6 +180,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         { nameof(MaxWidth), MaxWidth },
         { nameof(MaxHeight), MaxHeight },
         { nameof(MaxBasement), MaxBasement },
+        { nameof(Wallet), Wallet.Serialize() },
     };
 
     public TowerState Deserialize(Dictionary<string, Variant> dict)
@@ -170,6 +189,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         Rooms = dict[nameof(Rooms)].AsSaveFormatDict().DeSerialize<uint, RoomState>(uint.Parse);
         Transports = dict[nameof(Transports)].AsSaveFormatDict().DeSerialize<uint, TransportState>(uint.Parse);
         Workers = dict[nameof(Workers)].AsSaveFormatDict().DeSerialize<uint, WorkerState>(uint.Parse);
+        Wallet.Deserialize(dict[nameof(Wallet)].AsSaveFormatDict());
         RoomIdCounter = dict[nameof(RoomIdCounter)].AsUInt32();
         LowestFloor = dict[nameof(LowestFloor)].AsUInt32();
         HighestFloor = dict[nameof(HighestFloor)].AsUInt32();

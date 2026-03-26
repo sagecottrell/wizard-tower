@@ -1,6 +1,6 @@
 using Godot;
 using Godot.Collections;
-
+using System.Diagnostics;
 
 namespace wizardtower.resource_types;
 
@@ -8,6 +8,7 @@ namespace wizardtower.resource_types;
 [Icon("res://resource_types/tier-icon.svg")]
 [GlobalClass]
 [LoadDefinitions("res://tiers/")]
+[DebuggerDisplay("{Name}")]
 public partial class TierDefinition : Resource, INamedResource<TierDefinition>
 {
     [Export]

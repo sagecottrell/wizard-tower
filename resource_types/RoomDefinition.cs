@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System.Diagnostics;
 
 namespace wizardtower.resource_types;
 
@@ -7,12 +8,13 @@ namespace wizardtower.resource_types;
 [Icon("res://resource_types/room-icon.svg")]
 [GlobalClass]
 [LoadDefinitions("res://rooms/")]
-public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>
+[DebuggerDisplay("{Name}")]
+public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, IDebug
 {
     [Export]
     public string? Name { get; set; }
 
-    [Export]
+    [Export] 
     public Texture2D? Icon { get; set; }
 
     [Export]

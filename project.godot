@@ -22,6 +22,7 @@ run/max_fps=60
 [autoload]
 
 PhantomCameraManager="*uid://duq6jhf6unyis"
+GlobalSignals="*res://GlobalSignals.cs"
 
 [debug_draw_3d]
 
