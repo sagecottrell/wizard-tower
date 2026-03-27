@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cafrum1hwigwq"]
+
+[ext_resource type="Script" uid="uid://dk66s56q6slcc" path="res://UIs/save-file-selector/SaveFileSelector.cs" id="1_yu7s6"]
+[ext_resource type="Script" uid="uid://lmxutnady135" path="res://state/SaveFileState.cs" id="2_j55q6"]
+[ext_resource type="Resource" uid="uid://bld4rsj3dhoy" path="res://data_prefabs/save_games/testsave1.tres" id="3_5ewlo"]
+
+[node name="SaveFileSelector" type="Control" unique_id=499917661]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yu7s6")
+DeveloperAvailableSaveStates = Array[ExtResource("2_j55q6")]([ExtResource("3_5ewlo")])

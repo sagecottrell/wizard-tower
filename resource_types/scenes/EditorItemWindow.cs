@@ -3,7 +3,7 @@ using Godot.Collections;
 using System;
 using System.Reflection;
 
-namespace wizardtower.resource_types.helpers;
+namespace wizardtower.resource_types.scenes;
 
 [Tool]
 [GlobalClass]

@@ -1,23 +1,27 @@
 [gd_scene format=3 uid="uid://bxa4wivphl7rl"]
 
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="1_pyidc"]
-[ext_resource type="PackedScene" uid="uid://b0marluvmam1p" path="res://SaveFile.tscn" id="2_pyidc"]
+[ext_resource type="Script" uid="uid://du2rf66ck4n80" path="res://Root.cs" id="1_vvh5c"]
+[ext_resource type="PackedScene" uid="uid://cafrum1hwigwq" path="res://UIs/save_file_selector/SaveFileSelector.tscn" id="2_28aoi"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_cdhmb"]
 
 [sub_resource type="Sky" id="Sky_28aoi"]
 sky_material = SubResource("ProceduralSkyMaterial_cdhmb")
 
-[sub_resource type="Environment" id="Environment_pyidc"]
+[sub_resource type="Environment" id="Environment_vvh5c"]
 background_mode = 2
 sky = SubResource("Sky_28aoi")
 
 [node name="Root" type="Node3D" unique_id=1905936145]
+script = ExtResource("1_vvh5c")
+
+[node name="SaveFileSelector" parent="." unique_id=499917661 instance=ExtResource("2_28aoi")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=369862051]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 top_level = true
-environment = SubResource("Environment_pyidc")
+environment = SubResource("Environment_vvh5c")
 projection = 1
 current = true
 size = 30.0
@@ -28,11 +32,3 @@ process_priority = 300
 process_physics_priority = 300
 script = ExtResource("1_pyidc")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=619940948]
-transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.70710677, 0, -0.70710677, 0.7071067, 0, 11.315495, 10.989061)
-sky_mode = 1
-
-[node name="SaveFile" parent="." unique_id=1628514532 instance=ExtResource("2_pyidc")]
-
-[editable path="SaveFile"]

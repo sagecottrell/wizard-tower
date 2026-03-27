@@ -9,8 +9,8 @@ namespace wizardtower.state;
 [GlobalClass]
 public partial class FloorState : Resource, ICopy<FloorState>, IDeSerialize<FloorState>
 {
-    private uint sizeLeft;
-    private uint sizeRight;
+    private int leftBound;
+    private int rightBound;
 
     [Signal]
     public delegate void OnSizeChangedEventHandler(FloorState floor);
@@ -21,31 +21,31 @@ public partial class FloorState : Resource, ICopy<FloorState>, IDeSerialize<Floo
     {
         Definition = Definition,
         Elevation = Elevation,
-        SizeLeft = SizeLeft,
-        SizeRight = SizeRight,
+        LeftBound = LeftBound,
+        RightBound = RightBound,
     };
 
     [Export]
-    public FloorDefinition? Definition { get; set; }
+    public FloorDefinition Definition { get; set; } = new();
 
     [Export]
     public int Elevation { get; set; }
 
     [Export]
-    public uint SizeLeft { 
-        get => sizeLeft; 
+    public int LeftBound { 
+        get => leftBound; 
         set
         {
-            sizeLeft = Math.Min(MaxWidth, value);
+            leftBound = Math.Max(value, -(int)MaxWidth);
             EmitSignalOnSizeChanged(this);
         }
     }
 
     [Export]
-    public uint SizeRight { 
-        get => sizeRight; 
+    public int RightBound { 
+        get => rightBound; 
         set {
-            sizeRight = Math.Min(MaxWidth, value);
+            rightBound = Math.Min(value, (int)MaxWidth);
             EmitSignalOnSizeChanged(this);
         }
     }
@@ -53,35 +53,31 @@ public partial class FloorState : Resource, ICopy<FloorState>, IDeSerialize<Floo
     [Export]
     public uint MaxWidth { get; set; } = 10;
 
-    public static bool operator ==(FloorState self, FloorState other) => self.Equals(other);
-
-    public static bool operator !=(FloorState self, FloorState other) => !(self == other);
-
-    public override bool Equals(object? obj)
+    public bool Compare(FloorState? other)
     {
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj is null) return false;
-        if (obj is not FloorState other) return false;
-        return Elevation == other.Elevation && SizeLeft == other.SizeLeft && SizeRight == other.SizeRight && Definition == other.Definition;
+        if (ReferenceEquals(this, other)) return true;
+        if (other is null) return false;
+        return Elevation == other.Elevation 
+            && LeftBound == other.LeftBound 
+            && RightBound == other.RightBound 
+            && Definition == other.Definition;
     }
-
-    public override int GetHashCode() => base.GetHashCode();
 
     public Dictionary<string, Variant> Serialize() => new()
     {
         { nameof(Definition), Definition?.ResourcePath ?? "" },
         { nameof(Elevation), Elevation },
-        { nameof(SizeLeft), SizeLeft },
-        { nameof(SizeRight), SizeRight },
+        { nameof(LeftBound), LeftBound },
+        { nameof(RightBound), RightBound },
         { nameof(MaxWidth), MaxWidth },
     };
 
     public FloorState Deserialize(Dictionary<string, Variant> dict)
     {
-        Definition = LoadDefs.Get<FloorDefinition>(dict[nameof(Definition)].AsString());
+        Definition = LoadDefs.Get<FloorDefinition>(dict[nameof(Definition)].AsString()) ?? Definition;
         Elevation = dict[nameof(Elevation)].AsInt32();
-        sizeLeft = dict[nameof(SizeLeft)].AsUInt32();
-        sizeRight = dict[nameof(SizeRight)].AsUInt32();
+        leftBound = dict[nameof(LeftBound)].AsInt32();
+        rightBound = dict[nameof(RightBound)].AsInt32();
         MaxWidth = dict[nameof(MaxWidth)].AsUInt32();
         return this;
     }

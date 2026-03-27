@@ -3,13 +3,34 @@ using wizardtower.events;
 
 namespace wizardtower;
 
+[Tool]
 public partial class GlobalSignals : Node
 {
-    public static GlobalSignals? Singleton { get; private set; }
+    private static GlobalSignals? singleton;
+
+    public static GlobalSignals? Singleton {
+        get
+        {
+            if (Engine.IsEditorHint())
+            {
+                var root = EditorInterface.Singleton.GetEditedSceneRoot();
+                if (root.Child<GlobalSignals>() is not GlobalSignals gs)
+                {
+                    gs = new GlobalSignals();
+                    root.AddChild(gs);
+                }
+                return gs;
+            }
+            return singleton;
+        }
+        private set => singleton = value; 
+    }
 
     // Use _EnterTree to make sure the Singleton instance is avaiable in _Ready()
     public override void _EnterTree()
     {
+        if (Engine.IsEditorHint())
+            return;
         if (Singleton != null && Singleton != this)
         {
             QueueFree(); // The Singleton is already loaded, kill this instance
@@ -45,6 +66,17 @@ public partial class GlobalSignals : Node
     [Signal]
     public delegate void OnRoomConstructedEventHandler(RoomConstructedEvent @event);
     public static RoomConstructedEvent RoomConstructed(RoomConstructedEvent @event) => _call(SignalName.OnRoomConstructed, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnFloorConstructingEventHandler(FloorConstructingEvent @event);
+    public static FloorConstructingEvent FloorConstructing(FloorConstructingEvent @event) => _call(SignalName.OnFloorConstructing, @event);
+
+    [Signal]
+    public delegate void OnFloorConstructedEventHandler(FloorConstructedEvent @event);
+    public static FloorConstructedEvent FloorConstructed(FloorConstructedEvent @event) => _call(SignalName.OnFloorConstructed, @event);
 
     // ==================================================================================================================
     // ==================================================================================================================

@@ -13,26 +13,32 @@
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_1jp0y"]
 [ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_8x4tw"]
 [ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="8_fqv5x"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.FloorDefinition,System.Int32].cs" id="12_f4l78"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ResearchDefinition,System.Int32].cs" id="13_h7t0r"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,System.Int32].cs" id="14_amvtb"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.TransportDefinition,System.Int32].cs" id="15_30wl4"]
+[ext_resource type="Script" uid="uid://djnnr61j181id" path="res://state/EncyclopediaProgress.cs" id="16_4xtx7"]
+
+[sub_resource type="Resource" id="Resource_f4l78"]
+script = ExtResource("2_s7lup")
+
+[sub_resource type="Resource" id="Resource_h7t0r"]
+script = ExtResource("5_bw1c6")
+CostToBuildPerUnit = SubResource("Resource_f4l78")
 
 [sub_resource type="Resource" id="Resource_w2bl2"]
 script = ExtResource("1_o476b")
 Definition = ExtResource("1_5oluk")
-SizeLeft = 3
-SizeRight = 3
 
 [sub_resource type="Resource" id="Resource_0x1ro"]
 script = ExtResource("1_o476b")
 Definition = ExtResource("1_5oluk")
 Elevation = 1
-SizeLeft = 3
-SizeRight = 3
 
 [sub_resource type="Resource" id="Resource_2qcrd"]
 script = ExtResource("1_o476b")
 Definition = ExtResource("1_5oluk")
 Elevation = 2
-SizeLeft = 3
-SizeRight = 3
 
 [sub_resource type="Resource" id="Resource_5oluk"]
 script = ExtResource("2_s7lup")
@@ -45,10 +51,30 @@ Floors = Dictionary[int, ExtResource("1_o476b")]({
 2: SubResource("Resource_2qcrd")
 })
 DefaultAboveGroundFloorDefinition = ExtResource("1_5oluk")
+DefaultBasementFloorDefinition = SubResource("Resource_h7t0r")
 Wallet = SubResource("Resource_5oluk")
 UnlockedRooms = Array[ExtResource("6_1jp0y")]([ExtResource("7_8x4tw")])
 HighestFloor = 2
 metadata/_custom_type_script = "uid://mv22mxallfm6"
+
+[sub_resource type="Resource" id="Resource_uhjfj"]
+script = ExtResource("12_f4l78")
+
+[sub_resource type="Resource" id="Resource_jcqd2"]
+script = ExtResource("13_h7t0r")
+
+[sub_resource type="Resource" id="Resource_rk553"]
+script = ExtResource("14_amvtb")
+
+[sub_resource type="Resource" id="Resource_1er2x"]
+script = ExtResource("15_30wl4")
+
+[sub_resource type="Resource" id="Resource_cw0l3"]
+script = ExtResource("16_4xtx7")
+RoomsSeen = SubResource("Resource_rk553")
+TransportsSeen = SubResource("Resource_1er2x")
+FloorsSeen = SubResource("Resource_uhjfj")
+ResearchDefinitionsSeen = SubResource("Resource_jcqd2")
 
 [sub_resource type="Resource" id="Resource_5jflc"]
 script = ExtResource("1_mqmhn")
@@ -64,7 +90,7 @@ Data = Dictionary[String, int]({
 [resource]
 script = ExtResource("3_7qqru")
 Wallet = SubResource("Resource_011gn")
-AliveTowers = Array[Object]([SubResource("Resource_bw1c6")])
-DeadTowers = []
+AliveTowers = Array[ExtResource("5_2qcrd")]([SubResource("Resource_bw1c6")])
+EncyclopediaProgress = SubResource("Resource_cw0l3")
 Research = SubResource("Resource_5jflc")
 metadata/_custom_type_script = "uid://lmxutnady135"

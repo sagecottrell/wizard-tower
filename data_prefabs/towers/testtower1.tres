@@ -15,36 +15,58 @@
 [sub_resource type="Resource" id="Resource_et7yl"]
 script = ExtResource("1_jji12")
 Definition = ExtResource("2_8sv8r")
-SizeLeft = 10
-SizeRight = 10
+LeftBound = -6
+RightBound = 5
 
 [sub_resource type="Resource" id="Resource_8sv8r"]
 script = ExtResource("1_jji12")
 Definition = ExtResource("2_8sv8r")
 Elevation = 1
-SizeLeft = 10
-SizeRight = 10
+LeftBound = -7
+RightBound = 6
 
 [sub_resource type="Resource" id="Resource_h14h1"]
 script = ExtResource("1_jji12")
 Definition = ExtResource("2_8sv8r")
 Elevation = 2
-SizeLeft = 10
-SizeRight = 10
+LeftBound = -4
+RightBound = 10
 
 [sub_resource type="Resource" id="Resource_oywi7"]
 script = ExtResource("1_jji12")
 Definition = ExtResource("2_8sv8r")
 Elevation = 3
-SizeLeft = 6
-SizeRight = 6
+LeftBound = -9
+RightBound = 5
 
 [sub_resource type="Resource" id="Resource_oo7m3"]
 script = ExtResource("1_jji12")
 Definition = ExtResource("2_8sv8r")
 Elevation = 4
-SizeLeft = 3
-SizeRight = 3
+LeftBound = -6
+RightBound = 10
+
+[sub_resource type="Resource" id="Resource_5gs35"]
+script = ExtResource("2_et7yl")
+Definition = ExtResource("7_tq78q")
+Id = 1
+Height = 1
+FloorPosition = 2
+
+[sub_resource type="Resource" id="Resource_tq78q"]
+script = ExtResource("2_et7yl")
+Definition = ExtResource("7_tq78q")
+Id = 2
+Elevation = 1
+Height = 1
+
+[sub_resource type="Resource" id="Resource_e38s3"]
+script = ExtResource("2_et7yl")
+Definition = ExtResource("7_tq78q")
+Id = 3
+Elevation = 2
+Height = 1
+FloorPosition = 4
 
 [sub_resource type="Resource" id="Resource_sstfk"]
 script = ExtResource("5_8sv8r")
@@ -58,10 +80,16 @@ Floors = Dictionary[int, ExtResource("1_jji12")]({
 3: SubResource("Resource_oywi7"),
 4: SubResource("Resource_oo7m3")
 })
+Rooms = Dictionary[int, ExtResource("2_et7yl")]({
+1: SubResource("Resource_5gs35"),
+2: SubResource("Resource_tq78q"),
+3: SubResource("Resource_e38s3")
+})
 DefaultAboveGroundFloorDefinition = ExtResource("2_8sv8r")
 DefaultBasementFloorDefinition = ExtResource("2_8sv8r")
 Wallet = SubResource("Resource_sstfk")
 UnlockedRooms = Array[ExtResource("6_5gs35")]([ExtResource("7_tq78q")])
+RoomIdCounter = 3
 HighestFloor = 4
 MaxBasement = 5
 metadata/_custom_type_script = "uid://mv22mxallfm6"

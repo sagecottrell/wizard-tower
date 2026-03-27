@@ -104,8 +104,8 @@ public partial class BuildMenu : VBoxContainer
 
     private void _x_OnClicked(BuildButton btn)
     {
-        if (btn.RoomDefinition is not null)
-            if (GlobalSignals.StartingRoomConstruction(new(btn.RoomDefinition)).IsAllowed)
-                GlobalSignals.StartedRoomConstruction(new(btn.RoomDefinition));
+        if (btn.RoomDefinition is not null && TowerState is not null)
+            if (GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition)).IsAllowed)
+                GlobalSignals.StartedRoomConstruction(new(TowerState, btn.RoomDefinition));
     }
 }

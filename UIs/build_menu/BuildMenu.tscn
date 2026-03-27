@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c75plrkn8hxvp"]
 
-[ext_resource type="Script" uid="uid://bloy1ji5feilm" path="res://UIs/build-menu/BuildMenu.cs" id="1_7f4hj"]
+[ext_resource type="Script" uid="uid://bloy1ji5feilm" path="res://UIs/build_menu/BuildMenu.cs" id="1_7f4hj"]
 
 [node name="BuildMenu" type="VBoxContainer" unique_id=240534824 node_paths=PackedStringArray("NodeTowerName", "NodeWallet", "NodeRooms", "NodeFloors", "NodeTransports")]
 anchors_preset = 15
@@ -25,6 +25,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 current_tab = 0
+deselect_enabled = true
 
 [node name="Rooms" type="VBoxContainer" parent="TabContainer" unique_id=1820978117]
 layout_mode = 2

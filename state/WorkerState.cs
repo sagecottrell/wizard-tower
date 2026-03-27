@@ -7,18 +7,12 @@ namespace wizardtower.state;
 [GlobalClass]
 public partial class WorkerState : Resource, ICopy<WorkerState>, IDeSerialize<WorkerState>
 {
-    public WorkerState Copy()
-    {
-        throw new System.NotImplementedException();
-    }
+    public WorkerState Copy() => new();
 
     public WorkerState Deserialize(Dictionary<string, Variant> dict)
     {
-        throw new System.NotImplementedException();
+        return this;
     }
 
-    public Dictionary<string, Variant> Serialize()
-    {
-        throw new System.NotImplementedException();
-    }
+    public Dictionary<string, Variant> Serialize() => [];
 }

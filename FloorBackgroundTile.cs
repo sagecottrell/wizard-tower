@@ -19,6 +19,15 @@ public partial class FloorBackgroundTile : Node3D
     [Signal]
     public delegate void OnMouseExitedEventHandler(FloorBackgroundTile sender);
 
+    [Export]
+    public Node3D? Wall { get; set; }
+
+    public void WallVisible(bool visible)
+    {
+        if (Wall is not null)
+            Wall.Visible = visible;
+    }
+
 
     // OnDestroy
 

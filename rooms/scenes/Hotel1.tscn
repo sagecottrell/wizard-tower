@@ -1,18 +1,10 @@
 [gd_scene format=3 uid="uid://chn4rti55n71q"]
 
-[ext_resource type="Texture2D" uid="uid://c5hrcohsek5fk" path="res://rooms/images/hotel1-background.png" id="2_a1xdm"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bmw8p"]
-transparency = 1
-albedo_texture = ExtResource("2_a1xdm")
-texture_filter = 2
-stencil_mode = 3
-stencil_flags = 2
-
-[sub_resource type="QuadMesh" id="QuadMesh_k2r5n"]
-material = SubResource("StandardMaterial3D_bmw8p")
+[ext_resource type="ArrayMesh" uid="uid://doqpi40bpeayy" path="res://rooms/models/hotel1.obj" id="1_60jxi"]
+[ext_resource type="Script" uid="uid://ddbfom1g7a4ed" path="res://RoomBackground.cs" id="1_a1xdm"]
 
 [node name="Hotel1" type="Node3D" unique_id=1369366674]
+script = ExtResource("1_a1xdm")
 
-[node name="background" type="MeshInstance3D" parent="." unique_id=664860096]
-mesh = SubResource("QuadMesh_k2r5n")
+[node name="Hotel1" type="MeshInstance3D" parent="." unique_id=1525536553]
+mesh = ExtResource("1_60jxi")

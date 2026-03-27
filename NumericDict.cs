@@ -5,9 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
 using wizardtower.resource_types;
-using wizardtower.resource_types.helpers;
+using wizardtower.resource_types.scenes;
 
 namespace wizardtower;
 
@@ -365,8 +364,6 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     private void _saveItems(Godot.Collections.Dictionary data)
     {
-        _editorWindow?.QueueFree();
-        _editorWindow = null;
         Clear();
         foreach (var (key, value) in data)
         {
@@ -384,17 +381,18 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         }
     }
 
-    private Window? _editorWindow;
-
     private void _popupEditor()
     {
-        _editorWindow = new();
-        _editorWindow.CloseRequested += () => _editorWindow.QueueFree();
-        EditorInterface.Singleton.PopupDialog(_editorWindow, new(50, 50, 500, 500));
-        var editor = ResourceLoader.Load<PackedScene>("res://resource_types/scenes/EditorItemWindow.tscn").Instantiate<EditorItemWindow>();
-        editor.Setup(ToGodotDictionary(), LoadDefs.LoadAll<TKey>());
-        editor.OnSave += _saveItems;
-        _editorWindow.AddChild(editor); 
+        if (SceneLoader.TryLoadScene<EditorItemWindow>(out var editor))
+        {
+            editor.Setup(ToGodotDictionary(), LoadDefs.LoadAll<TKey>());
+            var id = EditorWindowHelper.PopupEditor(editor);
+            editor.OnSave += (data) =>
+            {
+                EditorWindowHelper.Close(id);
+                _saveItems(data);
+            };
+        }
     }
 
     #endregion

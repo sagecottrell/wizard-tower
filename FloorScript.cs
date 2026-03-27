@@ -17,16 +17,12 @@ public partial class FloorScript : Node3D
 
     public override void _Ready()
     {
-        Position = this.TowerCoordToNodePosition(y: State.Elevation, z: -State.Elevation);
+        Name = $"Floor{State.Elevation}";
+        Position = this.TowerCoordToNodePosition(y: State.Elevation);
     }
 
     public override void _Process(double delta)
     {
-        Name = $"Floor{State.Elevation}";
-
-        if (State is null || State.Definition is null || State.Definition.FloorBackgroundTileScene is null)
-            return;
-
         if (_tiles.Count == 0)
             foreach (var child in GetChildren(false))
             {
@@ -40,27 +36,27 @@ public partial class FloorScript : Node3D
                     
             }
 
-        Position = Position.MoveToward(this.TowerCoordToNodePosition(y: State.Elevation, z: -State.Elevation), (float)delta);
+        Position = Position.MoveToward(this.TowerCoordToNodePosition(y: State.Elevation), (float)delta);
 
-        if (State == PreviousState)
+        if (State.Compare(PreviousState))
             return;
 
-        var scene = State.Definition.FloorBackgroundTileScene;
-
-        if (State.SizeLeft < PreviousState.SizeLeft)
-            for (uint i = State.SizeLeft + 1; i <= PreviousState.SizeLeft; i++)
-                _removeTile(-(int)i);
-        if (State.SizeLeft > PreviousState.SizeLeft)
-            for (uint i = 1; i <= State.SizeLeft; i++)
-                _addTile(-(int)i, scene);
-        if (State.SizeRight < PreviousState.SizeRight)
-            for (uint i = State.SizeRight + 1; i <= PreviousState.SizeRight; i++)
-                _removeTile((int)i);
-        if (State.SizeRight > PreviousState.SizeRight)
-            for (uint i = 1; i <= State.SizeRight; i++)
-                _addTile((int)i, scene);
-
+        SetupTiles();
         PreviousState = State.Copy();
+    }
+
+    public void SetupTiles()
+    {
+        foreach (var id in _tiles.Keys)
+        {
+            if (id < State.LeftBound || id > State.RightBound)
+                _removeTile(id);
+        }
+
+        for (var i = State.LeftBound; i <= State.RightBound; i++)
+        {
+            _addTile(i);
+        }
     }
 
     private void _removeTile(int i)
@@ -73,14 +69,28 @@ public partial class FloorScript : Node3D
         }
     }
 
-    private void _addTile(int i, PackedScene scene)
+    private FloorBackgroundTile? _addTile(int i)
     {
-        if (!_tiles.ContainsKey(i) && scene.Instantiate() is FloorBackgroundTile fbt && _tiles.TryAdd(i, fbt))
+        if (State.Definition.FloorBackgroundTileScene is not PackedScene scene)
+            return null;
+        if (_tiles.TryGetValue(i, out var tile))
+            return tile;
+        if (scene.Instantiate() is FloorBackgroundTile fbt && _tiles.TryAdd(i, fbt))
         {
             AddChild(fbt);
             fbt.Index = i;
             fbt.Position = fbt.TowerCoordToNodePosition(x: i);
             fbt.OnCreate();
+            return fbt;
+        }
+        return null;
+    }
+
+    public void SetPositionVisible(int left, uint width, bool visible)
+    {
+        for (var i = 0; i < width; i++)
+        {
+            _addTile(i + left)?.WallVisible(visible);
         }
     }
 
@@ -94,7 +104,7 @@ public partial class FloorScript : Node3D
             PreviousState.Elevation = State.Elevation - System.Math.Sign(State.Elevation);
         else
             PreviousState.Elevation = -1;
-        Position = this.TowerCoordToNodePosition(y: PreviousState.Elevation, z: -State.Elevation);
+        Position = this.TowerCoordToNodePosition(y: PreviousState.Elevation);
     }
 
     public void Destroy()

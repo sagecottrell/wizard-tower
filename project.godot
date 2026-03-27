@@ -30,8 +30,8 @@ settings/addon_root_folder="res://addons/debug_draw_3d"
 
 [display]
 
-window/size/viewport_width=1200
-window/size/viewport_height=900
+window/size/viewport_width=800
+window/size/viewport_height=800
 window/size/sharp_corners=true
 
 [dotnet]
@@ -55,6 +55,7 @@ folder_colors={
 "res://research/": "green",
 "res://rooms/": "pink",
 "res://rooms/images/": "gray",
+"res://rooms/models/": "gray",
 "res://rooms/scenes/": "gray",
 "res://state/": "red",
 "res://tiers/": "yellow",

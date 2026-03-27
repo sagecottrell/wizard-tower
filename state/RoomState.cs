@@ -9,7 +9,7 @@ namespace wizardtower.state;
 public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomState>
 {
     [Export]
-    public RoomDefinition? Definition { get; set; }
+    public RoomDefinition Definition { get; set; } = new();
 
     [Export]
     public uint Id { get; set; }
@@ -23,31 +23,21 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     [Export]
     public int FloorPosition { get; set; }
 
-    public static bool operator ==(RoomState self, RoomState other) => self.Equals(other);
-
-    public static bool operator !=(RoomState self, RoomState other) => !(self == other);
-
-    public override bool Equals(object? obj)
+    public bool Compare(RoomState? other)
     {
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj is null) return false;
-        if (obj is not RoomState other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        if (other is null) return false;
         return Elevation == other.Elevation && Height == other.Height && FloorPosition == other.FloorPosition && Definition == other.Definition;
     }
 
-    public override int GetHashCode() => base.GetHashCode();
-
-    public RoomState Copy()
+    public RoomState Copy() => new()
     {
-        return new()
-        {
-            Id = Id,
-            Elevation = Elevation,
-            Height = Height,
-            FloorPosition = FloorPosition,
-            Definition = Definition,
-        };
-    }
+        Id = Id,
+        Elevation = Elevation,
+        Height = Height,
+        FloorPosition = FloorPosition,
+        Definition = Definition,
+    };
 
     public Dictionary<string, Variant> Serialize() => new()
     {
@@ -56,7 +46,10 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
 
     public RoomState Deserialize(Dictionary<string, Variant> dict)
     {
-        Definition = LoadDefs.Get<RoomDefinition>(dict[nameof(Definition)].AsString());
+        Definition = LoadDefs.Get<RoomDefinition>(dict[nameof(Definition)].AsString()) ?? Definition;
+        Elevation = dict[nameof(Elevation)].AsInt32();
+        Height = dict[nameof(Height)].AsUInt32();
+        FloorPosition = dict[nameof(FloorPosition)].AsInt32();
         return this;
     }
 }

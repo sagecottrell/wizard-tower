@@ -6,8 +6,6 @@ namespace wizardtower;
 
 public partial class SaveFileScript : Node3D
 {
-    [Export]
-    public Array<SaveFileState> DeveloperAvailableSaveStates { get; set; } = [];
 
 
 }

@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://dgrnjgrvvicfj"]
+
+[ext_resource type="Script" uid="uid://b5jfhjm32mmm6" path="res://UIs/editor_add_room/EditorAddRoom.cs" id="1_re423"]
+[ext_resource type="Texture2D" uid="uid://c5hrcohsek5fk" path="res://rooms/images/hotel1-background.png" id="2_q67kn"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_re423"]
+
+[node name="EditorAddRoom" type="Control" unique_id=584713413 node_paths=PackedStringArray("roomPickerPrefab", "ev", "fp")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_re423")
+roomPickerPrefab = NodePath("VBoxContainer/roomPickerPrefab")
+ev = NodePath("VBoxContainer/HBoxContainer/Elevation")
+fp = NodePath("VBoxContainer/HBoxContainer2/FloorPosition")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1608028713]
+layout_mode = 0
+offset_right = 278.0
+offset_bottom = 66.0
+
+[node name="Button" type="Button" parent="VBoxContainer" unique_id=791051322]
+layout_mode = 2
+text = "Save"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=912126822]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=391142016]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Elevation"
+
+[node name="Elevation" type="SpinBox" parent="VBoxContainer/HBoxContainer" unique_id=1144476973]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=356592748]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2" unique_id=1720795137]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Floor Position"
+
+[node name="FloorPosition" type="SpinBox" parent="VBoxContainer/HBoxContainer2" unique_id=425993193]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="roomPickerPrefab" type="CheckBox" parent="VBoxContainer" unique_id=1612751143]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+button_group = SubResource("ButtonGroup_re423")
+text = "room name"
+icon = ExtResource("2_q67kn")
+expand_icon = true
+
+[connection signal="pressed" from="VBoxContainer/Button" to="." method="Save"]

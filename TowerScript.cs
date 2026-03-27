@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using wizardtower.state;
 using wizardtower.UIs;
@@ -19,13 +20,7 @@ public partial class TowerScript : Node3D
     public Node3D? FloorsContainer { get; set; }
 
     [Export]
-    public Node3D? RoomsContainer { get; set; }
-
-    [Export]
     public Node3D? WorkersContainer { get; set; }
-
-    [Export]
-    public Node3D? TransportsContainer { get; set; }
 
     [Export]
     public Node3D? RoofsContainer { get; set; }
@@ -36,26 +31,61 @@ public partial class TowerScript : Node3D
     [Export]
     public BuildMenu? BuildMenu { get; set; }
 
+    public Resource? WhatAreWeBuilding { get; set; }
+
+    public Dictionary<int, FloorScript> Floors { get; set; } = [];
+
     public override void _Ready()
     {
         State.EnsureGroundFloor();
 
         if (FloorsContainer is not null)
+        {
             foreach (var newFloor in State.Floors.Keys)
             {
-                FloorsContainer.AddChild(new FloorScript()
-                {
-                    State = State.Floors[newFloor],
-                });
+                var fs = new FloorScript() { State = State.Floors[newFloor] };
+                FloorsContainer.AddChild(fs);
+                Floors[newFloor] = fs;
+                fs.SetupTiles();
             }
-        State.OnFloorAdd += OnFloorAdd;
+            foreach (var (roomId, room) in State.Rooms)
+            {
+                OnRoomAdd(room);
+            }
+        }
         BuildMenu?.SetTower(State);
         this.Child<UIManager>()?.ShowUI();
+
+        if (GlobalSignals.Singleton is GlobalSignals g)
+        {
+            g.OnStartedRoomConstruction += _g_OnStartedRoomConstruction;
+            g.OnRoomConstructed += _g_OnRoomConstructed;
+            g.OnFloorConstructed += _g_OnFloorConstructed;
+        }
+    }
+
+    private void _g_OnFloorConstructed(events.FloorConstructedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        OnFloorAdd(@event.Floor);
+    }
+
+    private void _g_OnRoomConstructed(events.RoomConstructedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        OnRoomAdd(@event.Room);
+    }
+
+    private void _g_OnStartedRoomConstruction(events.StartedRoomConstructionEvent @event)
+    {
+        WhatAreWeBuilding = @event.RoomDefinition;
     }
 
     public override void _Process(double delta)
     {
-        if (ReferenceEquals(State, PreviousState) == false && State == PreviousState)
+        if (State != PreviousState && State.Compare(PreviousState))
             return;
 
         if (State.Floors.Count < PreviousState.Floors.Count && FloorsContainer is not null)
@@ -66,11 +96,6 @@ public partial class TowerScript : Node3D
                 if (child is FloorScript fs && removedFloors.Contains(fs.State.Elevation))
                     fs.Destroy();
             }
-        }
-
-        if (TransportsContainer is not null)
-        {
-            TransportsContainer.Position = TransportsContainer.Position with { Z = Math.Max(2, State.MaxBasement) + 1 };
         }
 
         if (WorkersContainer is not null)
@@ -95,6 +120,28 @@ public partial class TowerScript : Node3D
             State = newFloor,
         };
         fs.OnCreate();
+        Floors[newFloor.Elevation] = fs;
+        fs.SetupTiles();
         FloorsContainer.AddChild(fs);
     }
+
+    public void OnRoomAdd(RoomState newRoom)
+    {
+        if (FloorsContainer is null)
+            return;
+        var room = new RoomScript()
+        {
+            State = newRoom,
+        };
+        FloorsContainer.AddChild(room);
+
+        for (var i = 0; i < newRoom.Height; i++)
+        {
+            if (Floors.TryGetValue(newRoom.Elevation + i, out var fs))
+            {
+                fs.SetPositionVisible(newRoom.FloorPosition, newRoom.Definition.Width, false);
+            }
+        }
+    }
+
 }

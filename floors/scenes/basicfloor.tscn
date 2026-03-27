@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://boamyq3uheg5m"]
+
+[ext_resource type="PackedScene" uid="uid://747rvkh0i8rj" path="res://floors/scenes/basefloorscene.tscn" id="1_7h4qg"]
+[ext_resource type="ArrayMesh" uid="uid://cgeciph81q4nk" path="res://floors/models/basic-floor.obj" id="2_y6hb1"]
+[ext_resource type="ArrayMesh" uid="uid://ccnhhtqx7rtt7" path="res://floors/models/basic-wall.obj" id="3_byg1u"]
+
+[node name="FloorTile" unique_id=1087024591 node_paths=PackedStringArray("Wall") instance=ExtResource("1_7h4qg")]
+Wall = NodePath("BasicFloor")
+
+[node name="BasicFloor" type="MeshInstance3D" parent="." index="1" unique_id=1211320676]
+gi_mode = 2
+gi_lightmap_texel_scale = 2.0
+mesh = ExtResource("2_y6hb1")
+
+[node name="BasicWall" type="MeshInstance3D" parent="BasicFloor" index="0" unique_id=335753864]
+mesh = ExtResource("3_byg1u")
+skeleton = NodePath("../..")
+
+[node name="BasicFloor2" type="MeshInstance3D" parent="." index="2" unique_id=1886370694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+gi_mode = 2
+gi_lightmap_texel_scale = 2.0
+mesh = ExtResource("2_y6hb1")

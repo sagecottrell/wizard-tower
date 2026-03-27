@@ -1,13 +1,11 @@
 using Godot;
-using wizardtower.resource_types;
+using wizardtower.events.interfaces;
 using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class RoomConstructedEvent(TowerState tower, RoomDefinition room, int elevation, int pos) : GodotObject, IDebug
+public partial class RoomConstructedEvent(TowerState tower, RoomState room) : GodotObject, IDebug, ITowerEvent
 {
-    public TowerState Tower { get; } = tower;
-    public RoomDefinition Room { get; } = room;
-    public int Elevation { get; } = elevation;
-    public int Pos { get; } = pos;
+    public TowerState TowerState { get; } = tower;
+    public RoomState Room { get; } = room;
 }

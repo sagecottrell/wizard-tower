@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bu86i425hnnlj"]
+
+[ext_resource type="PackedScene" uid="uid://b0marluvmam1p" path="res://SaveFile.tscn" id="1_s0q2g"]
+[ext_resource type="PackedScene" uid="uid://dbidjw1trp8wy" path="res://Tower.tscn" id="2_v3rel"]
+[ext_resource type="Resource" uid="uid://dgyunb4jt28yg" path="res://data_prefabs/towers/testtower1.tres" id="3_nwfsl"]
+[ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_481j5"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wqpcj"]
+
+[sub_resource type="Sky" id="Sky_28aoi"]
+sky_material = SubResource("ProceduralSkyMaterial_wqpcj")
+
+[sub_resource type="Environment" id="Environment_481j5"]
+background_mode = 2
+sky = SubResource("Sky_28aoi")
+
+[node name="TestSavegame1" type="Node3D" unique_id=1557969369]
+
+[node name="SaveFile" parent="." unique_id=1628514532 instance=ExtResource("1_s0q2g")]
+
+[node name="Tower" parent="SaveFile/Towers" parent_id_path=PackedInt32Array(1628514532, 1082885696) index="0" unique_id=1310180019 instance=ExtResource("2_v3rel")]
+State = ExtResource("3_nwfsl")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1123721676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+top_level = true
+environment = SubResource("Environment_481j5")
+projection = 1
+current = true
+size = 20.0
+far = 250.0
+
+[node name="PhantomCameraHost" type="Node" parent="Camera3D" unique_id=429770215]
+process_priority = 300
+process_physics_priority = 300
+script = ExtResource("4_481j5")
+metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[editable path="SaveFile"]

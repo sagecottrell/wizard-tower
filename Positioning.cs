@@ -9,7 +9,7 @@ public static class Positioning
     {
         var np = node.Position;
         if (x is int X)
-            np.X = X - 0.5f * Mathf.Sign(X);
+            np.X = X;
         if (y is int Y)
             np.Y = Y;
         if (z is int Z)

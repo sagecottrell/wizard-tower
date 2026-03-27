@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Linq;
 using wizardtower.resource_types;
+using wizardtower.UIs.editor_add_room;
 
 namespace wizardtower.state;
 
@@ -10,9 +11,6 @@ namespace wizardtower.state;
 public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<TowerState>, IDebug
 {
     private uint maxWidth = 10;
-
-    [Signal]
-    public delegate void OnFloorAddEventHandler(FloorState floor);
 
     [Export]
     public string Name { get; set; } = "Tower";
@@ -29,6 +27,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     [Export]
     public Dictionary<uint, RoomState> Rooms { get; set; } = [];
 
+    [ExportToolButton("Add New Room")]
+    public Callable addroom => Callable.From(EditorAddRoom);
+
     [Export]
     public Dictionary<uint, WorkerState> Workers { get; set; } = [];
 
@@ -36,10 +37,10 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public Dictionary<uint, TransportState> Transports { get; set; } = [];
 
     [Export]
-    public FloorDefinition? DefaultAboveGroundFloorDefinition { get; set; }
+    public FloorDefinition DefaultAboveGroundFloorDefinition { get; set; } = new();
 
     [Export]
-    public FloorDefinition? DefaultBasementFloorDefinition { get; set; }
+    public FloorDefinition DefaultBasementFloorDefinition { get; set; } = new();
 
     [Export]
     public NumericDict<ItemDefinition, uint> Wallet { get; set; } = [];
@@ -80,6 +81,46 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         }
     }
 
+
+    #region Room functions
+
+    public void EditorAddRoom()
+    {
+        if (SceneLoader.TryLoadScene<EditorAddRoom>(out var node))
+        {
+            node.TowerState = this;
+            var id = EditorWindowHelper.PopupEditor(node);
+            node.OnSave += (e, p, r) =>
+            {
+                EditorWindowHelper.Close(id);
+                OnAddRoom(e, p, r);
+            };
+        }
+    }
+
+    public void OnAddRoom(int elevation, int position, RoomDefinition r)
+    {
+        GD.Print($"Add room {elevation} {position} {r}");
+        var room = new RoomState()
+        {
+            Id = RoomIdCounter + 1,
+            Definition = r,
+            Elevation = elevation,
+            FloorPosition = position,
+            Height = 1,
+        };
+        if (!GlobalSignals.RoomConstructing(new(this, room)).IsAllowed)
+            return;
+        RoomIdCounter++;
+        Rooms[RoomIdCounter] = room;
+        GlobalSignals.RoomConstructed(new(this, room));
+    }
+
+    #endregion
+
+
+    #region Floor functions
+
     public void EnsureGroundFloor()
     {
         if (Floors.Count == 0)
@@ -87,8 +128,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             Floors[0] = new()
             {
                 TowerState = this,
-                SizeLeft = 3,
-                SizeRight = 3,
+                LeftBound = 3,
+                RightBound = 3,
                 Elevation = 0,
                 Definition = DefaultAboveGroundFloorDefinition,
             };
@@ -100,16 +141,20 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         EnsureGroundFloor();
         if (HighestFloor >= MaxHeight)
             return;
-        HighestFloor++;
-        Floors[(int)HighestFloor] = new()
+        var floor = new FloorState()
         {
             TowerState = this,
-            SizeLeft = 3,
-            SizeRight = 3,
-            Elevation = (int)HighestFloor,
+            LeftBound = 3,
+            RightBound = 3,
+            Elevation = (int)HighestFloor + 1,
             Definition = DefaultAboveGroundFloorDefinition,
         };
-        EmitSignalOnFloorAdd(Floors[(int)HighestFloor]);
+        if (GlobalSignals.FloorConstructing(new(this, floor)).IsAllowed)
+        {
+            HighestFloor++;
+            Floors[(int)HighestFloor] = floor;
+            GlobalSignals.FloorConstructed(new(this, floor));
+        }
     }
 
     public void AddBasementFloor()
@@ -117,27 +162,30 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         EnsureGroundFloor();
         if (LowestFloor >= MaxBasement)
             return;
-        LowestFloor++;
-        Floors[-(int)LowestFloor] = new()
+        var floor = new FloorState()
         {
             TowerState = this,
-            SizeLeft = 3,
-            SizeRight = 3,
-            Elevation = -(int)LowestFloor,
+            LeftBound = 3,
+            RightBound = 3,
+            Elevation = -(int)(LowestFloor + 1),
             Definition = DefaultBasementFloorDefinition ?? DefaultAboveGroundFloorDefinition,
         };
-        EmitSignalOnFloorAdd(Floors[-(int)LowestFloor]);
+        if (GlobalSignals.FloorConstructing(new(this, floor)).IsAllowed)
+        {
+            LowestFloor++;
+            Floors[-(int)LowestFloor] = floor;
+            GlobalSignals.FloorConstructed(new(this, floor));
+        }
     }
 
-    public static bool operator ==(TowerState self, TowerState other) => self.Equals(other);
+    #endregion
 
-    public static bool operator !=(TowerState self, TowerState other) => !(self == other);
+    #region operators
 
-    public override bool Equals(object? obj)
+    public bool Compare(TowerState other)
     {
-        if (ReferenceEquals(this, obj)) return true;
-        if (obj is null) return false;
-        if (obj is not TowerState other) return false;
+        if (ReferenceEquals(this, other)) return true;
+        if (other is null) return false;
         return RoomIdCounter == other.RoomIdCounter
             && LowestFloor == other.LowestFloor
             && HighestFloor == other.HighestFloor
@@ -151,7 +199,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             && MaxWidth == other.MaxWidth;
     }
 
-    public override int GetHashCode() => base.GetHashCode();
+    #endregion
+
+    #region Copy/DeSerialize
 
     public TowerState Copy() => new()
     {
@@ -198,4 +248,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         MaxHeight = dict[nameof(MaxHeight)].AsUInt32();
         return this;
     }
+
+    #endregion
 }

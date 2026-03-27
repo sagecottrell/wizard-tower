@@ -2,7 +2,7 @@ using Godot;
 using System.Linq;
 using System.Reflection;
 
-namespace wizardtower.resource_types.helpers;
+namespace wizardtower.resource_types.scenes;
 
 [Tool]
 [GlobalClass]

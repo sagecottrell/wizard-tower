@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -11,7 +10,13 @@ public static class LoadDefs
 {
     private static readonly Dictionary<Type, IDictionary> _allDefinitionsForEachType = [];
 
-    public static T? Get<[MustBeVariant] T>(string path) where T : Resource => LoadAll<T>().TryGetValue(path, out var value) ? value : default;
+    public static T? Get<[MustBeVariant] T>(string path) where T : Resource
+    {
+        if (LoadAll<T>().TryGetValue(path, out var value))
+            return value;
+        GD.PrintErr($"Failed to load {typeof(T).FullName}: \"{path}\"");
+        return null;
+    }
 
     public static IReadOnlyDictionary<string, T> LoadAll<[MustBeVariant] T>() where T : Resource
     {
