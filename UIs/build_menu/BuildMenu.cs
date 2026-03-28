@@ -95,13 +95,28 @@ public partial class BuildMenu : VBoxContainer
                 .WithChild(new Label { Text = name, SizeFlagsHorizontal = SizeFlags.ExpandFill })
                 .WithChild(new RichTextLabel { 
                     BbcodeEnabled = true, 
-                    Text = def.CostToBuildPerUnit?.ToStringAsCost(), 
+                    Text = _toStringAsCost(def.CostToBuildPerUnit), 
                     FitContent = true, 
                     ClipContents = false,
                     AutowrapMode = TextServer.AutowrapMode.Off,
                 })
             );
         }
+    }
+
+    private string _toStringAsCost(NumericDict<ItemDefinition, uint>? cost)
+    {
+        if (cost is null || cost.Count == 0)
+            return "Free";
+        return string.Join(" + ", cost.Select(kv =>
+        {
+            var color = "white";
+            uint walletAmount = 0;
+            if (TowerState is null || !TowerState.Wallet.TryGetValue(kv.Key, out walletAmount) || walletAmount < kv.Value)
+                color = "red";
+            GD.Print($"Checking cost {kv.Key.Name} with amount {kv.Value} - wallet {walletAmount} - {color}");
+            return $"[color={color}]{kv.Value}[/color][img height=24]{kv.Key.Icon?.ResourcePath}[/img]";
+        }));
     }
 
     private void _x_OnClicked(BuildButton btn)
