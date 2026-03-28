@@ -197,9 +197,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public static bool operator >(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
-        foreach (var kvp in a)
+        // loop over B because A must have every key in B to be greater, but A can have extra keys that aren't in B and still be greater
+        foreach (var kvp in b)
         {
-            if (!b.TryGetValue(kvp.Key, out var value) || kvp.Value <= value)
+            if (!a.TryGetValue(kvp.Key, out var value) || kvp.Value <= value)
             {
                 return false;
             }
@@ -207,23 +208,14 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return true;
     }
 
-    public static bool operator <(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
-    {
-        foreach (var kvp in a)
-        {
-            if (!b.TryGetValue(kvp.Key, out var value) || kvp.Value >= value)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    public static bool operator <(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => b > a;
 
     public static bool operator >=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
-        foreach (var kvp in a)
+        // loop over B because A must have every key in B to be greater, but A can have extra keys that aren't in B and still be greater
+        foreach (var kvp in b)
         {
-            if (!b.TryGetValue(kvp.Key, out var value) || kvp.Value < value)
+            if (!a.TryGetValue(kvp.Key, out var value) || kvp.Value < value)
             {
                 return false;
             }
@@ -231,17 +223,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return true;
     }
 
-    public static bool operator <=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
-    {
-        foreach (var kvp in a)
-        {
-            if (!b.TryGetValue(kvp.Key, out var value) || kvp.Value > value)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+    public static bool operator <=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => b >= a;
 
     public override bool Equals(object? obj)
     {

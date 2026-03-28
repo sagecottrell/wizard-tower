@@ -33,7 +33,7 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
     public PackedScene? RoomScene { get; set; }
 
     [Export]
-    public NumericDict<ItemDefinition, uint>? CostToBuildPerUnit { get; set; } = [];
+    public NumericDict<ItemDefinition, uint> CostToBuildPerUnit { get; set; } = [];
 
     [Export]
     public Array<FloorDefinition> AllowedFloors { get; set; } = [];

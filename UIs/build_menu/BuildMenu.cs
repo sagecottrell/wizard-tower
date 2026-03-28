@@ -114,7 +114,6 @@ public partial class BuildMenu : VBoxContainer
             uint walletAmount = 0;
             if (TowerState is null || !TowerState.Wallet.TryGetValue(kv.Key, out walletAmount) || walletAmount < kv.Value)
                 color = "red";
-            GD.Print($"Checking cost {kv.Key.Name} with amount {kv.Value} - wallet {walletAmount} - {color}");
             return $"[color={color}]{kv.Value}[/color][img height=24]{kv.Key.Icon?.ResourcePath}[/img]";
         }));
     }
@@ -122,7 +121,7 @@ public partial class BuildMenu : VBoxContainer
     private void _x_OnClicked(BuildButton btn)
     {
         if (btn.RoomDefinition is not null && TowerState is not null)
-            if (GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition)).IsAllowed)
+            if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition)).IsAllowed)
                 GlobalSignals.StartedRoomConstruction(new(TowerState, btn.RoomDefinition));
     }
 
