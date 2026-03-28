@@ -12,6 +12,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 {
     private uint maxWidth = 10;
 
+    private System.Collections.Generic.HashSet<(int elevation, int position)>? vacancies;
+
     [Export]
     public string Name { get; set; } = "Tower";
 
@@ -114,6 +116,27 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         RoomIdCounter++;
         Rooms[RoomIdCounter] = room;
         GlobalSignals.RoomConstructed(new(this, room));
+    }
+
+    public bool PositionVacant(int elevation, int position)
+    {
+        if (vacancies is null)
+        {
+            var rooms = Rooms.Values
+                .SelectMany(
+                    room => Enumerable
+                        .Range(room.FloorPosition, (int)room.Definition.Width)
+                        .Select(p => (room.Elevation, p)))
+                .ToHashSet();
+            var floorSpots = Floors.Values
+                .SelectMany(
+                    floor => Enumerable
+                        .Range(floor.LeftBound, floor.RightBound - floor.LeftBound + 1)
+                        .Select(p => (floor.Elevation, p))
+                ).ToHashSet();
+            vacancies = [.. floorSpots.Except(rooms)];
+        }
+        return vacancies.Contains((elevation, position));
     }
 
     #endregion

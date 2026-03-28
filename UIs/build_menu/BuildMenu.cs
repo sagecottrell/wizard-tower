@@ -3,9 +3,8 @@ using Godot.Collections;
 using System.Linq;
 using wizardtower.resource_types;
 using wizardtower.state;
-using wizardtower.UIs.build_menu;
 
-namespace wizardtower.UIs;
+namespace wizardtower.UIs.build_menu;
 
 [Tool]
 public partial class BuildMenu : VBoxContainer
@@ -27,6 +26,9 @@ public partial class BuildMenu : VBoxContainer
 
     [Export]
     public Control? NodeTransports { get; set; }
+
+    [Export]
+    public RichTextLabel? WhatAreWeBuildingLabel { get; set; }
 
     public override void _Ready()
     {
@@ -107,5 +109,15 @@ public partial class BuildMenu : VBoxContainer
         if (btn.RoomDefinition is not null && TowerState is not null)
             if (GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition)).IsAllowed)
                 GlobalSignals.StartedRoomConstruction(new(TowerState, btn.RoomDefinition));
+    }
+
+    public void SetWhatAreWeBuilding(Resource b)
+    {
+        if (WhatAreWeBuildingLabel is null)
+            return;
+        if (b is RoomDefinition room)
+        {
+            WhatAreWeBuildingLabel.Text = $"Building: [img height=24]{room.Icon?.ResourcePath}[/img] {room.Name}";
+        }
     }
 }

@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="RoomDefinition" format=3 uid="uid://dgywvojheeuxe"]
 
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="1_5iwn4"]
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="2_hj88f"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="2_rcq2y"]
 [ext_resource type="Texture2D" uid="uid://c5hrcohsek5fk" path="res://rooms/images/hotel1-background.png" id="3_rcq2y"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_tlh4u"]
@@ -34,5 +35,6 @@ Name = "Hotel 1"
 Icon = ExtResource("3_rcq2y")
 RoomScene = ExtResource("4_tlh4u")
 CostToBuildPerUnit = SubResource("Resource_i2gvq")
+AllowedFloors = Array[ExtResource("1_5iwn4")]([ExtResource("2_hj88f")])
 Upgrades = SubResource("Resource_wq5xc")
 metadata/_custom_type_script = "uid://wmhswxpf1gb5"

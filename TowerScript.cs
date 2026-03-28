@@ -2,8 +2,9 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using wizardtower.resource_types;
 using wizardtower.state;
-using wizardtower.UIs;
+using wizardtower.UIs.build_menu;
 
 namespace wizardtower;
 
@@ -80,7 +81,28 @@ public partial class TowerScript : Node3D
 
     private void _g_OnStartedRoomConstruction(events.StartedRoomConstructionEvent @event)
     {
+        if (@event.TowerState != State)
+            return;
         WhatAreWeBuilding = @event.RoomDefinition;
+        BuildMenu?.SetWhatAreWeBuilding(WhatAreWeBuilding);
+
+        if (WhatAreWeBuilding is RoomDefinition r && FloorsContainer is not null)
+        {
+            foreach (var (h, floor) in State.Floors)
+            {
+                if (r.AllowedFloors.Contains(floor.Definition))
+                {
+                    for (var i = floor.LeftBound; i <= floor.RightBound; i++)
+                    {
+                        if (State.PositionVacant(h, i) && SceneLoader.TryLoadScene<Selected>(out var s))
+                        {
+                            s.Position = s.TowerCoordToNodePosition(x: i, y: h);
+                            FloorsContainer.AddChild(s);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public override void _Process(double delta)
