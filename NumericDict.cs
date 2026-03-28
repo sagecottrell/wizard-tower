@@ -198,12 +198,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public static bool operator >(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         // loop over B because A must have every key in B to be greater, but A can have extra keys that aren't in B and still be greater
-        foreach (var kvp in b)
+        foreach (var (key, value) in b)
         {
-            if (!a.TryGetValue(kvp.Key, out var value) || kvp.Value <= value)
-            {
+            if (a.GetOrDefault(key, TValue.AdditiveIdentity) <= value)
                 return false;
-            }
         }
         return true;
     }
@@ -213,12 +211,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public static bool operator >=(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b)
     {
         // loop over B because A must have every key in B to be greater, but A can have extra keys that aren't in B and still be greater
-        foreach (var kvp in b)
+        foreach (var (key, value) in b)
         {
-            if (!a.TryGetValue(kvp.Key, out var value) || kvp.Value < value)
-            {
+            if (a.GetOrDefault(key, TValue.AdditiveIdentity) < value)
                 return false;
-            }
         }
         return true;
     }
@@ -245,6 +241,8 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public override int GetHashCode() => Data.GetHashCode();
 
     #endregion
+
+    public TValue GetOrDefault(TKey key, TValue defaultValue = default!) => TryGetValue(key, out var value) ? value : defaultValue;
 
     #region IDictionary<TKey, TValue> implementation
 
