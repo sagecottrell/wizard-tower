@@ -25,3 +25,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)
 shape = SubResource("BoxShape3D_kstcc")
 
 [connection signal="input_event" from="Area3D" to="." method="InputEvent"]
+[connection signal="mouse_entered" from="Area3D" to="." method="MouseEntered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="MouseExited"]

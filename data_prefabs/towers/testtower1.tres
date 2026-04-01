@@ -70,6 +70,11 @@ FloorPosition = 4
 
 [sub_resource type="Resource" id="Resource_sstfk"]
 script = ExtResource("5_8sv8r")
+Data = Dictionary[String, int]({
+"res://items/air.tres": 1000,
+"res://items/coin.tres": 100,
+"res://items/fire.tres": 100
+})
 
 [resource]
 script = ExtResource("5_oywi7")

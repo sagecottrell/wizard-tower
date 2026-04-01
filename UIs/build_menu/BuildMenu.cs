@@ -67,8 +67,8 @@ public partial class BuildMenu : VBoxContainer
 
     private static HBoxContainer _addItemLabelToWallet(Control nodewallet, ItemDefinition item, uint amount) => nodewallet.AddedChild(
         new HBoxContainer { Name = item.Name }
+            .WithChild(new TextureRect { Texture = item.Icon, TooltipText = item.Name, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
             .WithChild(new Label { Text = $"{amount}" })
-            .WithChild(new TextureRect { Texture = item.Icon })
     );
 
     private void _setRooms(Control nodeRooms, Array<RoomDefinition> rooms)
@@ -111,8 +111,7 @@ public partial class BuildMenu : VBoxContainer
         return string.Join(" + ", cost.Select(kv =>
         {
             var color = "white";
-            uint walletAmount = 0;
-            if (TowerState is null || !TowerState.Wallet.TryGetValue(kv.Key, out walletAmount) || walletAmount < kv.Value)
+            if (TowerState is null || !TowerState.Wallet.TryGetValue(kv.Key, out uint walletAmount) || walletAmount < kv.Value)
                 color = "red";
             return $"[color={color}]{kv.Value}[/color][img height=24]{kv.Key.Icon?.ResourcePath}[/img]";
         }));
@@ -121,8 +120,11 @@ public partial class BuildMenu : VBoxContainer
     private void _x_OnClicked(BuildButton btn)
     {
         if (btn.RoomDefinition is not null && TowerState is not null)
-            if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition)).IsAllowed)
+        {
+            var ev = GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition));
+            if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && ev.IsAllowed)
                 GlobalSignals.StartedRoomConstruction(new(TowerState, btn.RoomDefinition));
+        }
     }
 
     public void SetWhatAreWeBuilding(Resource b)

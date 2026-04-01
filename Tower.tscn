@@ -148,6 +148,7 @@ grow_vertical = 2
 
 [node name="BuildMenu" parent="UIManager/Control/PanelContainer" unique_id=240534824 instance=ExtResource("15_ntecg")]
 layout_mode = 2
+TowerState = SubResource("Resource_ntecg")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=170547547]
 transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.70710677, 0, -0.70710677, 0.7071067, 0, 11.315495, 10.989061)

@@ -1,0 +1,24 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://7yvdrrr7ro2h"]
+
+[ext_resource type="Shader" uid="uid://bx5nxx7idok8l" path="res://rooms/scenes/hologram-shader.tres" id="1_i5dfl"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_i5dfl")
+shader_parameter/primary_color = Color(0.8296993, 0.39073253, 0.07596368, 1)
+shader_parameter/secondary_color = Color(0.82908803, 0.39148962, 0.069477215, 1)
+shader_parameter/density = 1.0
+shader_parameter/effect_strength = 2.535
+shader_parameter/wipe_scale = 3.0
+shader_parameter/wipe_speed = 0.5
+shader_parameter/wipe_blend = 0.7
+shader_parameter/signal_scale = 40.0
+shader_parameter/signal_speed = 1.0
+shader_parameter/signal_random_scale = 0.3
+shader_parameter/signal_blend = 1.0
+shader_parameter/noise_distort_amount = 0.1
+shader_parameter/noise_amount = 1.0
+shader_parameter/grain_amount = 0.4
+shader_parameter/displacement_amount = 0.0
+shader_parameter/flicker_amount = 0.3
+shader_parameter/flicker_speed = 10.0

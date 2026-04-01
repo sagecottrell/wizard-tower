@@ -6,10 +6,22 @@ namespace wizardtower;
 [Tool]
 public partial class RoomBackground : Node3D
 {
+    [Export]
+    public MeshInstance3D? Background { get; set; }
+    [Export]
+    public Material? HologramMaterial { get; set; } 
+
     public RoomState RoomState { get; set; } = new();
 
-    [Export]
-    public Node3D? SomethingAnimatable { get; set; }
+    public RoomBackground AsHologram()
+    {
+        Background?.SetSurfaceOverrideMaterial(0, HologramMaterial);
+        return this;
+    }
 
-    public void DoSomething() { }
+    public RoomBackground AsBackground()
+    {
+        Background?.SetSurfaceOverrideMaterial(0, null);
+        return this;
+    }
 }

@@ -7,12 +7,21 @@ namespace wizardtower;
 [GlobalClass]
 public partial class RoomScript : Node3D
 {
-    [Export]
     public RoomState State { get; set; } = new();
 
     public RoomState PreviousState { get; set; } = new();
 
-    private Node? RoomScene { get; set; }
+    private RoomBackground? RoomScene { get; set; }
+
+    public bool HologramMode { get; set; } = false;
+
+    public override void _Ready()
+    {
+        if (HologramMode)
+            AsHologram();
+         else
+            AsBackground();
+    }
 
     public override void _Process(double delta)
     {
@@ -24,13 +33,30 @@ public partial class RoomScript : Node3D
             RoomScene?.QueueFree();
             if (State.Definition.RoomScene is PackedScene scene)
             {
-                RoomScene = scene.Instantiate();
+                RoomScene = scene.Instantiate() as RoomBackground;
                 AddChild(RoomScene);
             }
         }
 
+        if (HologramMode)
+            AsHologram();
+         else
+            AsBackground();
+
         Position = this.TowerCoordToNodePosition(x: State.FloorPosition, y: State.Elevation);
 
         PreviousState = State.Copy();
+    }
+    public RoomScript AsHologram()
+    {
+        HologramMode = true;
+        RoomScene?.AsHologram();
+        return this;
+    }
+    public RoomScript AsBackground()
+    {
+        HologramMode = false;
+        RoomScene?.AsBackground();
+        return this;
     }
 }

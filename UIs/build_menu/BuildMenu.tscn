@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c75plrkn8hxvp"]
 
 [ext_resource type="Script" uid="uid://bloy1ji5feilm" path="res://UIs/build_menu/BuildMenu.cs" id="1_7f4hj"]
+[ext_resource type="Texture2D" uid="uid://cjfxdbn5nq5lg" path="res://items/images/coin.png" id="2_m7gj7"]
 
 [node name="BuildMenu" type="VBoxContainer" unique_id=240534824 node_paths=PackedStringArray("NodeTowerName", "NodeWallet", "NodeRooms", "NodeFloors", "NodeTransports", "WhatAreWeBuildingLabel")]
 anchors_preset = 15
@@ -27,9 +28,23 @@ fit_content = true
 [node name="wallet" type="VBoxContainer" parent="." unique_id=1124535807]
 layout_mode = 2
 
+[node name="HBoxContainer" type="HBoxContainer" parent="wallet" unique_id=678113853]
+visible = false
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="wallet/HBoxContainer" unique_id=2049069824]
+layout_mode = 2
+texture = ExtResource("2_m7gj7")
+expand_mode = 2
+
+[node name="Label" type="Label" parent="wallet/HBoxContainer" unique_id=43440748]
+layout_mode = 2
+text = "this is text"
+
 [node name="TabContainer" type="TabContainer" parent="." unique_id=256354587]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 0
 current_tab = 0
 deselect_enabled = true
 

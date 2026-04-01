@@ -34,6 +34,8 @@ public partial class TowerScript : Node3D
 
     public Resource? WhatAreWeBuilding { get; set; }
 
+    public RoomScript? BuildingRoom { get; set; }
+
     public Dictionary<int, FloorScript> Floors { get; set; } = [];
 
     public override void _Ready()
@@ -96,8 +98,29 @@ public partial class TowerScript : Node3D
                     {
                         if (State.PositionVacant(h, i) && SceneLoader.TryLoadScene<Selected>(out var s))
                         {
-                            s.Position = s.TowerCoordToNodePosition(x: i, y: h);
+                            var x = i;
+                            var y = h;
+                            s.Position = s.TowerCoordToNodePosition(x, y);
                             FloorsContainer.AddChild(s);
+                            s.OnMouseEntered += (_) =>
+                            {
+                                if (BuildingRoom is not null)
+                                {
+                                    Floors[BuildingRoom.State.Elevation].SetPositionVisible(BuildingRoom.State.FloorPosition, BuildingRoom.State.Definition.Width, true);
+                                }
+                                BuildingRoom ??= this.AddedChild(new RoomScript()
+                                {
+                                    HologramMode = true,
+                                    State = new RoomState()
+                                    {
+                                        Definition = r,
+                                        Height = 1,
+                                    }
+                                });
+                                BuildingRoom.State.Elevation = y;
+                                BuildingRoom.State.FloorPosition = x;
+                                Floors[y].SetPositionVisible(x, r.Width, false);
+                            };
                         }
                     }
                 }
