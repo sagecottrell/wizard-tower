@@ -52,7 +52,13 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public delegate void OnChangedEventHandler();
 
     [Export]
-    private Godot.Collections.Dictionary<string, TValue> Data { get; set; } = [];
+    public Godot.Collections.Dictionary<string, TValue> Data { 
+        get {
+            data ??= [];
+            return data;
+        } 
+        set => data = value; 
+    }
 
     private static TKey? _loadKey(string variant) => ResourceLoader.Load<TKey>(variant);
 
@@ -60,15 +66,17 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(Data.ToDictionary(kvp => ResourceLoader.Load<TKey>(kvp.Key), kvp => kvp.Value));
 
-    private static NumericDict<TKey, TValue> _additiveIdentity = [];
+    private static NumericDict<TKey, TValue>? _additiveIdentity;
+    private Godot.Collections.Dictionary<string, TValue>? data;
 
-    public static NumericDict<TKey, TValue> AdditiveIdentity { get
-        {
-            if (_additiveIdentity.Count != 0)
+    public static NumericDict<TKey, TValue> AdditiveIdentity { 
+        get {
+            if (_additiveIdentity is null || _additiveIdentity.Count != 0)
                 // just in case someone modifies the additive identity, we want to be able to recreate it
                 _additiveIdentity = [];
             return _additiveIdentity;
-        } }
+        }
+    }
 
     public NumericDict<TKey, TValue> RemoveZeroes()
     {
@@ -224,16 +232,13 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(this, obj))
-        {
             return true;
-        }
-
-        if (obj is null)
-        {
+        if (obj == null)
             return false;
+        if (obj.Equals(0L) || obj.Equals(0))
+        {
+            return Data.Values.All(x => x.Equals(0));
         }
-        if (obj is int i && i == 0)
-            return this == AdditiveIdentity;
 
         return obj is NumericDict<TKey, TValue> other && this == other;
     }
@@ -326,7 +331,16 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
-        return Data.Select(kvp => new KeyValuePair<TKey, TValue>(ResourceLoader.Load<TKey>(kvp.Key), kvp.Value)).GetEnumerator();
+        return Data
+            .Select(kvp => {
+                var key = ResourceLoader.Load<TKey>(kvp.Key);
+                if (key is null)
+                    GD.PushError($"Failed to load key of type {typeof(TKey)} with path {kvp.Key}");
+                return key;
+            })
+            .Where(key => key is not null)
+            .Select(key => new KeyValuePair<TKey, TValue>(key!, Data[key!.ResourcePath]))
+            .GetEnumerator();
     }
 
     IEnumerator IEnumerable.GetEnumerator()

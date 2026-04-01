@@ -8,7 +8,6 @@ using wizardtower.UIs.build_menu;
 
 namespace wizardtower;
 
-[Tool]
 [GlobalClass]
 public partial class TowerScript : Node3D
 {

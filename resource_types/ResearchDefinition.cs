@@ -23,7 +23,7 @@ public partial class ResearchDefinition : Resource, INamedResource<ResearchDefin
     public string? Description { get; set; }
 
     [Export]
-    public NumericDict<ItemDefinition, uint>? CostToResearch { get; set; }
+    public NumericDict<ItemDefinition, uint> CostToResearch { get; set; } = [];
 
     [Export]
     public Array<ResearchDefinition> Prerequisites { get; set; } = [];

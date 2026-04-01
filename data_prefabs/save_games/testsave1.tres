@@ -21,6 +21,7 @@
 
 [sub_resource type="Resource" id="Resource_f4l78"]
 script = ExtResource("2_s7lup")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_h7t0r"]
 script = ExtResource("5_bw1c6")
@@ -42,6 +43,7 @@ Elevation = 2
 
 [sub_resource type="Resource" id="Resource_5oluk"]
 script = ExtResource("2_s7lup")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_bw1c6"]
 script = ExtResource("5_2qcrd")
@@ -59,15 +61,19 @@ metadata/_custom_type_script = "uid://mv22mxallfm6"
 
 [sub_resource type="Resource" id="Resource_uhjfj"]
 script = ExtResource("12_f4l78")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_jcqd2"]
 script = ExtResource("13_h7t0r")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_rk553"]
 script = ExtResource("14_amvtb")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_1er2x"]
 script = ExtResource("15_30wl4")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_cw0l3"]
 script = ExtResource("16_4xtx7")
@@ -78,6 +84,7 @@ ResearchDefinitionsSeen = SubResource("Resource_jcqd2")
 
 [sub_resource type="Resource" id="Resource_5jflc"]
 script = ExtResource("1_mqmhn")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_011gn"]
 script = ExtResource("2_s7lup")

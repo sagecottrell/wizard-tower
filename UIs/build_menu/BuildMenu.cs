@@ -32,6 +32,8 @@ public partial class BuildMenu : VBoxContainer
 
     public override void _Ready()
     {
+        if (Engine.IsEditorHint())
+            return;
         if (GlobalSignals.Singleton is GlobalSignals g)
         {
             g.OnTowerResourceChanged += _onTowerResourceChanged;

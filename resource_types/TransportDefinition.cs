@@ -35,4 +35,7 @@ public partial class TransportDefinition : Resource, INamedResource<TransportDef
     [Export]
     public Array<FloorDefinition> CanStopAtFloor { get; set; } = [];
 
+    [Export]
+    public NumericDict<ItemDefinition, uint> CostToBuild { get; set; } = [];
+
 }

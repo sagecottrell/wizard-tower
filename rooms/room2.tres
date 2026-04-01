@@ -8,14 +8,16 @@
 
 [sub_resource type="Resource" id="Resource_todtk"]
 script = ExtResource("2_ethje")
+Data = {}
 
-[sub_resource type="Resource" id="Resource_5h6u3"]
+[sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")
+Data = {}
 
 [resource]
 script = ExtResource("4_1ryl7")
 Name = "Room2"
 Icon = ExtResource("3_ethje")
 CostToBuildPerUnit = SubResource("Resource_todtk")
-Upgrades = SubResource("Resource_5h6u3")
+Upgrades = SubResource("Resource_ethje")
 metadata/_custom_type_script = "uid://wmhswxpf1gb5"

@@ -50,6 +50,7 @@ public partial class EditorItemWindow : Control
         if (_testZero(value))
         {
             EditedData.Remove(def);
+            _updateLabel(def, value);
         }
         else
         {
@@ -84,7 +85,7 @@ public partial class EditorItemWindow : Control
     {
         foreach (var key in EditedData.Keys)
         {
-            if (key.AsGodotObject() is Resource r && EditedData[key] is Variant v && !_testZero(v))
+            if (key.AsGodotObject() is Resource r && EditedData[key] is Variant v)
             {
                 _onAmountChanged(r, v);
                 _updateLabel(r, v);
@@ -94,7 +95,7 @@ public partial class EditorItemWindow : Control
 
     private static string _formatLabel(INamedResource def, Variant amount) => $"[img height=24]{def?.IconPathOrName}[/img] {def?.Name}: {(amount.Obj is IToBBCode bbcode ? bbcode.ToStringBBCode() : amount)}";
 
-    private static bool _testZero(Variant value) => value.Obj?.Equals(0) ?? true;
+    private static bool _testZero(Variant value) => value.Obj?.Equals(0L) ?? true;
 
     private void _onFilterSubmitted(string value)
     {

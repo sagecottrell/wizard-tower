@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="WorkerDefinition" format=3 uid="uid://ctvjetk1f10nm"]
+
+[ext_resource type="Script" uid="uid://draj1yxsnn0co" path="res://resource_types/WorkerDefinition.cs" id="1_myplx"]
+
+[resource]
+script = ExtResource("1_myplx")
+metadata/_custom_type_script = "uid://draj1yxsnn0co"
