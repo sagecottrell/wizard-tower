@@ -37,7 +37,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         IToBBCode,
         ICopy<NumericDict<TKey, TValue>>,
         IDeSerialize<NumericDict<TKey, TValue>>
-    where TKey : Resource, INamedResource
+    where TKey : Resource, INamedResource, new()
     where TValue : notnull,
         IComparisonOperators<TValue, TValue, bool>,
         IAdditionOperators<TValue, TValue, TValue>,
@@ -60,11 +60,24 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         set => data = value; 
     }
 
-    private static TKey? _loadKey(string variant) => ResourceLoader.Load<TKey>(variant);
+    private static readonly Dictionary<string, TKey> _keyCache = [];
+    private static TKey _loadKey(string variant)
+    {
+        if (_keyCache.TryGetValue(variant, out var cached))
+            return cached;
+        var loaded = ResourceLoader.Load<TKey>(variant);
+        if (loaded is null)
+        {
+            GD.PushError($"Failed to load key of type {typeof(TKey)} with path {variant}");
+            loaded = new();
+        }
+        _keyCache[variant] = loaded;
+        return loaded;
+    }
 
     #region Operators
 
-    public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(Data.ToDictionary(kvp => ResourceLoader.Load<TKey>(kvp.Key), kvp => kvp.Value));
+    public Godot.Collections.Dictionary<TKey, TValue> ToGodotDictionary() => new(Data.ToDictionary(kvp => _loadKey(kvp.Key), kvp => kvp.Value));
 
     private static NumericDict<TKey, TValue>? _additiveIdentity;
     private Godot.Collections.Dictionary<string, TValue>? data;
@@ -78,6 +91,12 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         }
     }
 
+    /// <summary>
+    /// Removes any entries with a value of zero (or whatever the additive identity is for TValue) from the dictionary. 
+    /// This is useful for keeping the dictionary clean after performing operations that may result in zero values, such as subtraction. 
+    /// Note that this modifies the current instance, it does not return a new instance. It returns this instance for chaining purposes.
+    /// </summary>
+    /// <returns></returns>
     public NumericDict<TKey, TValue> RemoveZeroes()
     {
         foreach (var (key, value) in Data)
@@ -89,6 +108,12 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return (NumericDict<TKey, TValue>)this;
     }
 
+    /// <summary>
+    /// Attempts subtraction, returning false if the result would contain any negative values. Note that this does not modify the current instance, it just checks if the subtraction is valid and returns the result if it is.
+    /// </summary>
+    /// <param name="other"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
     public bool TrySubtract(NumericDict<TKey, TValue> other, out NumericDict<TKey, TValue> result)
     {
         if (this >= other)
@@ -101,6 +126,11 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return false;
     }
 
+    /// <summary>
+    /// Mutates and adds the value
+    /// </summary>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public NumericDict<TKey, TValue> Added(NumericDict<TKey, TValue> b)
     {
         foreach (var (key, value) in b)
@@ -118,6 +148,11 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return (NumericDict<TKey, TValue>)this;
     }
 
+    /// <summary>
+    /// Mutates and subtracts the value 
+    /// </summary>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public NumericDict<TKey, TValue> Subtracted(NumericDict<TKey, TValue> b)
     {
         foreach (var (key, value) in b)
@@ -135,6 +170,13 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return (NumericDict<TKey, TValue>)this;
     }
 
+    /// <summary>
+    /// Mutates and multiplies the value componentwise. Note that this is not a standard vector operation, and it may not have a clear mathematical meaning in all contexts.
+    /// Symmetry is not guaranteed, as if one dictionary has a key that the other does not, the result will be different depending on which dictionary is the caller.
+    /// It can be useful for certain applications, such as applying a multiplier to a set of values, but it should be used with caution and clearly documented to avoid confusion.
+    /// </summary>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public NumericDict<TKey, TValue> MultipliedComponentwise(NumericDict<TKey, TValue> b)
     {
         foreach (var (key, value) in b)
@@ -152,6 +194,11 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return (NumericDict<TKey, TValue>)this;
     }
 
+    /// <summary>
+    /// Mutates and multiplies the value by a scalar. This is a standard vector operation, and it should have a clear mathematical meaning in most contexts. It multiplies every value in the dictionary by the given scalar, regardless of the keys.
+    /// </summary>
+    /// <param name="scalar"></param>
+    /// <returns></returns>
     public NumericDict<TKey, TValue> MultipliedByScalar(TValue scalar)
     {
         foreach (var key in Keys)
@@ -251,7 +298,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     #region IDictionary<TKey, TValue> implementation
 
-    public ICollection<TKey> Keys => [..Data.Keys.Select(key => ResourceLoader.Load<TKey>(key))];
+    public ICollection<TKey> Keys => [..Data.Keys.Select(_loadKey)];
 
     public ICollection<TValue> Values => Data.Values;
 
@@ -333,7 +380,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     {
         return Data
             .Select(kvp => {
-                var key = ResourceLoader.Load<TKey>(kvp.Key);
+                var key = _loadKey(kvp.Key);
                 if (key is null)
                     GD.PushError($"Failed to load key of type {typeof(TKey)} with path {kvp.Key}");
                 return key;
@@ -430,7 +477,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public override string ToString() => $"{{{string.Join(
         ",",
-        Data.Select(x => $"{ResourceLoader.Load<TKey>(x.Key).Name}:{x.Value}")
+        Data.Select(x => $"{_loadKey(x.Key).Name}:{x.Value}")
         )}}}";
 
     public string ToStringAsCost() => typeof(TValue).IsAssignableTo(typeof(Resource)) ? $"{{{string.Join(
