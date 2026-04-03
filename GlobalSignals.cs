@@ -42,19 +42,23 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
 
     [Signal]
-    public delegate void OnStartingRoomConstructionEventHandler(StartingRoomConstructionEvent @event);
-    public static StartingRoomConstructionEvent StartingRoomConstruction(StartingRoomConstructionEvent @event) => _call(SignalName.OnStartingRoomConstruction, @event);
+    public delegate void OnRoomConstructionSelectingEventHandler(RoomConstructionSelectingEvent @event);
+    public static RoomConstructionSelectingEvent RoomConstructionSelecting(RoomConstructionSelectingEvent @event) => _call(SignalName.OnRoomConstructionSelecting, @event);
 
     [Signal]
-    public delegate void OnStartedRoomConstructionEventHandler(StartedRoomConstructionEvent @event);
-    public static StartedRoomConstructionEvent StartedRoomConstruction(StartedRoomConstructionEvent @event) => _call(SignalName.OnStartedRoomConstruction, @event);
+    public delegate void OnRoomConstructionSelectedEventHandler(RoomConstructionSelectedEvent @event);
+    public static RoomConstructionSelectedEvent RoomConstructionSelected(RoomConstructionSelectedEvent @event) => _call(SignalName.OnRoomConstructionSelected, @event);
 
     // ==================================================================================================================
     // ==================================================================================================================
 
     [Signal]
-    public delegate void OnStoppedRoomConstructionEventHandler(StoppedRoomConstructionEvent @event);
-    public static void StoppedRoomConstruction(StoppedRoomConstructionEvent @event) => _call(SignalName.OnStoppedRoomConstruction, @event);
+    public delegate void OnRoomConstructionStoppingEventHandler(RoomConstructionStoppingEvent @event);
+    public static RoomConstructionStoppingEvent RoomConstructionStopping(RoomConstructionStoppingEvent @event) => _call(SignalName.OnRoomConstructionStopping, @event);
+
+    [Signal]
+    public delegate void OnRoomConstructionStoppedEventHandler(RoomConstructionStoppedEvent @event);
+    public static RoomConstructionStoppedEvent RoomConstructionStopped(RoomConstructionStoppedEvent @event) => _call(SignalName.OnRoomConstructionStopped, @event);
 
     // ==================================================================================================================
     // ==================================================================================================================

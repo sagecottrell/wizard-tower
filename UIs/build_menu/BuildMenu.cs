@@ -123,16 +123,21 @@ public partial class BuildMenu : VBoxContainer
     {
         if (btn.RoomDefinition is not null && TowerState is not null)
         {
-            var ev = GlobalSignals.StartingRoomConstruction(new(TowerState, btn.RoomDefinition));
+            var ev = GlobalSignals.RoomConstructionSelecting(new(TowerState, btn.RoomDefinition));
             if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && ev.IsAllowed)
-                GlobalSignals.StartedRoomConstruction(new(TowerState, btn.RoomDefinition));
+                GlobalSignals.RoomConstructionSelected(new(TowerState, btn.RoomDefinition));
         }
     }
 
-    public void SetWhatAreWeBuilding(Resource b)
+    public void SetWhatAreWeBuilding(Resource? b)
     {
         if (WhatAreWeBuildingLabel is null)
             return;
+        if (b is null)
+        {
+            WhatAreWeBuildingLabel.Text = "";
+            return;
+        }
         if (b is RoomDefinition room)
         {
             WhatAreWeBuildingLabel.Text = $"Building: [img height=24]{room.Icon?.ResourcePath}[/img] {room.Name}";

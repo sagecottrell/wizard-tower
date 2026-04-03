@@ -8,7 +8,9 @@
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="enums\" />
-    <Folder Include="state\production\" />
+    <Compile Remove="enums\**" />
+    <Compile Remove="state\production\**" />
+    <EmbeddedResource Remove="enums\**" />
+    <EmbeddedResource Remove="state\production\**" />
   </ItemGroup>
 </Project>

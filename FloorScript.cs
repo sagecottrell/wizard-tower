@@ -94,6 +94,11 @@ public partial class FloorScript : Node3D
         }
     }
 
+    public void SetPositionVisible(RoomState room, bool visible)
+    {
+        SetPositionVisible(room.FloorPosition, room.Definition.Width, visible);
+    }
+
 
     [ExportToolButton("OnCreate")]
     public Callable TriggerOnCreate => Callable.From(OnCreate);

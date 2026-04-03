@@ -5,7 +5,9 @@ namespace wizardtower.UIs.build_menu;
 public partial class Selected : Node3D
 {
     [Signal]
-    public delegate void OnClickEventHandler(Selected self);
+    public delegate void OnAcceptEventHandler(Selected self);
+    [Signal]
+    public delegate void OnCancelEventHandler(Selected self);
     [Signal]
     public delegate void OnMouseEnteredEventHandler(Selected self);
     [Signal]
@@ -17,7 +19,10 @@ public partial class Selected : Node3D
         {
             case InputEventMouseButton mouseEvent when mouseEvent.Pressed:
                 {
-                    EmitSignalOnClick(this);
+                    if (mouseEvent.ButtonMask == MouseButtonMask.Left)
+                        EmitSignalOnAccept(this);
+                    else if (mouseEvent.ButtonMask == MouseButtonMask.Right)
+                        EmitSignalOnCancel(this);
                     break;
                 }
         }

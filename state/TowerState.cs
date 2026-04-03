@@ -14,6 +14,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     private System.Collections.Generic.HashSet<(int elevation, int position)>? vacancies;
 
+    [Signal]
+    public delegate void OnRoomAddedEventHandler(RoomState room);
+
     [Export]
     public string Name { get; set; } = "Tower";
 
@@ -98,11 +101,11 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
                 OnAddRoom(e, p, r);
             };
         }
+        vacancies = null;
     }
 
     public void OnAddRoom(int elevation, int position, RoomDefinition r)
     {
-        GD.Print($"Add room {elevation} {position} {r}");
         var room = new RoomState()
         {
             Id = RoomIdCounter + 1,
@@ -111,11 +114,23 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             FloorPosition = position,
             Height = 1,
         };
-        if (!GlobalSignals.RoomConstructing(new(this, room)).IsAllowed)
-            return;
+        OnAddRoom(room);
+    }
+
+    public void OnAddRoom(RoomState room)
+    {
         RoomIdCounter++;
         Rooms[RoomIdCounter] = room;
-        GlobalSignals.RoomConstructed(new(this, room));
+        vacancies = null;
+        EmitSignalOnRoomAdded(room);
+    }
+
+    public void OnRemoveRoom(uint roomId)
+    {
+        if (!Rooms.ContainsKey(roomId))
+            return;
+        Rooms.Remove(roomId);
+        vacancies = null;
     }
 
     public bool PositionVacant(int elevation, int position)

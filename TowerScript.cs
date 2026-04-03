@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.build_menu;
@@ -31,15 +32,13 @@ public partial class TowerScript : Node3D
     [Export]
     public BuildMenu? BuildMenu { get; set; }
 
-    public Resource? WhatAreWeBuilding { get; set; }
-
-    public RoomScript? BuildingRoom { get; set; }
-
     public Dictionary<int, FloorScript> Floors { get; set; } = [];
 
     public override void _Ready()
     {
         State.EnsureGroundFloor();
+
+        AddChild(new TowerBuilderOverlay(this));
 
         if (FloorsContainer is not null)
         {
@@ -52,7 +51,7 @@ public partial class TowerScript : Node3D
             }
             foreach (var (roomId, room) in State.Rooms)
             {
-                OnRoomAdd(room);
+                SetupRoomDisplay(room);
             }
         }
         BuildMenu?.SetTower(State);
@@ -60,71 +59,68 @@ public partial class TowerScript : Node3D
 
         if (GlobalSignals.Singleton is GlobalSignals g)
         {
-            g.OnStartedRoomConstruction += _g_OnStartedRoomConstruction;
+            g.OnRoomConstructionSelected += _onRoomConstructionSelected;
+            g.OnRoomConstructing += _g_OnRoomConstructing;
             g.OnRoomConstructed += _g_OnRoomConstructed;
+            g.OnRoomConstructionStopping += _g_OnRoomConstructionStopping;
+            g.OnRoomConstructionStopped += _g_OnRoomConstructionStopped;
             g.OnFloorConstructed += _g_OnFloorConstructed;
         }
     }
 
-    private void _g_OnFloorConstructed(events.FloorConstructedEvent @event)
+    private void _g_OnRoomConstructionStopping(RoomConstructionStoppingEvent @event)
     {
-        if (@event.TowerState != State)
+        if (@event.TowerState != State || @event.UserRequested)
             return;
-        OnFloorAdd(@event.Floor);
+        if (@event.RoomDefinition.CostToBuildPerUnit <= State.Wallet)
+            @event.IsAllowed = false;
     }
 
-    private void _g_OnRoomConstructed(events.RoomConstructedEvent @event)
+    private void _g_OnRoomConstructionStopped(RoomConstructionStoppedEvent @event)
     {
-        if (@event.TowerState != State)
-            return;
-        OnRoomAdd(@event.Room);
+        BuildMenu?.SetWhatAreWeBuilding(null);
     }
 
-    private void _g_OnStartedRoomConstruction(events.StartedRoomConstructionEvent @event)
+    private void _g_OnRoomConstructing(RoomConstructingEvent @event)
     {
         if (@event.TowerState != State)
             return;
-        WhatAreWeBuilding = @event.RoomDefinition;
-        BuildMenu?.SetWhatAreWeBuilding(WhatAreWeBuilding);
-
-        if (WhatAreWeBuilding is RoomDefinition r && FloorsContainer is not null)
+        if (@event.Room.Definition.CostToBuildPerUnit > State.Wallet)
         {
-            foreach (var (h, floor) in State.Floors)
-            {
-                if (r.AllowedFloors.Contains(floor.Definition))
-                {
-                    for (var i = floor.LeftBound; i <= floor.RightBound; i++)
-                    {
-                        if (State.PositionVacant(h, i) && SceneLoader.TryLoadScene<Selected>(out var s))
-                        {
-                            var x = i;
-                            var y = h;
-                            s.Position = s.TowerCoordToNodePosition(x, y);
-                            FloorsContainer.AddChild(s);
-                            s.OnMouseEntered += (_) =>
-                            {
-                                if (BuildingRoom is not null)
-                                {
-                                    Floors[BuildingRoom.State.Elevation].SetPositionVisible(BuildingRoom.State.FloorPosition, BuildingRoom.State.Definition.Width, true);
-                                }
-                                BuildingRoom ??= this.AddedChild(new RoomScript()
-                                {
-                                    HologramMode = true,
-                                    State = new RoomState()
-                                    {
-                                        Definition = r,
-                                        Height = 1,
-                                    }
-                                });
-                                BuildingRoom.State.Elevation = y;
-                                BuildingRoom.State.FloorPosition = x;
-                                Floors[y].SetPositionVisible(x, r.Width, false);
-                            };
-                        }
-                    }
-                }
-            }
+            this.Log("Not enough money to build this room.");
+            @event.IsAllowed = false;
+            return;
         }
+        // enough money means it is allowed to build
+    }
+
+    private void _g_OnFloorConstructed(FloorConstructedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        SetupFloorDisplay(@event.Floor);
+    }
+
+    private void _g_OnRoomConstructed(RoomConstructedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        State.OnAddRoom(@event.Room);
+        SetupRoomDisplay(@event.Room);
+
+        var cost = @event.Room.Definition.CostToBuildPerUnit;
+        if (GlobalSignals.TowerResourceChanging(new(State, cost)).IsAllowed)
+        {
+            State.Wallet.Subtracted(cost);
+            GlobalSignals.TowerResourceChanged(new(State, cost));
+        }
+    }
+
+    private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        BuildMenu?.SetWhatAreWeBuilding(@event.RoomDefinition);
     }
 
     public override void _Process(double delta)
@@ -155,7 +151,7 @@ public partial class TowerScript : Node3D
         PreviousState = State.Copy();
     }
 
-    public void OnFloorAdd(FloorState newFloor)
+    public void SetupFloorDisplay(FloorState newFloor)
     {
         if (FloorsContainer is null)
             return;
@@ -169,7 +165,7 @@ public partial class TowerScript : Node3D
         FloorsContainer.AddChild(fs);
     }
 
-    public void OnRoomAdd(RoomState newRoom)
+    public void SetupRoomDisplay(RoomState newRoom)
     {
         if (FloorsContainer is null)
             return;
@@ -183,7 +179,7 @@ public partial class TowerScript : Node3D
         {
             if (Floors.TryGetValue(newRoom.Elevation + i, out var fs))
             {
-                fs.SetPositionVisible(newRoom.FloorPosition, newRoom.Definition.Width, false);
+                fs.SetPositionVisible(newRoom, false);
             }
         }
     }
