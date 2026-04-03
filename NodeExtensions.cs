@@ -58,6 +58,44 @@ public static class NodeExtensions
     public static Control? ChildControl(this Node node, string name = "", bool owned = false) => node.Child<Control>(name, owned);
     public static Node? Child(this Node node, string name = "", bool owned = false) => node.Child<Node>(name, owned);
 
+    public static void FreeChildren(this Node node, bool owned = false)
+    {
+        foreach (var child in node.GetChildren(!owned))
+        {
+            if (child is Node n)
+                n.QueueFree();
+        }
+    }
+
+    public static void FreeChildren(this Node node, Func<Node, bool> predicate, bool owned = false)
+    {
+        foreach (var child in node.GetChildren(!owned))
+        {
+            if (child is Node n && predicate(n))
+                n.QueueFree();
+        }
+    }
+
+    public static void FreeChildren<TNode>(this Node node, Func<TNode, bool> predicate, bool owned = false) 
+        where TNode : Node
+    {
+        foreach (var child in node.GetChildren(!owned))
+        {
+            if (child is TNode n && predicate(n))
+                n.QueueFree();
+        }
+    }
+
+    public static void FreeChildren<TNode>(this Node node, bool owned = false) 
+        where TNode : Node
+    {
+        foreach (var child in node.GetChildren(!owned))
+        {
+            if (child is TNode n)
+                n.QueueFree();
+        }
+    }
+
     public static SignalAwaiter GodotSleep(this Node node, float seconds) => node.ToSignal(node.GetTree().CreateTimer(seconds), SceneTreeTimer.SignalName.Timeout);
 
     public static T AddOwnedChild<T>(this Node node, T child) where T : Node
@@ -72,4 +110,12 @@ public static class NodeExtensions
         var path = node.IsInsideTree() ? node.GetPath().ToString() : $"{node.GetType()} not in tree";
         GD.Print($"{DateTime.Now}|{path}|{message}");
     }
+
+    public static void Error(this Node node, string message)
+    {
+        var path = node.IsInsideTree() ? node.GetPath().ToString() : $"{node.GetType()} not in tree";
+        GD.PushError($"{DateTime.Now}|{path}|{message}");
+    }
+
+
 }
