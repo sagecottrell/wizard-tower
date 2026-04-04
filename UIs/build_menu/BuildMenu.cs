@@ -1,8 +1,10 @@
 using Godot;
 using Godot.Collections;
 using System.Linq;
+using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
+using static Godot.WebSocketPeer;
 
 namespace wizardtower.UIs.build_menu;
 
@@ -37,6 +39,8 @@ public partial class BuildMenu : VBoxContainer
         if (GlobalSignals.Singleton is GlobalSignals g)
         {
             g.OnTowerResourceChanged += _onTowerResourceChanged;
+            g.OnRoomConstructionSelected += _onRoomConstructionSelected;
+            g.OnRoomConstructionStopped += _g_OnRoomConstructionStopped;
         }
         if (TowerState is not null)
             SetTower(TowerState);
@@ -54,7 +58,7 @@ public partial class BuildMenu : VBoxContainer
             _setRooms(NodeRooms, state.UnlockedRooms);
     }
 
-    private void _onTowerResourceChanged(events.TowerResourceChangedEvent @event)
+    private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
     {
         if (TowerState is null || NodeWallet is null || @event.Tower != TowerState) return;
         foreach (var key in @event.Amount.Keys)
@@ -65,6 +69,20 @@ public partial class BuildMenu : VBoxContainer
             // we do not remove labels that are zero or less
             child.Child<Label>()!.Text = value.ToString();
         }
+    }
+
+    private void _g_OnRoomConstructionStopped(RoomConstructionStoppedEvent @event)
+    {
+        if (@event.TowerState != TowerState)
+            return;
+        SetWhatAreWeBuilding(null);
+    }
+
+    private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
+    {
+        if (@event.TowerState != TowerState)
+            return;
+        SetWhatAreWeBuilding(@event.RoomDefinition);
     }
 
     private static HBoxContainer _addItemLabelToWallet(Control nodewallet, ItemDefinition item, uint amount) => nodewallet.AddedChild(

@@ -1,7 +1,7 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using wizardtower.events;
+using wizardtower.resource_types;
 using wizardtower.state;
 
 namespace wizardtower.UIs.build_menu;
@@ -16,6 +16,8 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
     public RoomScript? BuildingRoom { get; set; }
     private readonly Dictionary<(int elevation, int position), Selected> _selected = [];
 
+    private RoomDefinition? _currentRoomDef;
+
     public override void _Ready()
     {
         if (GlobalSignals.Singleton is GlobalSignals g)
@@ -25,19 +27,30 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
         }
     }
 
-    private void _onRoomConstructionStopped(RoomConstructionStoppedEvent @event)
+    private void _reset()
     {
         this.FreeChildren<Selected>();
         _selected.Clear();
         _revertFloorVis();
         BuildingRoom?.QueueFree();
+        _currentRoomDef = null;
         BuildingRoom = null;
     }
+
+    private void _onRoomConstructionStopped(RoomConstructionStoppedEvent @event) => _reset();
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
         if (@event.TowerState != Tower?.State || Tower?.State is null)
             return;
+
+        if (_currentRoomDef is not null)
+        {
+            GlobalSignals.RoomConstructionStopped(new(Tower.State, _currentRoomDef));
+            return;
+        }
+
+        _currentRoomDef = @event.RoomDefinition;
 
         foreach (var (h, floor) in Tower.State.Floors)
         {
@@ -49,7 +62,7 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
                     {
                         var x = i;
                         var y = h;
-                        _selected[(x, y)] = s;
+                        _selected[(x, y)] = s; 
                         s.Position = s.TowerCoordToNodePosition(x, y);
                         AddChild(s);
                         s.OnMouseEntered += _ => _onMouseEnter(@event, x, y);
@@ -63,10 +76,10 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onCancel(RoomConstructionSelectedEvent @event, int x, int y)
     {
+        // the user tried to cancel the construction of a room
         if (@event.TowerState != Tower?.State || Tower?.State is null)
             return;
-        if (GlobalSignals.RoomConstructionStopping(new(Tower.State, @event.RoomDefinition, userRequested: true)).IsAllowed)
-            GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
+        GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
     }
 
     private void _onAccept(RoomConstructionSelectedEvent @event, int x, int y)

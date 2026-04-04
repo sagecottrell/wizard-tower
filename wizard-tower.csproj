@@ -13,4 +13,7 @@
     <EmbeddedResource Remove="enums\**" />
     <EmbeddedResource Remove="state\production\**" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="events\construction-diagram.md" />
+  </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@
 
 [sub_resource type="Resource" id="Resource_cp8l4"]
 script = ExtResource("5_752je")
-Data = {}
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_ygasj"]
 script = ExtResource("5_ntecg")
@@ -26,7 +26,7 @@ CostToBuildPerUnit = SubResource("Resource_cp8l4")
 
 [sub_resource type="Resource" id="Resource_2es8u"]
 script = ExtResource("5_752je")
-Data = {}
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_4jvl5"]
 script = ExtResource("5_ntecg")
@@ -34,7 +34,7 @@ CostToBuildPerUnit = SubResource("Resource_2es8u")
 
 [sub_resource type="Resource" id="Resource_g4l7v"]
 script = ExtResource("5_752je")
-Data = {}
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_uyed3"]
 script = ExtResource("5_ntecg")
@@ -46,7 +46,7 @@ Definition = SubResource("Resource_uyed3")
 
 [sub_resource type="Resource" id="Resource_djx0s"]
 script = ExtResource("5_752je")
-Data = {}
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_ntecg"]
 script = ExtResource("6_oadqw")
@@ -139,7 +139,7 @@ metadata/_custom_type_script = "uid://cs6dkcx2kdv1p"
 layout_mode = 3
 anchor_right = 1.0
 anchor_bottom = 0.37100002
-offset_right = -537.0
+offset_right = -921.0
 offset_bottom = 5.1999817
 
 [node name="PanelContainer" type="PanelContainer" parent="UIManager/Control" unique_id=1522159308]

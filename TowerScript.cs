@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.events;
-using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.build_menu;
 
@@ -59,26 +58,19 @@ public partial class TowerScript : Node3D
 
         if (GlobalSignals.Singleton is GlobalSignals g)
         {
-            g.OnRoomConstructionSelected += _onRoomConstructionSelected;
             g.OnRoomConstructing += _g_OnRoomConstructing;
             g.OnRoomConstructed += _g_OnRoomConstructed;
             g.OnRoomConstructionStopping += _g_OnRoomConstructionStopping;
-            g.OnRoomConstructionStopped += _g_OnRoomConstructionStopped;
             g.OnFloorConstructed += _g_OnFloorConstructed;
         }
     }
 
     private void _g_OnRoomConstructionStopping(RoomConstructionStoppingEvent @event)
     {
-        if (@event.TowerState != State || @event.UserRequested)
+        if (@event.TowerState != State)
             return;
         if (@event.RoomDefinition.CostToBuildPerUnit <= State.Wallet)
             @event.IsAllowed = false;
-    }
-
-    private void _g_OnRoomConstructionStopped(RoomConstructionStoppedEvent @event)
-    {
-        BuildMenu?.SetWhatAreWeBuilding(null);
     }
 
     private void _g_OnRoomConstructing(RoomConstructingEvent @event)
@@ -114,13 +106,6 @@ public partial class TowerScript : Node3D
             State.Wallet.Subtracted(cost);
             GlobalSignals.TowerResourceChanged(new(State, cost));
         }
-    }
-
-    private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
-    {
-        if (@event.TowerState != State)
-            return;
-        BuildMenu?.SetWhatAreWeBuilding(@event.RoomDefinition);
     }
 
     public override void _Process(double delta)
