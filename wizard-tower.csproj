@@ -8,12 +8,17 @@
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="enums\**" />
-    <Compile Remove="state\production\**" />
-    <EmbeddedResource Remove="enums\**" />
-    <EmbeddedResource Remove="state\production\**" />
+    <None Include="docs\construction-diagram.md" />
+    <None Include="docs\overallgameloop.md" />
+    <None Include="docs\towergameloop.md" />
+	  <AdditionalFiles Include="project.godot" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="events\construction-diagram.md" />
-  </ItemGroup>
+
+	<ItemGroup>
+		<!-- Note that this is not a "normal" ProjectReference.
+         It needs the additional 'OutputItemType' and 'ReferenceOutputAssmbly' attributes. -->
+		<ProjectReference Include="../GodotSourceGenerators/GodotSourceGenerators.csproj"
+						  OutputItemType="Analyzer"
+						  ReferenceOutputAssembly="false" />
+	</ItemGroup>
 </Project>

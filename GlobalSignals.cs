@@ -96,12 +96,10 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
     // ==================================================================================================================
 
-    public static bool LogGlobalSignals { get; set; } = true;
-
     private static T _call<T>(string action, T ev) where T : GodotObject
     {
         Singleton?.EmitSignal(action, ev);
-        if (LogGlobalSignals)
+        if (Input.IsActionPressed(InputMapConstants.LogGlobalSignals))
         {
             var p = ev is IDebug d ? d.DebugString(depth: 0) : typeof(T).Name;
             Singleton?.Log($"{action}|{p}");

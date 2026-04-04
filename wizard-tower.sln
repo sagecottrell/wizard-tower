@@ -1,12 +1,17 @@
-﻿Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wizard-tower", "wizard-tower.csproj", "{A8F147A7-4A68-43B9-8926-572BF5822B26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotSourceGenerators", "..\GodotSourceGenerators\GodotSourceGenerators.csproj", "{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-	Debug|Any CPU = Debug|Any CPU
-	ExportDebug|Any CPU = ExportDebug|Any CPU
-	ExportRelease|Any CPU = ExportRelease|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A8F147A7-4A68-43B9-8926-572BF5822B26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -15,5 +20,14 @@ Global
 		{A8F147A7-4A68-43B9-8926-572BF5822B26}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{A8F147A7-4A68-43B9-8926-572BF5822B26}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{A8F147A7-4A68-43B9-8926-572BF5822B26}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.ExportDebug|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.ExportDebug|Any CPU.Build.0 = Release|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
