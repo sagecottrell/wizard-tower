@@ -1,10 +1,10 @@
 using Godot;
 
-namespace wizardtower.resource_types.production;
+namespace wizardtower.resource_types.room_functions;
 
 [Tool]
 [GlobalClass]
-internal partial class ProduceWorkers : BaseProductionInfo
+public partial class RoomProvideTowerWorkers : BaseRoomFunction
 {
     [Export]
     public NumericDict<WorkerDefinition, uint> WorkersToProduce { get; set; } = [];

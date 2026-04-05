@@ -4,7 +4,6 @@ using System.Linq;
 using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
-using static Godot.WebSocketPeer;
 
 namespace wizardtower.UIs.build_menu;
 
@@ -28,9 +27,6 @@ public partial class BuildMenu : VBoxContainer
 
     [Export]
     public Control? NodeTransports { get; set; }
-
-    [Export]
-    public RichTextLabel? WhatAreWeBuildingLabel { get; set; }
 
     public override void _Ready()
     {
@@ -75,14 +71,14 @@ public partial class BuildMenu : VBoxContainer
     {
         if (@event.TowerState != TowerState)
             return;
-        SetWhatAreWeBuilding(null);
+        //SetWhatAreWeBuilding(null);
     }
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
         if (@event.TowerState != TowerState)
             return;
-        SetWhatAreWeBuilding(@event.RoomDefinition);
+        //SetWhatAreWeBuilding(@event.RoomDefinition);
     }
 
     private static HBoxContainer _addItemLabelToWallet(Control nodewallet, ItemDefinition item, uint amount) => nodewallet.AddedChild(
@@ -147,18 +143,18 @@ public partial class BuildMenu : VBoxContainer
         }
     }
 
-    public void SetWhatAreWeBuilding(Resource? b)
-    {
-        if (WhatAreWeBuildingLabel is null)
-            return;
-        if (b is null)
-        {
-            WhatAreWeBuildingLabel.Text = "";
-            return;
-        }
-        if (b is RoomDefinition room)
-        {
-            WhatAreWeBuildingLabel.Text = $"Building: [img height=24]{room.Icon?.ResourcePath}[/img] {room.Name}";
-        }
-    }
+    //public void SetWhatAreWeBuilding(Resource? b)
+    //{
+    //    if (WhatAreWeBuildingLabel is null)
+    //        return;
+    //    if (b is null)
+    //    {
+    //        WhatAreWeBuildingLabel.Text = " ";
+    //        return;
+    //    }
+    //    if (b is RoomDefinition room)
+    //    {
+    //        WhatAreWeBuildingLabel.Text = $"Building: [img height=24]{room.Icon?.ResourcePath}[/img] {room.Name}";
+    //    }
+    //}
 }

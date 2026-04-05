@@ -5,14 +5,15 @@
 [ext_resource type="Texture2D" uid="uid://dwur7kaj1v6tf" path="res://rooms/images/room-hotel-basic-small-empty.png" id="3_ethje"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_eud12"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_1ryl7"]
+[ext_resource type="Script" uid="uid://cwrvgxy6cpb3m" path="res://resource_types/room_functions/BaseRoomFunction.cs" id="4_eud12"]
 
 [sub_resource type="Resource" id="Resource_todtk"]
 script = ExtResource("2_ethje")
-Data = {}
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")
-Data = {}
+Data = Dictionary[String, ExtResource("2_ethje")]({})
 
 [resource]
 script = ExtResource("4_1ryl7")

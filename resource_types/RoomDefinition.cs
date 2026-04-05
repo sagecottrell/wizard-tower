@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System.Diagnostics;
+using wizardtower.resource_types.room_functions;
 
 namespace wizardtower.resource_types;
 
@@ -40,4 +41,7 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
 
     [Export]
     public NumericDict<RoomDefinition, NumericDict<ItemDefinition, uint>> Upgrades { get; set; } = [];
+
+    [Export]
+    public Array<BaseRoomFunction> RoomFunctions { get; set; } = [];
 }
