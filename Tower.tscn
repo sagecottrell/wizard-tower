@@ -1,62 +1,11 @@
 [gd_scene format=3 uid="uid://dbidjw1trp8wy"]
 
-[ext_resource type="Script" uid="uid://1rus5sxo18gx" path="res://TowerScript.cs" id="1_arn3v"]
-[ext_resource type="Script" uid="uid://c8vrsoc85mh81" path="res://state/FloorState.cs" id="2_sqkc8"]
-[ext_resource type="Script" uid="uid://bdqiw4lswse2o" path="res://state/RoomState.cs" id="3_752je"]
-[ext_resource type="Script" uid="uid://b3s7iebxp5m14" path="res://state/TransportState.cs" id="4_djx0s"]
-[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="5_752je"]
-[ext_resource type="Script" uid="uid://c75dxx53npn8e" path="res://state/WorkerState.cs" id="5_abn5a"]
-[ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_ntecg"]
-[ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_cp8l4"]
-[ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="6_oadqw"]
+[ext_resource type="Script" uid="uid://dyotv4c6gjxde" path="res://containers/TowerScript.cs" id="1_0ule7"]
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="7_sqkc8"]
-[ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="7_ygasj"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_752je"]
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="9_djx0s"]
 [ext_resource type="Script" uid="uid://cs6dkcx2kdv1p" path="res://UIManager.cs" id="11_djx0s"]
 [ext_resource type="PackedScene" uid="uid://c75plrkn8hxvp" path="res://UIs/build_menu/BuildMenu.tscn" id="15_ntecg"]
-
-[sub_resource type="Resource" id="Resource_cp8l4"]
-script = ExtResource("5_752je")
-Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_ygasj"]
-script = ExtResource("5_ntecg")
-CostToBuildPerUnit = SubResource("Resource_cp8l4")
-
-[sub_resource type="Resource" id="Resource_2es8u"]
-script = ExtResource("5_752je")
-Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_4jvl5"]
-script = ExtResource("5_ntecg")
-CostToBuildPerUnit = SubResource("Resource_2es8u")
-
-[sub_resource type="Resource" id="Resource_g4l7v"]
-script = ExtResource("5_752je")
-Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_uyed3"]
-script = ExtResource("5_ntecg")
-CostToBuildPerUnit = SubResource("Resource_g4l7v")
-
-[sub_resource type="Resource" id="Resource_cdhmb"]
-script = ExtResource("2_sqkc8")
-Definition = SubResource("Resource_uyed3")
-
-[sub_resource type="Resource" id="Resource_djx0s"]
-script = ExtResource("5_752je")
-Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_ntecg"]
-script = ExtResource("6_oadqw")
-Floors = Dictionary[int, ExtResource("2_sqkc8")]({
-0: SubResource("Resource_cdhmb")
-})
-DefaultAboveGroundFloorDefinition = SubResource("Resource_ygasj")
-DefaultBasementFloorDefinition = SubResource("Resource_4jvl5")
-Wallet = SubResource("Resource_djx0s")
-MaxHeight = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58w82"]
 albedo_color = Color(0.20392157, 0.12156863, 0.06666667, 1)
@@ -90,12 +39,8 @@ sky_material = SubResource("ProceduralSkyMaterial_wqpcj")
 background_mode = 2
 sky = SubResource("Sky_28aoi")
 
-[node name="Tower" type="Node3D" unique_id=1310180019 node_paths=PackedStringArray("FloorsContainer", "WorkersContainer", "RoofsContainer", "Camera", "BuildMenu")]
-script = ExtResource("1_arn3v")
-State = SubResource("Resource_ntecg")
-FloorsContainer = NodePath("Floors")
-WorkersContainer = NodePath("Workers")
-RoofsContainer = NodePath("Roofs")
+[node name="Tower" type="Node3D" unique_id=1310180019 node_paths=PackedStringArray("Camera", "BuildMenu")]
+script = ExtResource("1_0ule7")
 Camera = NodePath("PhantomCamera3D")
 BuildMenu = NodePath("UIManager/Control/PanelContainer/BuildMenu")
 
@@ -110,15 +55,6 @@ skeleton = NodePath("../..")
 mesh = SubResource("PlaneMesh_coqsy")
 skeleton = NodePath("../..")
 
-[node name="Floors" type="Node3D" parent="." unique_id=1001740931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
-
-[node name="Workers" type="Node3D" parent="." unique_id=1568787616]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
-
-[node name="Transports" type="Node3D" parent="." unique_id=1148540269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
-
 [node name="PhantomCamera3D" type="Node3D" parent="." unique_id=401810305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
 script = ExtResource("7_sqkc8")
@@ -126,9 +62,6 @@ tween_resource = SubResource("Resource_abn5a")
 camera_3d_resource = SubResource("Resource_oadqw")
 environment = SubResource("Environment_ntecg")
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
-
-[node name="Roofs" type="Node3D" parent="." unique_id=444647521]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
 
 [node name="UIManager" type="CanvasLayer" parent="." unique_id=608780469 node_paths=PackedStringArray("Node")]
 script = ExtResource("11_djx0s")

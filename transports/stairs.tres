@@ -3,16 +3,20 @@
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="1_t61ax"]
 [ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="2_qrd80"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="2_tkheq"]
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="2_tpbr4"]
+[ext_resource type="Texture2D" uid="uid://b6xo22k8e3x1u" path="res://transports/images/stairs.png" id="3_tcp0q"]
+[ext_resource type="PackedScene" uid="uid://b7a2g7eb3if73" path="res://transports/scenes/Stairs.tscn" id="4_tpbr4"]
 
 [sub_resource type="Resource" id="Resource_tcp0q"]
 script = ExtResource("2_tkheq")
 Data = Dictionary[String, int]({
-"res://items/air.tres": 3,
-"res://items/coin.tres": 2,
-"res://items/fire.tres": 2
+"res://items/coin.tres": 2
 })
 
 [resource]
 script = ExtResource("2_qrd80")
+Icon = ExtResource("3_tcp0q")
+Scene = ExtResource("4_tpbr4")
+CanStopAtFloor = Array[ExtResource("1_t61ax")]([ExtResource("2_tpbr4")])
 CostToBuild = SubResource("Resource_tcp0q")
 metadata/_custom_type_script = "uid://dr02erkwv8yks"

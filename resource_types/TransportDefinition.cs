@@ -33,6 +33,9 @@ public partial class TransportDefinition : Resource, INamedResource<TransportDef
     public uint MaxHeight { get; set; } = 10;
 
     [Export]
+    public uint Width { get; set; } = 1;
+
+    [Export]
     public Array<FloorDefinition> CanStopAtFloor { get; set; } = [];
 
     [Export]

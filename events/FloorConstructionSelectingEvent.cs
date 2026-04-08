@@ -5,7 +5,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorConstructionSelectingEvent(TowerState towerState, FloorDefinition floorDefinition) : GodotObject, IDebug, IAllowableEvent, ITowerEvent
+public partial class FloorConstructionSelectingEvent(TowerState towerState, FloorDefinition floorDefinition) : GodotObject, IDebug, IAllowableEvent, ITowerEvent, IEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = towerState;

@@ -5,7 +5,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorConstructionStoppedEvent(TowerState towerState, FloorDefinition floorDefinition) : GodotObject, IDebug, ITowerEvent
+public partial class FloorConstructionStoppedEvent(TowerState towerState, FloorDefinition floorDefinition) : GodotObject, IDebug, ITowerEvent, IEvent
 {
     public TowerState TowerState { get; } = towerState;
     public FloorDefinition FloorDefinition { get; } = floorDefinition;

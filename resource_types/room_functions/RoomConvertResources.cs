@@ -11,5 +11,8 @@ public partial class RoomConvertResources : BaseRoomFunction
     public NumericDict<ItemDefinition, uint> Input { get; set; } = [];
 
     [Export]
-    public Array<RandomOutput> Output { get; set; }
+    public Array<RandomOutput>? Output { get; set; }
+
+    [Export]
+    public bool ToTowerWallet { get; set; }
 }

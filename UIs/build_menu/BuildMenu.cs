@@ -58,7 +58,7 @@ public partial class BuildMenu : VBoxContainer
 
     private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
     {
-        if (TowerState is null || NodeWallet is null || @event.Tower != TowerState) return;
+        if (TowerState is null || NodeWallet is null || @event.TowerState != TowerState) return;
         foreach (var key in @event.Amount.Keys)
         {
             var value = TowerState.Wallet[key];

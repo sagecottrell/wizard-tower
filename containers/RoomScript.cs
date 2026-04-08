@@ -1,7 +1,7 @@
 using Godot;
 using wizardtower.state;
 
-namespace wizardtower;
+namespace wizardtower.containers;
 
 [Tool]
 [GlobalClass]
@@ -11,7 +11,7 @@ public partial class RoomScript : Node3D
 
     public RoomState PreviousState { get; set; } = new();
 
-    private RoomBackground? RoomScene { get; set; }
+    private RoomBackgroundScript? RoomScene { get; set; }
 
     public bool HologramMode { get; set; } = false;
 
@@ -33,7 +33,7 @@ public partial class RoomScript : Node3D
             RoomScene?.QueueFree();
             if (State.Definition.RoomScene is PackedScene scene)
             {
-                RoomScene = scene.Instantiate() as RoomBackground;
+                RoomScene = scene.Instantiate() as RoomBackgroundScript;
                 AddChild(RoomScene);
             }
         }
@@ -47,12 +47,14 @@ public partial class RoomScript : Node3D
 
         PreviousState = State.Copy();
     }
+
     public RoomScript AsHologram()
     {
         HologramMode = true;
         RoomScene?.AsHologram();
         return this;
     }
+
     public RoomScript AsBackground()
     {
         HologramMode = false;

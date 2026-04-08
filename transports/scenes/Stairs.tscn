@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://b7a2g7eb3if73"]
+
+[ext_resource type="Script" uid="uid://bqgjs4a5b3iwn" path="res://containers/TransportBackgroundScript.cs" id="1_4hrjh"]
+[ext_resource type="ArrayMesh" uid="uid://byggaoe8sv2t1" path="res://transports/models/stairs.obj" id="1_k3l13"]
+
+[node name="Stairs" type="Node3D" unique_id=1259107740]
+script = ExtResource("1_4hrjh")
+
+[node name="Stairs" type="MeshInstance3D" parent="." unique_id=1766945165]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+mesh = ExtResource("1_k3l13")

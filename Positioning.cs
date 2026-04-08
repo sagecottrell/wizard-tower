@@ -1,18 +1,17 @@
 using Godot;
-using System;
 
-namespace wizardtower;
+namespace wizardtower.containers;
 
 public static class Positioning
 {
-    public static Vector3 TowerCoordToNodePosition(this Node3D node, int? x = null, int? y = null, int? z = null)
+    public static Vector3 TowerCoordToNodePosition(this Node3D node, int? x = null, int? y = null, float? z = null)
     {
         var np = node.Position;
         if (x is int X)
             np.X = X;
         if (y is int Y)
             np.Y = Y;
-        if (z is int Z)
+        if (z is float Z)
             np.Z = Z;
         return np;
     }
@@ -29,7 +28,7 @@ public static class Positioning
 
     public static void FloorBackground(this FloorScript node)
     {
-        node.Position = node.Position with { Z = node.State.Elevation * -0.1f };
+        node.Position = node.Position with { Z = node.FloorState.Elevation * -0.1f };
     }
 
     public static void RoomBackground(this Node3D node) 

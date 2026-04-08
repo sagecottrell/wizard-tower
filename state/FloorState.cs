@@ -50,6 +50,8 @@ public partial class FloorState : Resource, ICopy<FloorState>, IDeSerialize<Floo
         }
     }
 
+    public uint Width => (uint)(RightBound - LeftBound + 1);
+
     [Export]
     public uint MaxWidth { get; set; } = 10;
 

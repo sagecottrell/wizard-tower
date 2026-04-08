@@ -4,7 +4,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class RoomConstructingEvent(TowerState tower, RoomState room) : GodotObject, IAllowableEvent, ITowerEvent
+public partial class RoomConstructingEvent(TowerState tower, RoomState room) : GodotObject, IAllowableEvent, ITowerEvent, IEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = tower;

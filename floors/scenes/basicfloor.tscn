@@ -4,8 +4,16 @@
 [ext_resource type="ArrayMesh" uid="uid://cgeciph81q4nk" path="res://floors/models/basic-floor.obj" id="2_y6hb1"]
 [ext_resource type="ArrayMesh" uid="uid://ccnhhtqx7rtt7" path="res://floors/models/basic-wall.obj" id="3_byg1u"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_vn6wp"]
+
 [node name="FloorTile" unique_id=1087024591 node_paths=PackedStringArray("Wall") instance=ExtResource("1_7h4qg")]
 Wall = NodePath("BasicFloor")
+
+[node name="Floor0" type="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(2103108605) index="0" unique_id=1595667154]
+shape = SubResource("BoxShape3D_vn6wp")
+
+[node name="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(2103108605) index="1" unique_id=1595667154]
+shape = SubResource("BoxShape3D_vn6wp")
 
 [node name="BasicFloor" type="MeshInstance3D" parent="." index="1" unique_id=1211320676]
 gi_mode = 2

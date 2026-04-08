@@ -75,6 +75,13 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
 
     [Signal]
+    public delegate void OnRoomConstructionPreviewEventHandler(RoomConstructionPreviewEvent @event);
+    public static RoomConstructionPreviewEvent RoomConstructionPreview(RoomConstructionPreviewEvent @event) => _call(SignalName.OnRoomConstructionPreview, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
     public delegate void OnFloorConstructionSelectingEventHandler(FloorConstructionSelectingEvent @event);
     public static FloorConstructionSelectingEvent FloorConstructionSelecting(FloorConstructionSelectingEvent @event) => _call(SignalName.OnFloorConstructionSelecting, @event);
 
@@ -135,9 +142,9 @@ public partial class GlobalSignals : Node
         if (Input.IsActionPressed(InputMapConstants.LogGlobalSignals))
         {
             var p = ev is IDebug d ? d.DebugString(depth: 0) : typeof(T).Name;
-            Singleton?.Log($"{action}|{p}");
+            Singleton?.Debug($"{action}|{p}");
         }
-            
+        
         return ev;
     }
 }

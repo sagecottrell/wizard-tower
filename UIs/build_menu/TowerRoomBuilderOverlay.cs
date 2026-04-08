@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using wizardtower.containers;
 using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -9,7 +10,7 @@ namespace wizardtower.UIs.build_menu;
 public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 {
     [Signal]
-    public delegate void OnRoomConstructingEventHandler(RoomState room);
+    public delegate void OnRoomConstructEventHandler(RoomConstructedEvent @event);
 
     public TowerScript Tower { get; set; } = tower;
 
@@ -93,7 +94,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
         };
         if (GlobalSignals.RoomConstructing(new(Tower.State, room)).IsAllowed)
         {
-            EmitSignalOnRoomConstructing(room);
+            EmitSignalOnRoomConstruct(new(Tower.State, room));
             GlobalSignals.RoomConstructed(new(Tower.State, room));
 
             if (GlobalSignals.RoomConstructionStopping(new(Tower.State, @event.RoomDefinition)).IsAllowed)
@@ -123,12 +124,11 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
         });
         BuildingRoom.State.Elevation = y;
         BuildingRoom.State.FloorPosition = x;
-        Tower.Floors[y].SetPositionVisible(x, @event.RoomDefinition.Width, false);
+        GlobalSignals.RoomConstructionPreview(new(Tower.State, BuildingRoom.State));
     }
 
     private void _revertFloorVis()
     {
-        if (BuildingRoom is not null && Tower is not null)
-            Tower.Floors[BuildingRoom.State.Elevation].SetPositionVisible(BuildingRoom.State, true);
+        GlobalSignals.RoomConstructionPreview(new(Tower.State, null));
     }
 }

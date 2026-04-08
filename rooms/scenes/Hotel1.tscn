@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://chn4rti55n71q"]
 
 [ext_resource type="ArrayMesh" uid="uid://doqpi40bpeayy" path="res://rooms/models/hotel1.obj" id="1_60jxi"]
-[ext_resource type="Script" uid="uid://ddbfom1g7a4ed" path="res://RoomBackground.cs" id="1_a1xdm"]
+[ext_resource type="Script" uid="uid://bnu1oq0kfql8b" path="res://containers/RoomBackgroundScript.cs" id="1_a1xdm"]
 [ext_resource type="Material" uid="uid://7yvdrrr7ro2h" path="res://rooms/scenes/hologram-material.tres" id="2_xeh64"]
 
 [node name="Hotel1" type="Node3D" unique_id=1369366674 node_paths=PackedStringArray("Background")]

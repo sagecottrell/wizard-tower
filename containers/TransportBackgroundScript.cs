@@ -1,25 +1,22 @@
 using Godot;
-using wizardtower.state;
 
-namespace wizardtower;
+namespace wizardtower.containers;
 
 [Tool]
-public partial class RoomBackground : Node3D
+public partial class TransportBackgroundScript : Node3D
 {
     [Export]
     public MeshInstance3D? Background { get; set; }
     [Export]
-    public Material? HologramMaterial { get; set; } 
+    public Material? HologramMaterial { get; set; }
 
-    public RoomState RoomState { get; set; } = new();
-
-    public RoomBackground AsHologram()
+    public TransportBackgroundScript AsHologram()
     {
         Background?.SetSurfaceOverrideMaterial(0, HologramMaterial);
         return this;
     }
 
-    public RoomBackground AsBackground()
+    public TransportBackgroundScript AsBackground()
     {
         Background?.SetSurfaceOverrideMaterial(0, null);
         return this;

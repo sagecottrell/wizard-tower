@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using wizardtower.containers;
 using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -9,10 +10,10 @@ namespace wizardtower.UIs.build_menu;
 public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 {
     [Signal]
-    public delegate void OnFloorConstructingEventHandler(FloorState room);
+    public delegate void OnFloorConstructEventHandler(FloorConstructingEvent @event);
 
     [Signal]
-    public delegate void OnFloorExtendingEventHandler(FloorState room, int leftBound, int rightBound);
+    public delegate void OnFloorExtendEventHandler(FloorExtendingEvent @event);
 
     public TowerScript Tower { get; set; } = tower;
 
@@ -50,7 +51,11 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         _currentFloorDef = @event.FloorDefinition;
         this.FreeChildren(_selected.Values);
         _selected.Clear();
+        _showExtenders();
+    }
 
+    private void _showExtenders()
+    {
         // floors that match this floor def can be extended
         // floors that do not match this floor def can be replaced
         foreach (var floor in Tower.State.Floors.Values)
@@ -58,7 +63,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             if (floor.Definition == _currentFloorDef)
                 _showExtenders(floor);
             else
-                _showReplacer(floor); 
+                _showReplacer(floor);
         }
     }
 
@@ -99,6 +104,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private FloorSelected _createTile(int y, int x)
     {
+        if (_selected.TryGetValue((y, x), out var existing))
+            return existing;
         if (!SceneLoader.TryLoadScene<FloorSelected>(out var tile))
             throw new Exception("Failed to load FloorSelected scene");
 
@@ -107,7 +114,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
         tile.OnAccept += _ => _onAccept(x, y);
-        tile.OnCancel += _ => _onCancel(x, y);
+        //tile.OnCancel += _ => _onCancel(x, y);
         return tile;
     }
 
@@ -120,14 +127,15 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
     {
         if (Tower.State.Floors.TryGetValue(y, out var floor)) {
             // extending the floor
-            var left = floor.LeftBound;
-            var right = floor.RightBound;
+            uint left = 0;
+            uint right = 0;
             if (x < floor.LeftBound)
             {
-                left = x;
+                left = (uint)(floor.LeftBound - x);
             }
-            else if (x > floor.RightBound) {
-                right = x;
+            else if (x > floor.RightBound) 
+            {
+                right = (uint)(x - floor.RightBound);
             }
             else
             {
@@ -137,16 +145,17 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
             if (GlobalSignals.FloorExtending(new(Tower.State, floor, left, right)).IsAllowed)
             {
-                EmitSignalOnFloorExtending(floor, left, right);
+                EmitSignalOnFloorExtend(new(Tower.State, floor, left, right));
                 GlobalSignals.FloorExtended(new(Tower.State, floor, left, right));
 
                 if (GlobalSignals.FloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
                     GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
                 else
                 {
-                    for (var i = left; i <= right; i++)
+                    for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                         if (_selected.Remove((y, i), out var s))
                             s.QueueFree();
+                    _showExtenders();
                 }
             }
         }

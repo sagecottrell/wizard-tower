@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_oywi7"]
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_sstfk"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_5gs35"]
+[ext_resource type="Resource" uid="uid://dqsm1a0fqu8y1" path="res://transports/stairs.tres" id="7_5gs35"]
 [ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_tq78q"]
 [ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="8_e38s3"]
 
@@ -46,12 +47,22 @@ Elevation = 4
 LeftBound = -6
 RightBound = 10
 
+[sub_resource type="Resource" id="Resource_y253d"]
+script = ExtResource("5_8sv8r")
+Data = Dictionary[String, int]({})
+
 [sub_resource type="Resource" id="Resource_5gs35"]
 script = ExtResource("2_et7yl")
 Definition = ExtResource("7_tq78q")
 Id = 1
 Height = 1
 FloorPosition = 2
+StoredItems = SubResource("Resource_y253d")
+WorkerPaths = []
+
+[sub_resource type="Resource" id="Resource_831pd"]
+script = ExtResource("5_8sv8r")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_tq78q"]
 script = ExtResource("2_et7yl")
@@ -59,6 +70,12 @@ Definition = ExtResource("7_tq78q")
 Id = 2
 Elevation = 1
 Height = 1
+StoredItems = SubResource("Resource_831pd")
+WorkerPaths = []
+
+[sub_resource type="Resource" id="Resource_32nna"]
+script = ExtResource("5_8sv8r")
+Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_e38s3"]
 script = ExtResource("2_et7yl")
@@ -67,6 +84,14 @@ Id = 3
 Elevation = 2
 Height = 1
 FloorPosition = 4
+StoredItems = SubResource("Resource_32nna")
+WorkerPaths = []
+
+[sub_resource type="Resource" id="Resource_7dg5d"]
+script = ExtResource("3_8sv8r")
+Definition = ExtResource("7_5gs35")
+LoadStatistics = []
+metadata/_custom_type_script = "uid://b3s7iebxp5m14"
 
 [sub_resource type="Resource" id="Resource_sstfk"]
 script = ExtResource("5_8sv8r")
@@ -90,10 +115,14 @@ Rooms = Dictionary[int, ExtResource("2_et7yl")]({
 2: SubResource("Resource_tq78q"),
 3: SubResource("Resource_e38s3")
 })
+Transports = Dictionary[int, ExtResource("3_8sv8r")]({
+0: SubResource("Resource_7dg5d")
+})
 DefaultAboveGroundFloorDefinition = ExtResource("2_8sv8r")
 DefaultBasementFloorDefinition = ExtResource("2_8sv8r")
 Wallet = SubResource("Resource_sstfk")
 UnlockedRooms = Array[ExtResource("6_5gs35")]([ExtResource("7_tq78q")])
+UnlockedFloors = Array[ExtResource("5_sstfk")]([ExtResource("2_8sv8r")])
 RoomIdCounter = 3
 HighestFloor = 4
 MaxBasement = 5

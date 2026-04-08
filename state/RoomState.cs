@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using System.Linq;
 using wizardtower.resource_types;
 
 namespace wizardtower.state;
@@ -23,6 +24,12 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     [Export]
     public int FloorPosition { get; set; }
 
+    [Export]
+    public NumericDict<ItemDefinition, uint> StoredItems { get; set; } = [];
+
+    [Export]
+    public Array<RoomStateWorkerPath>? WorkerPaths { get; set; }
+
     public bool Compare(RoomState? other)
     {
         if (ReferenceEquals(this, other)) return true;
@@ -37,6 +44,7 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
         Height = Height,
         FloorPosition = FloorPosition,
         Definition = Definition,
+        StoredItems = StoredItems.Copy(),
     };
 
     public Dictionary<string, Variant> Serialize() => new()
@@ -51,5 +59,16 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
         Height = dict[nameof(Height)].AsUInt32();
         FloorPosition = dict[nameof(FloorPosition)].AsInt32();
         return this;
+    }
+
+    public System.Collections.Generic.IEnumerable<RoomStateWorkerPath> GetWorkerPathTo(RoomState destination)
+    {
+        if (WorkerPaths is null)
+            yield break;
+        foreach (var path in WorkerPaths)
+        {
+            if (path.TargetRoomId == destination.Id)
+                yield return path;
+        }
     }
 }

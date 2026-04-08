@@ -1,5 +1,5 @@
 using Godot;
-using Godot.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using wizardtower.resource_types;
 using wizardtower.UIs.editor_add_room;
@@ -12,16 +12,25 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 {
     private uint maxWidth = 10;
 
-    private System.Collections.Generic.HashSet<(int elevation, int position)>? vacancies;
+    private HashSet<(int elevation, int position)>? vacancies;
 
     [Signal]
     public delegate void OnRoomAddedEventHandler(RoomState room);
+
+    [Signal]
+    public delegate void OnRoomRemovedEventHandler(RoomState room);
+
+    [Signal]
+    public delegate void OnFloorAddedEventHandler(FloorState floor);
+
+    [Signal]
+    public delegate void OnFloorRemovedEventHandler(FloorState floor);
 
     [Export]
     public string Name { get; set; } = "Tower";
 
     [Export]
-    public Dictionary<int, FloorState> Floors { get; set; } = [];
+    public Godot.Collections.Dictionary<int, FloorState> Floors { get; set; } = [];
 
     [ExportToolButton("Add Top Floor")]
     public Callable addTopFloor => Callable.From(AddTopFloor);
@@ -30,16 +39,16 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public Callable addBopFloor => Callable.From(AddBasementFloor);
 
     [Export]
-    public Dictionary<uint, RoomState> Rooms { get; set; } = [];
+    public Godot.Collections.Dictionary<uint, RoomState> Rooms { get; set; } = [];
 
     [ExportToolButton("Add New Room")]
     public Callable addroom => Callable.From(EditorAddRoom);
 
     [Export]
-    public Dictionary<uint, WorkerState> Workers { get; set; } = [];
+    public Godot.Collections.Dictionary<uint, WorkerState> Workers { get; set; } = [];
 
     [Export]
-    public Dictionary<uint, TransportState> Transports { get; set; } = [];
+    public Godot.Collections.Dictionary<uint, TransportState> Transports { get; set; } = [];
 
     [Export]
     public FloorDefinition DefaultAboveGroundFloorDefinition { get; set; } = new();
@@ -51,13 +60,13 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public NumericDict<ItemDefinition, uint> Wallet { get; set; } = [];
 
     [Export]
-    public Array<RoomDefinition> UnlockedRooms { get; set; } = [];
+    public Godot.Collections.Array<RoomDefinition> UnlockedRooms { get; set; } = [];
 
     [Export]
-    public Array<FloorDefinition> UnlockedFloors { get; set; } = [];
+    public Godot.Collections.Array<FloorDefinition> UnlockedFloors { get; set; } = [];
 
     [Export]
-    public Array<TransportDefinition> UnlockedTransports { get; set; } = [];
+    public Godot.Collections.Array<TransportDefinition> UnlockedTransports { get; set; } = [];
 
     [Export]
     public uint RoomIdCounter { get; set; } = 0;
@@ -121,41 +130,42 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     {
         RoomIdCounter++;
         Rooms[RoomIdCounter] = room;
-        vacancies = null;
+        vacancies?.ExceptWith(_roomRange(room));
         EmitSignalOnRoomAdded(room);
     }
 
     public void OnRemoveRoom(uint roomId)
     {
-        if (!Rooms.ContainsKey(roomId))
+        if (!Rooms.TryGetValue(roomId, out RoomState? value))
             return;
+        vacancies?.UnionWith(_roomRange(value));
         Rooms.Remove(roomId);
-        vacancies = null;
     }
+
+    #endregion
+
+    #region Vacancies
 
     public bool PositionVacant(int elevation, int position)
     {
         if (vacancies is null)
         {
-            var rooms = Rooms.Values
-                .SelectMany(
-                    room => Enumerable
-                        .Range(room.FloorPosition, (int)room.Definition.Width)
-                        .Select(p => (room.Elevation, p)))
-                .ToHashSet();
-            var floorSpots = Floors.Values
-                .SelectMany(
-                    floor => Enumerable
-                        .Range(floor.LeftBound, floor.RightBound - floor.LeftBound + 1)
-                        .Select(p => (floor.Elevation, p))
-                ).ToHashSet();
-            vacancies = [.. floorSpots.Except(rooms)];
+            var rooms = Rooms.Values.SelectMany(_roomRange).ToHashSet();
+            var transports = Transports.Values.SelectMany(_transportRange).ToHashSet();
+            var floorSpots = Floors.Values.SelectMany(_floorRange).ToHashSet();
+            vacancies = [.. floorSpots.Except(rooms).Except(transports)];
         }
         return vacancies.Contains((elevation, position));
     }
 
-    #endregion
+    private static IEnumerable<(int elevation, int position)> _roomRange(RoomState room)
+        => Enumerable.Range(room.FloorPosition, (int)room.Definition.Width).Select(p => (room.Elevation, p));
+    private static IEnumerable<(int elevation, int position)> _transportRange(TransportState transport)
+        => Enumerable.Range(transport.HorizontalPosition, (int)transport.Definition.Width).Select(p => (transport.Elevation, p));
+    private static IEnumerable<(int elevation, int position)> _floorRange(FloorState floor)
+        => Enumerable.Range(floor.LeftBound, floor.RightBound - floor.LeftBound + 1).Select(p => (floor.Elevation, p));
 
+    #endregion
 
     #region Floor functions
 
@@ -163,7 +173,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     {
         if (Floors.Count == 0)
         {
-            Floors[0] = new()
+            var floor = new FloorState()
             {
                 TowerState = this,
                 LeftBound = 3,
@@ -171,6 +181,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
                 Elevation = 0,
                 Definition = DefaultAboveGroundFloorDefinition,
             };
+            Floors[0] = floor;
+            vacancies?.UnionWith(_floorRange(floor));
+            EmitSignalOnFloorAdded(floor);
         }
     }
 
@@ -187,12 +200,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             Elevation = (int)HighestFloor + 1,
             Definition = DefaultAboveGroundFloorDefinition,
         };
-        if (GlobalSignals.FloorConstructing(new(this, floor)).IsAllowed)
-        {
-            HighestFloor++;
-            Floors[(int)HighestFloor] = floor;
-            GlobalSignals.FloorConstructed(new(this, floor));
-        }
+        HighestFloor++;
+        OnAddFloor(floor);
     }
 
     public void AddBasementFloor()
@@ -208,12 +217,26 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             Elevation = -(int)(LowestFloor + 1),
             Definition = DefaultBasementFloorDefinition ?? DefaultAboveGroundFloorDefinition,
         };
-        if (GlobalSignals.FloorConstructing(new(this, floor)).IsAllowed)
-        {
-            LowestFloor++;
-            Floors[-(int)LowestFloor] = floor;
-            GlobalSignals.FloorConstructed(new(this, floor));
-        }
+        LowestFloor++;
+        OnAddFloor(floor);
+    }
+
+    public void OnAddFloor(FloorState floor)
+    {
+        Floors[floor.Elevation] = floor;
+        vacancies?.UnionWith(_floorRange(floor));
+        EmitSignalOnFloorAdded(floor);
+    }
+
+    public void ExtendFloor(FloorState floor, uint left, uint right)
+    {
+        if (left > 0)
+            vacancies?.UnionWith(Enumerable.Range(floor.LeftBound - (int)left, (int)left).Select(i => (floor.Elevation, i)));
+        if (right > 0)
+            vacancies?.UnionWith(Enumerable.Range(floor.RightBound + 1, (int)right).Select(i => (floor.Elevation, i)));
+        this.Debug($"Extending floor at elevation {floor.Elevation} from bounds ({floor.LeftBound}, {floor.RightBound}) to ({floor.LeftBound - (int)left}, {floor.RightBound + (int)right})");
+        floor.LeftBound -= (int)left;
+        floor.RightBound += (int)right;
     }
 
     #endregion

@@ -4,10 +4,11 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorExtendedEvent(TowerState towerState, FloorState floor, int left, int right) : GodotObject, IDebug, ITowerEvent
+public partial class FloorExtendedEvent(TowerState towerState, FloorState floor, uint extendedLeft, uint extendedRight) : GodotObject, IDebug, ITowerEvent, IEvent
 {
     public TowerState TowerState { get; } = towerState;
     public FloorState Floor { get; } = floor;
-    public int Left { get; } = left;
-    public int Right { get; } = right;
+    public uint ExtendedLeft { get; } = extendedLeft;
+    public uint ExtendedRight { get; } = extendedRight;
+    public uint ExtensionAmount => ExtendedLeft + ExtendedRight;
 }
