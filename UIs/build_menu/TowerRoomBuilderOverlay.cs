@@ -6,15 +6,15 @@ using wizardtower.state;
 
 namespace wizardtower.UIs.build_menu;
 
-public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
+public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 {
     [Signal]
     public delegate void OnRoomConstructingEventHandler(RoomState room);
 
-    public TowerScript? Tower { get; set; } = tower;
+    public TowerScript Tower { get; set; } = tower;
 
     public RoomScript? BuildingRoom { get; set; }
-    private readonly Dictionary<(int elevation, int position), Selected> _selected = [];
+    private readonly Dictionary<(int elevation, int position), RoomSelected> _selected = [];
 
     private RoomDefinition? _currentRoomDef;
 
@@ -29,7 +29,7 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _reset()
     {
-        this.FreeChildren<Selected>();
+        this.FreeChildren<RoomSelected>();
         _selected.Clear();
         _revertFloorVis();
         BuildingRoom?.QueueFree();
@@ -41,7 +41,7 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
-        if (@event.TowerState != Tower?.State || Tower?.State is null)
+        if (@event.TowerState != Tower.State)
             return;
 
         if (_currentRoomDef is not null)
@@ -58,7 +58,7 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
             {
                 for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                 {
-                    if (Tower.State.PositionVacant(h, i) && SceneLoader.TryLoadScene<Selected>(out var s))
+                    if (Tower.State.PositionVacant(h, i) && SceneLoader.TryLoadScene<RoomSelected>(out var s))
                     {
                         var x = i;
                         var y = h;
@@ -77,15 +77,11 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
     private void _onCancel(RoomConstructionSelectedEvent @event, int x, int y)
     {
         // the user tried to cancel the construction of a room
-        if (@event.TowerState != Tower?.State || Tower?.State is null)
-            return;
         GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
     }
 
     private void _onAccept(RoomConstructionSelectedEvent @event, int x, int y)
     {
-        if (@event.TowerState != Tower?.State || Tower?.State is null)
-            return;
         BuildingRoom?.QueueFree();
         BuildingRoom = null;
         var room = new RoomState()
@@ -115,8 +111,6 @@ public partial class TowerBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onMouseEnter(RoomConstructionSelectedEvent @event, int x, int y)
     {
-        if (@event.TowerState != Tower?.State || Tower?.State is null)
-            return;
         _revertFloorVis();
         BuildingRoom ??= this.AddedChild(new RoomScript()
         {

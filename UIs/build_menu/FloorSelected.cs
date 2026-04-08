@@ -2,16 +2,16 @@ using Godot;
 
 namespace wizardtower.UIs.build_menu;
 
-public partial class Selected : Node3D
+public partial class FloorSelected : Node3D
 {
     [Signal]
-    public delegate void OnAcceptEventHandler(Selected self);
+    public delegate void OnAcceptEventHandler(FloorSelected self);
     [Signal]
-    public delegate void OnCancelEventHandler(Selected self);
+    public delegate void OnCancelEventHandler(FloorSelected self);
     [Signal]
-    public delegate void OnMouseEnteredEventHandler(Selected self);
+    public delegate void OnMouseEnteredEventHandler(FloorSelected self);
     [Signal]
-    public delegate void OnMouseExitedEventHandler(Selected self);
+    public delegate void OnMouseExitedEventHandler(FloorSelected self);
 
     public void InputEvent(Node camera, InputEvent @event, Vector3 position, Vector3 normal, long shapeIdx)
     {

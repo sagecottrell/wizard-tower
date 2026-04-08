@@ -75,12 +75,45 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
 
     [Signal]
+    public delegate void OnFloorConstructionSelectingEventHandler(FloorConstructionSelectingEvent @event);
+    public static FloorConstructionSelectingEvent FloorConstructionSelecting(FloorConstructionSelectingEvent @event) => _call(SignalName.OnFloorConstructionSelecting, @event);
+
+    [Signal]
+    public delegate void OnFloorConstructionSelectedEventHandler(FloorConstructionSelectedEvent @event);
+    public static FloorConstructionSelectedEvent FloorConstructionSelected(FloorConstructionSelectedEvent @event) => _call(SignalName.OnFloorConstructionSelected, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
     public delegate void OnFloorConstructingEventHandler(FloorConstructingEvent @event);
     public static FloorConstructingEvent FloorConstructing(FloorConstructingEvent @event) => _call(SignalName.OnFloorConstructing, @event);
 
     [Signal]
     public delegate void OnFloorConstructedEventHandler(FloorConstructedEvent @event);
     public static FloorConstructedEvent FloorConstructed(FloorConstructedEvent @event) => _call(SignalName.OnFloorConstructed, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnFloorExtendingEventHandler(FloorExtendingEvent @event);
+    public static FloorExtendingEvent FloorExtending(FloorExtendingEvent @event) => _call(SignalName.OnFloorExtending, @event);
+
+    [Signal]
+    public delegate void OnFloorExtendedEventHandler(FloorExtendedEvent @event);
+    public static FloorExtendedEvent FloorExtended(FloorExtendedEvent @event) => _call(SignalName.OnFloorExtended, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnFloorConstructionStoppingEventHandler(FloorConstructionStoppingEvent @event);
+    public static FloorConstructionStoppingEvent FloorConstructionStopping(FloorConstructionStoppingEvent @event) => _call(SignalName.OnFloorConstructionStopping, @event);
+
+    [Signal]
+    public delegate void OnFloorConstructionStoppedEventHandler(FloorConstructionStoppedEvent @event);
+    public static FloorConstructionStoppedEvent FloorConstructionStopped(FloorConstructionStoppedEvent @event) => _call(SignalName.OnFloorConstructionStopped, @event);
 
     // ==================================================================================================================
     // ==================================================================================================================

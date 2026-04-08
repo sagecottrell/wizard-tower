@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://ccjjs0ieqdi1u"]
+[gd_scene format=3 uid="uid://cmxx2xsla6pgr"]
 
-[ext_resource type="Script" uid="uid://baysf5w4ydpkm" path="res://UIs/build_menu/Selected.cs" id="1_kstcc"]
+[ext_resource type="Script" uid="uid://caqj2nbu0ppfb" path="res://UIs/build_menu/FloorSelected.cs" id="1_kb2c0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ofba2"]
 transparency = 1
@@ -11,8 +11,8 @@ material = SubResource("StandardMaterial3D_ofba2")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kstcc"]
 
-[node name="Selected" type="Node3D" unique_id=1933226709]
-script = ExtResource("1_kstcc")
+[node name="FloorSelected" type="Node3D" unique_id=1933226709]
+script = ExtResource("1_kb2c0")
 
 [node name="Selected" type="MeshInstance3D" parent="." unique_id=946469614]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)

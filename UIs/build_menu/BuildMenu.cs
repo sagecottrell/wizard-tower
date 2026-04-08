@@ -35,8 +35,6 @@ public partial class BuildMenu : VBoxContainer
         if (GlobalSignals.Singleton is GlobalSignals g)
         {
             g.OnTowerResourceChanged += _onTowerResourceChanged;
-            g.OnRoomConstructionSelected += _onRoomConstructionSelected;
-            g.OnRoomConstructionStopped += _g_OnRoomConstructionStopped;
         }
         if (TowerState is not null)
             SetTower(TowerState);
@@ -52,6 +50,10 @@ public partial class BuildMenu : VBoxContainer
             NodeTowerName.Text = state.Name;
         if (NodeRooms is not null)
             _setRooms(NodeRooms, state.UnlockedRooms);
+        if (NodeFloors is not null)
+            _setFloors(NodeFloors, state.UnlockedFloors);
+        if (NodeTransports is not null)
+            _setTransports(NodeTransports, state.UnlockedTransports);
     }
 
     private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
@@ -65,20 +67,6 @@ public partial class BuildMenu : VBoxContainer
             // we do not remove labels that are zero or less
             child.Child<Label>()!.Text = value.ToString();
         }
-    }
-
-    private void _g_OnRoomConstructionStopped(RoomConstructionStoppedEvent @event)
-    {
-        if (@event.TowerState != TowerState)
-            return;
-        //SetWhatAreWeBuilding(null);
-    }
-
-    private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
-    {
-        if (@event.TowerState != TowerState)
-            return;
-        //SetWhatAreWeBuilding(@event.RoomDefinition);
     }
 
     private static HBoxContainer _addItemLabelToWallet(Control nodewallet, ItemDefinition item, uint amount) => nodewallet.AddedChild(
@@ -120,6 +108,74 @@ public partial class BuildMenu : VBoxContainer
         }
     }
 
+    private void _setFloors(Control nodeFloors, Array<FloorDefinition> floors)
+    {
+        var names = floors.ToDictionary(x => x.Name ?? "UNKNOWN", x => x).ToGodotDictionary();
+        foreach (var child in nodeFloors.GetChildren())
+        {
+            if (!names.ContainsKey(child.Name))
+                nodeFloors.RemoveChild(child);
+            else
+                names.Remove(child.Name);
+        }
+
+        // the remaining names that aren't already here
+        foreach (var (name, def) in names)
+        {
+            nodeFloors.AddChild(
+                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, FloorDefinition = def }
+                .Configured(x =>
+                {
+                    x.OnClicked += _x_OnClicked;
+                })
+                .WithChild(new TextureRect { Texture = def.Icon, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
+                .WithChild(new Label { Text = name, SizeFlagsHorizontal = SizeFlags.ExpandFill })
+                .WithChild(new RichTextLabel
+                {
+                    BbcodeEnabled = true,
+                    Text = _toStringAsCost(def.CostToBuildPerUnit),
+                    FitContent = true,
+                    ClipContents = false,
+                    AutowrapMode = TextServer.AutowrapMode.Off,
+                })
+            );
+        }
+    }
+
+    private void _setTransports(Control nodeTransports, Array<TransportDefinition> transports)
+    {
+        var names = transports.ToDictionary(x => x.Name ?? "UNKNOWN", x => x).ToGodotDictionary();
+        foreach (var child in nodeTransports.GetChildren())
+        {
+            if (!names.ContainsKey(child.Name))
+                nodeTransports.RemoveChild(child);
+            else
+                names.Remove(child.Name);
+        }
+
+        // the remaining names that aren't already here
+        foreach (var (name, def) in names)
+        {
+            nodeTransports.AddChild(
+                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, TransportDefinition = def }
+                .Configured(x =>
+                {
+                    x.OnClicked += _x_OnClicked;
+                })
+                .WithChild(new TextureRect { Texture = def.Icon, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
+                .WithChild(new Label { Text = name, SizeFlagsHorizontal = SizeFlags.ExpandFill })
+                .WithChild(new RichTextLabel
+                {
+                    BbcodeEnabled = true,
+                    Text = _toStringAsCost(def.CostToBuild),
+                    FitContent = true,
+                    ClipContents = false,
+                    AutowrapMode = TextServer.AutowrapMode.Off,
+                })
+            );
+        }
+    }
+
     private string _toStringAsCost(NumericDict<ItemDefinition, uint>? cost)
     {
         if (cost is null || cost.Count == 0)
@@ -140,6 +196,12 @@ public partial class BuildMenu : VBoxContainer
             var ev = GlobalSignals.RoomConstructionSelecting(new(TowerState, btn.RoomDefinition));
             if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && ev.IsAllowed)
                 GlobalSignals.RoomConstructionSelected(new(TowerState, btn.RoomDefinition));
+        }
+        if (btn.FloorDefinition is not null && TowerState is not null)
+        {
+            var ev = GlobalSignals.FloorConstructionSelecting(new(TowerState, btn.FloorDefinition));
+            if (TowerState.Wallet >= btn.FloorDefinition.CostToBuildPerUnit && ev.IsAllowed)
+                GlobalSignals.FloorConstructionSelected(new(TowerState, btn.FloorDefinition));
         }
     }
 

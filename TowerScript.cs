@@ -37,7 +37,8 @@ public partial class TowerScript : Node3D
     {
         State.EnsureGroundFloor();
 
-        AddChild(new TowerBuilderOverlay(this));
+        AddChild(new TowerRoomBuilderOverlay(this));
+        AddChild(new TowerFloorBuilderOverlay(this));
 
         if (FloorsContainer is not null)
         {
@@ -52,6 +53,10 @@ public partial class TowerScript : Node3D
             {
                 SetupRoomDisplay(room);
             }
+            foreach (var (tId, transport) in State.Transports)
+            {
+                SetupTransportationDisplay(transport);
+            }
         }
         BuildMenu?.SetTower(State);
         this.Child<UIManager>()?.ShowUI();
@@ -62,6 +67,7 @@ public partial class TowerScript : Node3D
             g.OnRoomConstructed += _g_OnRoomConstructed;
             g.OnRoomConstructionStopping += _g_OnRoomConstructionStopping;
             g.OnFloorConstructed += _g_OnFloorConstructed;
+            g.OnFloorExtended += _g_OnFloorExtended;
         }
     }
 
@@ -86,13 +92,6 @@ public partial class TowerScript : Node3D
         // enough money means it is allowed to build
     }
 
-    private void _g_OnFloorConstructed(FloorConstructedEvent @event)
-    {
-        if (@event.TowerState != State)
-            return;
-        SetupFloorDisplay(@event.Floor);
-    }
-
     private void _g_OnRoomConstructed(RoomConstructedEvent @event)
     {
         if (@event.TowerState != State)
@@ -101,6 +100,27 @@ public partial class TowerScript : Node3D
         SetupRoomDisplay(@event.Room);
 
         var cost = @event.Room.Definition.CostToBuildPerUnit;
+        if (GlobalSignals.TowerResourceChanging(new(State, cost)).IsAllowed)
+        {
+            State.Wallet.Subtracted(cost);
+            GlobalSignals.TowerResourceChanged(new(State, cost));
+        }
+    }
+
+    private void _g_OnFloorConstructed(FloorConstructedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        SetupFloorDisplay(@event.Floor);
+    }
+
+    private void _g_OnFloorExtended(FloorExtendedEvent @event)
+    {
+        if (@event.TowerState != State)
+            return;
+        @event.Floor.LeftBound = @event.Left;
+        @event.Floor.RightBound = @event.Right;
+        var cost = @event.Floor.Definition.CostToBuildPerUnit;
         if (GlobalSignals.TowerResourceChanging(new(State, cost)).IsAllowed)
         {
             State.Wallet.Subtracted(cost);
@@ -169,4 +189,22 @@ public partial class TowerScript : Node3D
         }
     }
 
+    public void SetupTransportationDisplay(TransportState newTransport)
+    {
+        if (FloorsContainer is null)
+            return;
+        var transport = new TransportScript()
+        {
+            State = newTransport,
+        };
+        FloorsContainer.AddChild(transport);
+
+        for (var i = 0; i < newTransport.Height; i++)
+        {
+            if (Floors.TryGetValue(newTransport.Elevation + i, out var fs))
+            {
+                fs.SetPositionVisible(newTransport.HorizontalPosition, newTransport.Definition.Width, false);
+            }
+        }
+    }
 }

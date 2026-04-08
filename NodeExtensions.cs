@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace wizardtower;
@@ -58,52 +59,35 @@ public static class NodeExtensions
     public static Control? ChildControl(this Node node, string name = "", bool owned = false) => node.Child<Control>(name, owned);
     public static Node? Child(this Node node, string name = "", bool owned = false) => node.Child<Node>(name, owned);
 
-    public static void FreeChildren(this Node node, bool owned = false)
-    {
-        foreach (var child in node.GetChildren(!owned))
-        {
-            if (child is Node n)
-                n.QueueFree();
-        }
-    }
-
-    public static void FreeChildren(this Node node, Func<Node, bool> predicate, bool owned = false)
-    {
-        foreach (var child in node.GetChildren(!owned))
-        {
-            if (child is Node n && predicate(n))
-                n.QueueFree();
-        }
-    }
-
+    public static void FreeChildren(this Node node, bool owned = false) 
+        => FreeChildren(node, node.GetChildren(!owned), owned);
+    public static void FreeChildren(this Node node, Func<Node, bool> predicate, bool owned = false) 
+        => FreeChildren(node, node.GetChildren(!owned).Where(predicate), owned);
     public static void FreeChildren<TNode>(this Node node, Func<TNode, bool> predicate, bool owned = false) 
-        where TNode : Node
-    {
-        foreach (var child in node.GetChildren(!owned))
-        {
-            if (child is TNode n && predicate(n))
-                n.QueueFree();
-        }
-    }
-
+        => FreeChildren(node, node.GetChildren(!owned).Where(x => x is TNode n && predicate(n)), owned);
     public static void FreeChildren<TNode>(this Node node, bool owned = false) 
-        where TNode : Node
+        where TNode : Node 
+        => FreeChildren(node, node.GetChildren(!owned).Where(x => x is TNode), owned);
+
+    /// <summary>
+    /// Queues the specified child nodes of the given parent node for deletion and returns the children that were
+    /// successfully queued.
+    /// </summary>
+    /// <remarks>Only child nodes whose parent is the specified <paramref name="node"/> are queued for
+    /// deletion. Other nodes in the collection are ignored.</remarks>
+    /// <param name="node">The parent node whose children are to be freed. Must not be null.</param>
+    /// <param name="children">The collection of child nodes to attempt to free. Only children whose parent is <paramref name="node"/> will be
+    /// affected.</param>
+    /// <param name="owned">Indicates whether the parent node owns the children. This parameter is currently not used.</param>
+    /// <returns>An enumerable collection of child nodes that were successfully queued for deletion.</returns>
+    public static void FreeChildren(this Node node, IEnumerable<Node> children, bool owned = false)
     {
-        foreach (var child in node.GetChildren(!owned))
-        {
-            if (child is TNode n)
-                n.QueueFree();
-        }
+        foreach (var child in children)
+            if (child.GetParent() == node)
+                child.QueueFree();
     }
 
     public static SignalAwaiter GodotSleep(this Node node, float seconds) => node.ToSignal(node.GetTree().CreateTimer(seconds), SceneTreeTimer.SignalName.Timeout);
-
-    public static T AddOwnedChild<T>(this Node node, T child) where T : Node
-    {
-        node.AddChild(child);
-        child.Owner = node.Owner ?? node;
-        return child;
-    }
 
     public static void Log(this Node node, string message)
     {

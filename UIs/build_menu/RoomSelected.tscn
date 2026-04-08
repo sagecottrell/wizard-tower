@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://ccjjs0ieqdi1u"]
+
+[ext_resource type="Script" uid="uid://b1sgwkcuh1xl6" path="res://UIs/build_menu/RoomSelected.cs" id="1_bnyuc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ofba2"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.32156864)
+
+[sub_resource type="QuadMesh" id="QuadMesh_sexh6"]
+material = SubResource("StandardMaterial3D_ofba2")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kstcc"]
+
+[node name="RoomSelected" type="Node3D" unique_id=1933226709]
+script = ExtResource("1_bnyuc")
+
+[node name="Selected" type="MeshInstance3D" parent="." unique_id=946469614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)
+mesh = SubResource("QuadMesh_sexh6")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1845002315]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1508121608]
+shape = SubResource("BoxShape3D_kstcc")
+
+[connection signal="input_event" from="Area3D" to="." method="InputEvent"]
+[connection signal="mouse_entered" from="Area3D" to="." method="MouseEntered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="MouseExited"]
