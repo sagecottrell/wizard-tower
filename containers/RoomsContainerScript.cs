@@ -50,4 +50,10 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         }
         // enough money means it is allowed to build
     }
+
+    public void OnRoomConstruct(RoomConstructedEvent @event)
+    {
+        Actions.BuyRoom(State, @event);
+        SetupRoomDisplay(@event.Room);
+    }
 }

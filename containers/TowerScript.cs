@@ -1,7 +1,5 @@
 using Godot;
 using System;
-using wizardtower.actions;
-using wizardtower.events.interfaces;
 using wizardtower.state;
 using wizardtower.UIs.build_menu;
 
@@ -30,26 +28,15 @@ public partial class TowerScript : Node3D
         var tcs = this.AddedChild(new TransportsContainerScript(this));
         AddChild(new TowerRoomBuilderOverlay(this).Configured(overlay =>
         {
-            overlay.OnRoomConstruct += @event => _on_roomConstruct(@event, rcs);
+            overlay.OnRoomConstruct += rcs.OnRoomConstruct;
         }));
         AddChild(new TowerFloorBuilderOverlay(this).Configured(overlay =>
         {
-            overlay.OnFloorExtend += _on_floorExtend;
+            overlay.OnFloorExtend += fcs.OnFloorExtend;
         }));
 
         BuildMenu?.SetTower(State);
         this.Child<UIManager>()?.ShowUI();
-    }
-
-    private void _on_roomConstruct(events.RoomConstructedEvent @event, RoomsContainerScript rcs)
-    {
-        Actions.BuyRoom(State, @event);
-        rcs.SetupRoomDisplay(@event.Room);
-    }
-
-    private void _on_floorExtend(events.FloorExtendingEvent @event)
-    {
-        Actions.ExtendFloor(State, @event);
     }
 
     public override void _Process(double delta)

@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using System.Linq;
+using wizardtower.actions.ui;
 using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -191,17 +192,16 @@ public partial class BuildMenu : VBoxContainer
 
     private void _x_OnClicked(BuildButton btn)
     {
-        if (btn.RoomDefinition is not null && TowerState is not null)
+        if (TowerState is null)
+            return;
+
+        if (btn.RoomDefinition is not null)
         {
-            var ev = GlobalSignals.RoomConstructionSelecting(new(TowerState, btn.RoomDefinition));
-            if (TowerState.Wallet >= btn.RoomDefinition.CostToBuildPerUnit && ev.IsAllowed)
-                GlobalSignals.RoomConstructionSelected(new(TowerState, btn.RoomDefinition));
+            UIActions.BuildSelectRoom(TowerState, btn.RoomDefinition);
         }
-        if (btn.FloorDefinition is not null && TowerState is not null)
+        else if (btn.FloorDefinition is not null)
         {
-            var ev = GlobalSignals.FloorConstructionSelecting(new(TowerState, btn.FloorDefinition));
-            if (TowerState.Wallet >= btn.FloorDefinition.CostToBuildPerUnit && ev.IsAllowed)
-                GlobalSignals.FloorConstructionSelected(new(TowerState, btn.FloorDefinition));
+            UIActions.BuildSelectFloor(TowerState, btn.FloorDefinition);
         }
     }
 

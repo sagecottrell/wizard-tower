@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Collections.Generic;
 using wizardtower.actions;
 using wizardtower.events;
@@ -75,5 +74,10 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
             return;
         if (@event.FloorDefinition.CostToBuildPerUnit <= State.Wallet)
             @event.IsAllowed = false;
+    }
+
+    public void OnFloorExtend(FloorExtendingEvent @event)
+    {
+        Actions.ExtendFloor(State, @event);
     }
 }
