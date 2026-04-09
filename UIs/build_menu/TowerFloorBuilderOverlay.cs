@@ -59,15 +59,6 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onFloorConstructionSelected(FloorConstructionSelectedEvent @event)
     {
-        if (@event.TowerState != Tower.State)
-            return;
-
-        if (_currentFloorDef is not null)
-        {
-            GlobalSignals.FloorConstructionStopped(new(Tower.State, _currentFloorDef));
-            return;
-        }
-
         _currentFloorDef = @event.FloorDefinition;
         this.FreeChildren(_selected.Values);
         _selected.Clear();
@@ -118,7 +109,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         }
         else
         {
-            this.Error($"Floor at elevation {floor.Elevation} has no floor below it, cannot be extended");
+            this.Error($"Floor at elevation {floor.Elevation} extension bounds cannot be determined; cannot be extended");
         }
     }
 

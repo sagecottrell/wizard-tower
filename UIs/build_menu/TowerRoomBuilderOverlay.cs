@@ -42,15 +42,6 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
-        if (@event.TowerState != Tower.State)
-            return;
-
-        if (_currentRoomDef is not null)
-        {
-            GlobalSignals.RoomConstructionStopped(new(Tower.State, _currentRoomDef));
-            return;
-        }
-
         _currentRoomDef = @event.RoomDefinition;
 
         foreach (var (h, floor) in Tower.State.Floors)
