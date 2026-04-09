@@ -33,6 +33,7 @@ public partial class TowerScript : Node3D
         AddChild(new TowerFloorBuilderOverlay(this).Configured(overlay =>
         {
             overlay.OnFloorExtend += fcs.OnFloorExtend;
+            overlay.OnFloorReplace += fcs.OnFloorReplace;
         }));
 
         BuildMenu?.SetTower(State);

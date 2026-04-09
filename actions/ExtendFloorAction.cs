@@ -7,12 +7,11 @@ public static partial class Actions
 {
     public static void ExtendFloor(TowerState state, FloorExtendingEvent @event)
     {
-        var cost = @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount;
-        state.ExtendFloor(@event.Floor, @event.ExtendedLeft, @event.ExtendedRight);
-        if (GlobalSignals.TowerResourceChanging(new(state, cost, @event)).IsAllowed)
+        if (GlobalSignals.FloorExtending(@event).IsAllowed)
         {
-            state.Wallet.Subtracted(cost);
-            GlobalSignals.TowerResourceChanged(new(state, cost, @event));
+            RemoveFromWallet(state, @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount, @event);
+            state.ExtendFloor(@event.Floor, @event.ExtendedLeft, @event.ExtendedRight);
+            GlobalSignals.FloorExtended(new(state, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight));
         }
     }
 }

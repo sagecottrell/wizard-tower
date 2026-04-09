@@ -115,6 +115,17 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
 
     [Signal]
+    public delegate void OnFloorReplacingEventHandler(FloorReplacingEvent @event);
+    public static FloorReplacingEvent FloorReplacing(FloorReplacingEvent @event) => _call(SignalName.OnFloorReplacing, @event);
+
+    [Signal]
+    public delegate void OnFloorReplacedEventHandler(FloorReplacedEvent @event);
+    public static FloorReplacedEvent FloorReplaced(FloorReplacedEvent @event) => _call(SignalName.OnFloorReplaced, @event);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
     public delegate void OnFloorConstructionStoppingEventHandler(FloorConstructionStoppingEvent @event);
     public static FloorConstructionStoppingEvent FloorConstructionStopping(FloorConstructionStoppingEvent @event) => _call(SignalName.OnFloorConstructionStopping, @event);
 

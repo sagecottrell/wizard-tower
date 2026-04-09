@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 using wizardtower.events;
 using wizardtower.state;
 
@@ -27,6 +28,19 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
             g.OnRoomConstructionPreview += _g_OnRoomConstructionPreview;
             g.OnRoomConstructed += _g_OnRoomConstructed;
             g.OnFloorExtended += _g_OnFloorExtended;
+            g.OnFloorReplaced += _g_OnFloorReplaced;
+        }
+    }
+
+    private void _g_OnFloorReplaced(FloorReplacedEvent @event)
+    {
+        if (@event.Floor.Elevation != FloorState.Elevation)
+            return;
+        foreach (var (id, tile) in _tiles.ToList())
+        {
+            _removeTile(id);
+            var r = _addTile(id);
+            r?.WallVisible(tile.Wall?.Visible ?? true);
         }
     }
 
@@ -40,7 +54,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     {
         if (@event.Room.Elevation != FloorState.Elevation)
             return;
-        _removeTile(@event.Room.FloorPosition);
+        SetPositionVisible(@event.Room, false);
     }
 
     private void _g_OnRoomConstructionPreview(RoomConstructionPreviewEvent @event)
@@ -82,14 +96,15 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
             return null;
         if (_tiles.TryGetValue(i, out var tile))
             return tile;
-        if (!TowerState.PositionVacant(FloorState.Elevation, i))
-            return null;
         if (scene.Instantiate() is FloorBackgroundTileScript fbt && _tiles.TryAdd(i, fbt))
         {
             AddChild(fbt);
             fbt.Index = i;
             fbt.Position = fbt.TowerCoordToNodePosition(x: i);
             fbt.OnCreate();
+
+            if (!TowerState.PositionVacant(FloorState.Elevation, i))
+                fbt.WallVisible(false);
             return fbt;
         }
         return null;
@@ -111,7 +126,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     public void MakeAllVisible()
     {
         foreach (var tile in _tiles.Values)
-            tile.WallVisible(true);
+            tile.WallVisible(TowerState.PositionVacant(FloorState.Elevation, tile.Index));
     }
 
     public void OnCreate()

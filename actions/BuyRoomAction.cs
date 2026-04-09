@@ -5,14 +5,13 @@ namespace wizardtower.actions;
 
 public static partial class Actions
 {
-    public static void BuyRoom(TowerState state, RoomConstructedEvent @event)
+    public static void BuyRoom(TowerState state, RoomConstructingEvent @event)
     {
-        var cost = @event.Room.Definition.CostToBuildPerUnit;
-        state.OnAddRoom(@event.Room);
-        if (GlobalSignals.TowerResourceChanging(new(state, cost, @event)).IsAllowed)
+        if (GlobalSignals.RoomConstructing(@event).IsAllowed)
         {
-            state.Wallet.Subtracted(cost);
-            GlobalSignals.TowerResourceChanged(new(state, cost, @event));
+            RemoveFromWallet(state, @event.Room.Definition.CostToBuildPerUnit, @event);
+            state.OnAddRoom(@event.Room);
+            GlobalSignals.RoomConstructed(new(state, @event.Room));
         }
     }
 }

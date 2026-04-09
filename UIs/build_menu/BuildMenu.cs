@@ -104,7 +104,16 @@ public partial class BuildMenu : VBoxContainer
                     FitContent = true, 
                     ClipContents = false,
                     AutowrapMode = TextServer.AutowrapMode.Off,
-                })
+                }.Configured(rtl =>
+                {
+                    if (GlobalSignals.Singleton is GlobalSignals g)
+                    {
+                        g.OnTowerResourceChanged += e =>
+                        {
+                            rtl.Text = _toStringAsCost(def.CostToBuildPerUnit);
+                        };
+                    }
+                }))
             );
         }
     }

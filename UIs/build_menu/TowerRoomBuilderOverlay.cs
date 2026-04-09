@@ -10,7 +10,7 @@ namespace wizardtower.UIs.build_menu;
 public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 {
     [Signal]
-    public delegate void OnRoomConstructEventHandler(RoomConstructedEvent @event);
+    public delegate void OnRoomConstructEventHandler(RoomConstructingEvent @event);
 
     public TowerScript Tower { get; set; } = tower;
 
@@ -92,20 +92,16 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
             Elevation = y,
             FloorPosition = x,
         };
-        if (GlobalSignals.RoomConstructing(new(Tower.State, room)).IsAllowed)
-        {
-            EmitSignalOnRoomConstruct(new(Tower.State, room));
-            GlobalSignals.RoomConstructed(new(Tower.State, room));
+        EmitSignalOnRoomConstruct(new(Tower.State, room));
 
-            if (GlobalSignals.RoomConstructionStopping(new(Tower.State, @event.RoomDefinition)).IsAllowed)
-                GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
-            else
+        if (GlobalSignals.RoomConstructionStopping(new(Tower.State, @event.RoomDefinition)).IsAllowed)
+            GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
+        else
+        {
+            for (var i = 0; i < @event.RoomDefinition.Width; i++)
             {
-                for (var i = 0; i < @event.RoomDefinition.Width; i++)
-                {
-                    if (_selected.Remove((x + i, y), out var s))
-                        s.QueueFree();
-                }
+                if (_selected.Remove((x + i, y), out var s))
+                    s.QueueFree();
             }
         }
     }

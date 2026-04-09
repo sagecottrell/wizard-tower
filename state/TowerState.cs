@@ -14,18 +14,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     private HashSet<(int elevation, int position)>? vacancies;
 
-    [Signal]
-    public delegate void OnRoomAddedEventHandler(RoomState room);
-
-    [Signal]
-    public delegate void OnRoomRemovedEventHandler(RoomState room);
-
-    [Signal]
-    public delegate void OnFloorAddedEventHandler(FloorState floor);
-
-    [Signal]
-    public delegate void OnFloorRemovedEventHandler(FloorState floor);
-
     [Export]
     public string Name { get; set; } = "Tower";
 
@@ -131,7 +119,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         RoomIdCounter++;
         Rooms[RoomIdCounter] = room;
         vacancies?.ExceptWith(_roomRange(room));
-        EmitSignalOnRoomAdded(room);
     }
 
     public void OnRemoveRoom(uint roomId)
@@ -183,7 +170,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             };
             Floors[0] = floor;
             vacancies?.UnionWith(_floorRange(floor));
-            EmitSignalOnFloorAdded(floor);
         }
     }
 
@@ -225,7 +211,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     {
         Floors[floor.Elevation] = floor;
         vacancies?.UnionWith(_floorRange(floor));
-        EmitSignalOnFloorAdded(floor);
     }
 
     public void ExtendFloor(FloorState floor, uint left, uint right)

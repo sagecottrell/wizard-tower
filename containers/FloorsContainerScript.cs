@@ -22,9 +22,13 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
             g.OnFloorConstructing += _g_OnFloorConstructing;
             g.OnFloorExtending += _g_OnFloorExtending;
             g.OnFloorConstructionStopping += _g_OnFloorConstructionStopping;
+            g.OnFloorConstructed += _g_OnFloorConstructed;
         }
-        State.OnFloorAdded += SetupFloorDisplay;
-        State.OnFloorRemoved += _state_OnFloorRemoved;
+    }
+
+    private void _g_OnFloorConstructed(FloorConstructedEvent @event)
+    {
+        SetupFloorDisplay(@event.Floor);
     }
 
     private void _state_OnFloorRemoved(FloorState floor)
@@ -44,8 +48,6 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     private void _g_OnFloorExtending(FloorExtendingEvent @event)
     {
-        if (@event.TowerState != State)
-            return;
         if (@event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount > State.Wallet)
         {
             this.Log("Not enough money to build this room.");
@@ -57,8 +59,6 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     private void _g_OnFloorConstructing(FloorConstructingEvent @event)
     {
-        if (@event.TowerState != State)
-            return;
         if (@event.Floor.Definition.CostToBuildPerUnit * @event.Floor.Width > State.Wallet)
         {
             this.Log("Not enough money to build this room.");
@@ -70,8 +70,6 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     private void _g_OnFloorConstructionStopping(FloorConstructionStoppingEvent @event)
     {
-        if (@event.TowerState != State)
-            return;
         if (@event.FloorDefinition.CostToBuildPerUnit <= State.Wallet)
             @event.IsAllowed = false;
     }
@@ -79,5 +77,10 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
     public void OnFloorExtend(FloorExtendingEvent @event)
     {
         Actions.ExtendFloor(State, @event);
+    }
+
+    public void OnFloorReplace(FloorReplacingEvent @event)
+    {
+        Actions.ReplaceFloor(State, @event);
     }
 }

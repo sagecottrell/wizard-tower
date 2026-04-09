@@ -11,7 +11,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 {
     [Signal]
     public delegate void OnFloorConstructEventHandler(FloorConstructingEvent @event);
-
+    [Signal]
+    public delegate void OnFloorReplaceEventHandler(FloorReplacingEvent @event);
     [Signal]
     public delegate void OnFloorExtendEventHandler(FloorExtendingEvent @event);
 
@@ -27,6 +28,25 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         {
             g.OnFloorConstructionSelected += _onFloorConstructionSelected;
             g.OnFloorConstructionStopped += _onFloorConstructionStopped;
+            g.OnFloorExtended += _onFloorExtended;
+            g.OnFloorReplaced += _onFloorReplaced;
+        }
+    }
+
+    private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
+
+    private void _onFloorExtended(FloorExtendedEvent @event) => _tryStopConstruction(@event.Floor);
+
+    private void _tryStopConstruction(FloorState floor)
+    {
+        if (GlobalSignals.FloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
+            GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
+        else
+        {
+            for (var i = floor.LeftBound; i <= floor.RightBound; i++)
+                if (_selected.Remove((floor.Elevation, i), out var s))
+                    s.QueueFree();
+            _showExtenders();
         }
     }
 
@@ -67,6 +87,18 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         }
     }
 
+    #region Replacement
+
+    private void _showReplacer(FloorState floor)
+    {
+        for (int i = floor.LeftBound; i <= floor.RightBound; i++)
+            _createTile(floor.Elevation, i, _onAcceptReplace);
+    }
+
+    #endregion
+
+    #region Extension
+
     private void _showExtenders(FloorState floor)
     {
         if (floor.Elevation == 0)
@@ -90,19 +122,17 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         }
     }
 
-    private void _showReplacer(FloorState floor)
-    {
-    }
-
     private void _matchWidth(FloorState floor, int left, int right)
     {
         for (int i = left; i < floor.LeftBound; i++)
-            _createTile(floor.Elevation, i);
+            _createTile(floor.Elevation, i, _onAcceptExtend);
         for (int i = floor.RightBound + 1; i <= right; i++)
-            _createTile(floor.Elevation, i);
+            _createTile(floor.Elevation, i, _onAcceptExtend);
     }
 
-    private FloorSelected _createTile(int y, int x)
+    #endregion
+
+    private FloorSelected _createTile(int y, int x, Action<int, int> onAccept)
     {
         if (_selected.TryGetValue((y, x), out var existing))
             return existing;
@@ -113,19 +143,27 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         _selected[(y, x)] = tile;
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
-        tile.OnAccept += _ => _onAccept(x, y);
-        //tile.OnCancel += _ => _onCancel(x, y);
+        tile.OnAccept += _ => onAccept(x, y);
+        tile.OnCancel += _ => _onCancel(x, y);
         return tile;
     }
 
     private void _onCancel(int x, int y)
     {
-        throw new NotImplementedException();
     }
 
-    private void _onAccept(int x, int y)
+    private void _onAcceptReplace(int x, int y)
     {
-        if (Tower.State.Floors.TryGetValue(y, out var floor)) {
+        if (Tower.State.Floors.TryGetValue(y, out var floor) && _currentFloorDef != null)
+        {
+            EmitSignalOnFloorReplace(new(Tower.State, floor, _currentFloorDef));
+        }
+    }
+
+    private void _onAcceptExtend(int x, int y)
+    {
+        if (Tower.State.Floors.TryGetValue(y, out var floor))
+        {
             // extending the floor
             uint left = 0;
             uint right = 0;
@@ -133,7 +171,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             {
                 left = (uint)(floor.LeftBound - x);
             }
-            else if (x > floor.RightBound) 
+            else if (x > floor.RightBound)
             {
                 right = (uint)(x - floor.RightBound);
             }
@@ -142,22 +180,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
                 this.Error($"Clicked on an existing part of the floor at ({x}, {y}), this should not be possible");
                 return;
             }
-
-            if (GlobalSignals.FloorExtending(new(Tower.State, floor, left, right)).IsAllowed)
-            {
-                EmitSignalOnFloorExtend(new(Tower.State, floor, left, right));
-                GlobalSignals.FloorExtended(new(Tower.State, floor, left, right));
-
-                if (GlobalSignals.FloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
-                    GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
-                else
-                {
-                    for (var i = floor.LeftBound; i <= floor.RightBound; i++)
-                        if (_selected.Remove((y, i), out var s))
-                            s.QueueFree();
-                    _showExtenders();
-                }
-            }
+            EmitSignalOnFloorExtend(new(Tower.State, floor, left, right));
         }
     }
 }
