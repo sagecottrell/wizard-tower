@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
 using wizardtower.resource_types;
@@ -69,7 +70,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     private void _onCancel(RoomConstructionSelectedEvent @event, int x, int y)
     {
         // the user tried to cancel the construction of a room
-        GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));
+        UIActions.BuildDeselectForce(Tower.State);
     }
 
     private void _onAccept(RoomConstructionSelectedEvent @event, int x, int y)

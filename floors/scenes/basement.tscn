@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://55h0vxxln5ln"]
+
+[ext_resource type="PackedScene" uid="uid://747rvkh0i8rj" path="res://floors/scenes/basefloorscene.tscn" id="1_lqgk0"]
+[ext_resource type="ArrayMesh" uid="uid://cgeciph81q4nk" path="res://floors/models/basic-floor.obj" id="2_0ohgf"]
+[ext_resource type="ArrayMesh" uid="uid://3r21ramfpscm" path="res://floors/models/basement.obj" id="3_lqgk0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vn6wp"]
+
+[node name="FloorTile" unique_id=1087024591 node_paths=PackedStringArray("Wall") instance=ExtResource("1_lqgk0")]
+Wall = NodePath("BasicFloor")
+
+[node name="Floor0" type="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(2103108605) index="0" unique_id=1595667154]
+shape = SubResource("BoxShape3D_vn6wp")
+
+[node name="CollisionShape3D" parent="Area3D" parent_id_path=PackedInt32Array(2103108605) index="1" unique_id=1595667154]
+shape = SubResource("BoxShape3D_vn6wp")
+
+[node name="BasicFloor" type="MeshInstance3D" parent="." index="1" unique_id=1211320676]
+gi_mode = 2
+gi_lightmap_texel_scale = 2.0
+mesh = ExtResource("2_0ohgf")
+
+[node name="BasicFloor2" type="MeshInstance3D" parent="." index="2" unique_id=1886370694]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+gi_mode = 2
+gi_lightmap_texel_scale = 2.0
+mesh = ExtResource("2_0ohgf")
+
+[node name="Basement" type="MeshInstance3D" parent="." index="3" unique_id=116645679]
+mesh = ExtResource("3_lqgk0")

@@ -17,3 +17,4 @@ Name = "Basic Floor"
 Icon = ExtResource("3_kx7yt")
 FloorBackgroundTileScene = ExtResource("2_cf1s2")
 CostToBuildPerUnit = SubResource("Resource_cf1s2")
+CanBuildAtElevations = []

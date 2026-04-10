@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="FloorDefinition" format=3 uid="uid://b8k44nh1gp7h5"]
+
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="1_blukl"]
+[ext_resource type="PackedScene" uid="uid://55h0vxxln5ln" path="res://floors/scenes/basement.tscn" id="2_blukl"]
+[ext_resource type="Texture2D" uid="uid://bm1c15xrjy36v" path="res://floors/images/basic-floor-bg.png" id="3_yxsey"]
+[ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="4_flwul"]
+
+[sub_resource type="Resource" id="Resource_cf1s2"]
+script = ExtResource("1_blukl")
+Data = Dictionary[String, int]({
+"res://items/air.tres": 3
+})
+
+[resource]
+script = ExtResource("4_flwul")
+Name = "Basement"
+Icon = ExtResource("3_yxsey")
+FloorBackgroundTileScene = ExtResource("2_blukl")
+CostToBuildPerUnit = SubResource("Resource_cf1s2")
+CanBuildAtElevations = []
+CanBuildInBasement = true

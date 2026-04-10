@@ -1,8 +1,10 @@
 using Godot;
 using System;
 using System.Drawing;
+using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
+using wizardtower.events.interfaces;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -167,6 +169,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onCancel(int x, int y)
     {
+        UIActions.BuildDeselectForce(Tower.State);
     }
 
     private void _onAcceptReplace(int x, int y)
