@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using wizardtower.resource_types;
 using wizardtower.UIs.editor_add_room;
@@ -21,10 +22,10 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public Godot.Collections.Dictionary<int, FloorState> Floors { get; set; } = [];
 
     [ExportToolButton("Add Top Floor")]
-    public Callable addTopFloor => Callable.From(AddTopFloor);
+    public Callable addTopFloor => Callable.From(_editorAddTopFloor);
 
     [ExportToolButton("Add Basement Floor")]
-    public Callable addBopFloor => Callable.From(AddBasementFloor);
+    public Callable addBopFloor => Callable.From(_editorAddBopFloor);
 
     [Export]
     public Godot.Collections.Dictionary<uint, RoomState> Rooms { get; set; } = [];
@@ -57,13 +58,19 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public Godot.Collections.Array<TransportDefinition> UnlockedTransports { get; set; } = [];
 
     [Export]
+    public int DefaultFloorLeftBound { get; set; } = -3;
+
+    [Export]
+    public int DefaultFloorRightBound { get; set; } = 3;
+
+    [Export]
     public uint RoomIdCounter { get; set; } = 0;
 
     [Export]
-    public uint LowestFloor { get; set; } = 0;
+    public int LowestFloor { get; set; } = 0;
 
     [Export]
-    public uint HighestFloor { get; set; } = 0;
+    public int HighestFloor { get; set; } = 0;
 
     [Export]
     public uint MaxHeight { get; set; } = 5;
@@ -156,6 +163,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     #region Floor functions
 
+    public bool IsHeightLimitReached => HighestFloor >= MaxHeight;
+    public bool IsDepthLimitReached => -LowestFloor >= MaxBasement;
+
     public void EnsureGroundFloor()
     {
         if (Floors.Count == 0)
@@ -163,8 +173,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             var floor = new FloorState()
             {
                 TowerState = this,
-                LeftBound = 3,
-                RightBound = 3,
+                LeftBound = DefaultFloorLeftBound,
+                RightBound = DefaultFloorRightBound,
                 Elevation = 0,
                 Definition = DefaultAboveGroundFloorDefinition,
             };
@@ -173,43 +183,53 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         }
     }
 
-    public void AddTopFloor()
+    private void _editorAddTopFloor()
     {
-        EnsureGroundFloor();
-        if (HighestFloor >= MaxHeight)
+        if (IsHeightLimitReached)
             return;
-        var floor = new FloorState()
-        {
-            TowerState = this,
-            LeftBound = 3,
-            RightBound = 3,
-            Elevation = (int)HighestFloor + 1,
-            Definition = DefaultAboveGroundFloorDefinition,
-        };
-        HighestFloor++;
+        EnsureGroundFloor();
+        var floor = NewTopFloor();
         OnAddFloor(floor);
     }
 
-    public void AddBasementFloor()
+    private void _editorAddBopFloor()
     {
-        EnsureGroundFloor();
-        if (LowestFloor >= MaxBasement)
+        if (IsHeightLimitReached)
             return;
-        var floor = new FloorState()
-        {
-            TowerState = this,
-            LeftBound = 3,
-            RightBound = 3,
-            Elevation = -(int)(LowestFloor + 1),
-            Definition = DefaultBasementFloorDefinition ?? DefaultAboveGroundFloorDefinition,
-        };
-        LowestFloor++;
+        EnsureGroundFloor();
+        var floor = NewBasementFloor();
         OnAddFloor(floor);
     }
+
+    /// <summary>
+    /// Creates a floor that would be above the top floor, does not actually add the floor to the tower
+    /// </summary>
+    /// <returns></returns>
+    public FloorState NewTopFloor(FloorDefinition? def = null) => new()
+    {
+        TowerState = this,
+        LeftBound = DefaultFloorLeftBound,
+        RightBound = DefaultFloorRightBound,
+        Elevation = HighestFloor + 1,
+        Definition = def ?? DefaultAboveGroundFloorDefinition,
+    };
+
+    public FloorState NewBasementFloor(FloorDefinition? def = null) => new()
+    {
+        TowerState = this,
+        LeftBound = DefaultFloorLeftBound,
+        RightBound = DefaultFloorRightBound,
+        Elevation = LowestFloor - 1,
+        Definition = def ?? DefaultBasementFloorDefinition ?? DefaultAboveGroundFloorDefinition,
+    };
 
     public void OnAddFloor(FloorState floor)
     {
         Floors[floor.Elevation] = floor;
+        if (floor.Elevation > HighestFloor)
+            HighestFloor = floor.Elevation;
+        if (floor.Elevation < LowestFloor)
+            LowestFloor = floor.Elevation;
         vacancies?.UnionWith(_floorRange(floor));
     }
 
@@ -287,8 +307,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         Workers = dict[nameof(Workers)].AsSaveFormatDict().DeSerialize<uint, WorkerState>(uint.Parse);
         Wallet.Deserialize(dict[nameof(Wallet)].AsSaveFormatDict());
         RoomIdCounter = dict[nameof(RoomIdCounter)].AsUInt32();
-        LowestFloor = dict[nameof(LowestFloor)].AsUInt32();
-        HighestFloor = dict[nameof(HighestFloor)].AsUInt32();
+        LowestFloor = dict[nameof(LowestFloor)].AsInt32();
+        HighestFloor = dict[nameof(HighestFloor)].AsInt32();
         MaxBasement = dict[nameof(MaxBasement)].AsUInt32();
         MaxWidth = dict[nameof(MaxWidth)].AsUInt32();
         MaxHeight = dict[nameof(MaxHeight)].AsUInt32();

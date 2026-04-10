@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Drawing;
 using wizardtower.containers;
 using wizardtower.events;
 using wizardtower.resource_types;
@@ -30,12 +31,13 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             g.OnFloorConstructionStopped += _onFloorConstructionStopped;
             g.OnFloorExtended += _onFloorExtended;
             g.OnFloorReplaced += _onFloorReplaced;
+            g.OnFloorConstructed += _onFloorConstructed;
         }
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
-
     private void _onFloorExtended(FloorExtendedEvent @event) => _tryStopConstruction(@event.Floor);
+    private void _onFloorConstructed(FloorConstructedEvent @event) => _tryStopConstruction(@event.Floor);
 
     private void _tryStopConstruction(FloorState floor)
     {
@@ -43,10 +45,11 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
         else
         {
+            this.Debug($"{floor.Elevation} - {floor.Definition.Name}");
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                 if (_selected.Remove((floor.Elevation, i), out var s))
                     s.QueueFree();
-            _showExtenders();
+            _showSelectable();
         }
     }
 
@@ -54,7 +57,6 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
     {
         this.FreeChildren(_selected.Values);
         _selected.Clear();
-        _currentFloorDef = null;
     }
 
     private void _onFloorConstructionSelected(FloorConstructionSelectedEvent @event)
@@ -62,10 +64,10 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         _currentFloorDef = @event.FloorDefinition;
         this.FreeChildren(_selected.Values);
         _selected.Clear();
-        _showExtenders();
+        _showSelectable();
     }
 
-    private void _showExtenders()
+    private void _showSelectable()
     {
         // floors that match this floor def can be extended
         // floors that do not match this floor def can be replaced
@@ -76,12 +78,16 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             else
                 _showReplacer(floor);
         }
+        _showNewTopFloorButton();
+        _showNewBasementFloorButton();
     }
 
     #region Replacement
 
     private void _showReplacer(FloorState floor)
     {
+        if (!_canBuildFloorAt(floor.Elevation))
+            return;
         for (int i = floor.LeftBound; i <= floor.RightBound; i++)
             _createTile(floor.Elevation, i, _onAcceptReplace);
     }
@@ -119,6 +125,26 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             _createTile(floor.Elevation, i, _onAcceptExtend);
         for (int i = floor.RightBound + 1; i <= right; i++)
             _createTile(floor.Elevation, i, _onAcceptExtend);
+    }
+
+    #endregion
+
+    #region New floor
+
+    private void _showNewTopFloorButton()
+    {
+        if (Tower.State.IsHeightLimitReached || !_canBuildFloorAt(Tower.State.HighestFloor + 1))
+            return;
+        for (int i = Tower.State.DefaultFloorLeftBound; i <= Tower.State.DefaultFloorRightBound; i++)
+            _createTile(Tower.State.HighestFloor + 1, i, _onAcceptNewTop);
+    }
+
+    private void _showNewBasementFloorButton()
+    {
+        if (Tower.State.IsDepthLimitReached || !_canBuildFloorAt(Tower.State.LowestFloor - 1))
+            return;
+        for (int i = Tower.State.DefaultFloorLeftBound; i <= Tower.State.DefaultFloorRightBound; i++)
+            _createTile(Tower.State.LowestFloor - 1, i, _onAcceptNewBasement);
     }
 
     #endregion
@@ -174,4 +200,16 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             EmitSignalOnFloorExtend(new(Tower.State, floor, left, right));
         }
     }
+
+    private void _onAcceptNewBasement(int x, int y)
+    {
+        EmitSignalOnFloorConstruct(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
+    }
+
+    private void _onAcceptNewTop(int x, int y)
+    {
+        EmitSignalOnFloorConstruct(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
+    }
+
+    private bool _canBuildFloorAt(int elevation) => _currentFloorDef?.CanBuildFloorAt(elevation) ?? false;
 }

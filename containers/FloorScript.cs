@@ -46,6 +46,8 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
 
     private void _g_OnFloorExtended(FloorExtendedEvent @event)
     {
+        if (@event.Floor.Elevation != FloorState.Elevation) 
+            return;
         SetPositionVisible(@event.Floor.LeftBound, @event.ExtendedLeft, true);
         SetPositionVisible(@event.Floor.RightBound - (int)@event.ExtendedRight + 1, @event.ExtendedRight, true);
     }
@@ -101,6 +103,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
             AddChild(fbt);
             fbt.Index = i;
             fbt.Position = fbt.TowerCoordToNodePosition(x: i);
+            fbt.InDirection = -Mathf.Sign(FloorState.Elevation);
             fbt.OnCreate();
 
             if (!TowerState.PositionVacant(FloorState.Elevation, i))

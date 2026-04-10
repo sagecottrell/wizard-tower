@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System.Diagnostics;
 
 namespace wizardtower.resource_types;
@@ -27,4 +28,9 @@ public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
 
     [Export]
     public NumericDict<ItemDefinition, uint> CostToBuildPerUnit { get; set; } = [];
+
+    [Export]
+    public Array<int>? CanBuildAtElevations { get; set; }
+
+    public bool CanBuildFloorAt(int elevation) => CanBuildAtElevations is null || CanBuildAtElevations.Contains(elevation);
 }

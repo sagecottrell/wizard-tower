@@ -16,6 +16,9 @@ public partial class FloorBackgroundTileScript : Node3D
     [Export]
     public float StartingZ { get; set; } = -2f;
 
+    [Export]
+    public int InDirection { get; set; } = -1;
+
     [Signal]
     public delegate void OnMouseEnteredEventHandler(FloorBackgroundTileScript sender);
 
@@ -36,7 +39,7 @@ public partial class FloorBackgroundTileScript : Node3D
 
     public void OnCreate()
     {
-        Position = this.TowerCoordToNodePosition(y: -1, z: StartingZ);
+        Position = this.TowerCoordToNodePosition(y: InDirection, z: StartingZ);
         var lerp = new PosLerpHelper()
         {
             InTime = InTime,

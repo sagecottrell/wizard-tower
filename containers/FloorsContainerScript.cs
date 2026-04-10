@@ -83,4 +83,9 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
     {
         Actions.ReplaceFloor(State, @event);
     }
+
+    public void OnFloorConstruct(FloorConstructingEvent @event)
+    {
+        Actions.BuyFloor(State, @event);
+    }
 }

@@ -34,6 +34,7 @@ public partial class TowerScript : Node3D
         {
             overlay.OnFloorExtend += fcs.OnFloorExtend;
             overlay.OnFloorReplace += fcs.OnFloorReplace;
+            overlay.OnFloorConstruct += fcs.OnFloorConstruct;
         }));
 
         BuildMenu?.SetTower(State);
