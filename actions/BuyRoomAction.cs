@@ -1,17 +1,17 @@
 using wizardtower.events;
-using wizardtower.state;
 
 namespace wizardtower.actions;
 
 public static partial class Actions
 {
-    public static void BuyRoom(TowerState state, RoomConstructingEvent @event)
+    public static void BuyRoom(RoomConstructingEvent @event)
     {
+        var tower = @event.TowerState;
         if (GlobalSignals.RoomConstructing(@event).IsAllowed)
         {
-            RemoveFromWallet(state, @event.Room.Definition.CostToBuildPerUnit, @event);
-            state.OnAddRoom(@event.Room);
-            GlobalSignals.RoomConstructed(new(state, @event.Room));
+            RemoveFromWallet(tower, @event.Room.Definition.CostToBuildPerUnit, @event);
+            tower.AddRoom(@event.Room);
+            GlobalSignals.RoomConstructed(new(tower, @event.Room));
         }
     }
 }

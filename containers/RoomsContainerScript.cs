@@ -1,5 +1,5 @@
 using Godot;
-using wizardtower.actions;
+using System.Collections.Generic;
 using wizardtower.events;
 using wizardtower.state;
 
@@ -10,6 +10,8 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
     public TowerScript Tower { get; } = tower;
     public TowerState State { get; } = tower.State;
 
+    public Dictionary<RoomState, RoomScript> Rooms { get; } = [];
+
     public override void _Ready()
     {
         foreach (var room in State.Rooms.Values)
@@ -18,16 +20,25 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         {
             g.OnRoomConstructing += _g_OnRoomConstructing;
             g.OnRoomConstructionStopping += _g_OnRoomConstructionStopping;
+            g.OnRoomConstructed += _g_OnRoomConstructed;
+            g.OnRoomDestroyed += _g_OnRoomDestroyed;
         }
+    }
+
+    private void _g_OnRoomDestroyed(RoomDestroyedEvent @event)
+    {
+        if (Rooms.Remove(@event.Room, out var node))
+            node.QueueFree();
+    }
+
+    private void _g_OnRoomConstructed(RoomConstructedEvent @event)
+    {
+        SetupRoomDisplay(@event.Room);
     }
 
     public void SetupRoomDisplay(RoomState newRoom)
     {
-        var room = new RoomScript()
-        {
-            State = newRoom,
-        };
-        AddChild(room);
+        Rooms[newRoom] = this.AddedChild(new RoomScript() { State = newRoom  });
     }
 
     private void _g_OnRoomConstructionStopping(RoomConstructionStoppingEvent @event)
@@ -49,11 +60,5 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
             return;
         }
         // enough money means it is allowed to build
-    }
-
-    public void OnRoomConstruct(RoomConstructingEvent @event)
-    {
-        Actions.BuyRoom(State, @event);
-        SetupRoomDisplay(@event.Room);
     }
 }

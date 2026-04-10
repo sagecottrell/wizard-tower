@@ -1,6 +1,5 @@
 using Godot;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using wizardtower.resource_types;
 using wizardtower.UIs.editor_add_room;
@@ -14,6 +13,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     private uint maxWidth = 10;
 
     private HashSet<(int elevation, int position)>? vacancies;
+    private Dictionary<int, List<RoomState>>? roomsByFloor;
 
     [Export]
     public string Name { get; set; } = "Tower";
@@ -29,6 +29,19 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     [Export]
     public Godot.Collections.Dictionary<uint, RoomState> Rooms { get; set; } = [];
+
+    private Dictionary<int, List<RoomState>> RoomsByFloor { 
+        get
+        {
+            if (roomsByFloor is null)
+            {
+                roomsByFloor = [];
+                foreach (var room in Rooms.Values)
+                    _addRoomByFloor(room);
+            }
+            return roomsByFloor;
+        }
+    }
 
     [ExportToolButton("Add New Room")]
     public Callable addroom => Callable.From(EditorAddRoom);
@@ -102,38 +115,45 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             node.OnSave += (e, p, r) =>
             {
                 EditorWindowHelper.Close(id);
-                OnAddRoom(e, p, r);
+                AddRoom(e, p, r);
             };
         }
         vacancies = null;
     }
 
-    public void OnAddRoom(int elevation, int position, RoomDefinition r)
+    public void AddRoom(int elevation, int position, RoomDefinition r) => AddRoom(new RoomState()
     {
-        var room = new RoomState()
-        {
-            Id = RoomIdCounter + 1,
-            Definition = r,
-            Elevation = elevation,
-            FloorPosition = position,
-            Height = 1,
-        };
-        OnAddRoom(room);
-    }
+        Id = RoomIdCounter + 1,
+        Definition = r,
+        Elevation = elevation,
+        FloorPosition = position,
+        Height = 1,
+    });
 
-    public void OnAddRoom(RoomState room)
+    public void AddRoom(RoomState room)
     {
         RoomIdCounter++;
         Rooms[RoomIdCounter] = room;
         vacancies?.ExceptWith(_roomRange(room));
+        _addRoomByFloor(room);
     }
 
-    public void OnRemoveRoom(uint roomId)
+    public void RemoveRoom(RoomState room)
     {
-        if (!Rooms.TryGetValue(roomId, out RoomState? value))
-            return;
-        vacancies?.UnionWith(_roomRange(value));
-        Rooms.Remove(roomId);
+        vacancies?.UnionWith(_roomRange(room));
+        Rooms.Remove(room.Id);
+        if (RoomsByFloor is not null && RoomsByFloor.TryGetValue(room.Elevation, out var floorList))
+            floorList.Remove(room);
+    }
+
+    private void _addRoomByFloor(RoomState room)
+    {
+        if (!RoomsByFloor.TryGetValue(room.Elevation, out var floorList))
+        {
+            floorList = [];
+            RoomsByFloor[room.Elevation] = floorList;
+        }
+        floorList.Add(room);
     }
 
     #endregion
@@ -243,6 +263,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         floor.LeftBound -= (int)left;
         floor.RightBound += (int)right;
     }
+
+    public IReadOnlyList<RoomState> RoomsOnFloor(int elevation) => RoomsByFloor.TryGetValue(elevation, out var list) ? list : [];
 
     #endregion
 

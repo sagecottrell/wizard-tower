@@ -27,6 +27,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
         {
             g.OnRoomConstructionPreview += _g_OnRoomConstructionPreview;
             g.OnRoomConstructed += _g_OnRoomConstructed;
+            g.OnRoomDestroyed += _g_OnRoomDestroyed;
             g.OnFloorExtended += _g_OnFloorExtended;
             g.OnFloorReplaced += _g_OnFloorReplaced;
         }
@@ -57,6 +58,13 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
         if (@event.Room.Elevation != FloorState.Elevation)
             return;
         SetPositionVisible(@event.Room, false);
+    }
+
+    private void _g_OnRoomDestroyed(RoomDestroyedEvent @event)
+    {
+        if (@event.Room.Elevation != FloorState.Elevation)
+            return;
+        SetPositionVisible(@event.Room, true);
     }
 
     private void _g_OnRoomConstructionPreview(RoomConstructionPreviewEvent @event)

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using wizardtower.actions;
 using wizardtower.state;
 using wizardtower.UIs.build_menu;
 
@@ -23,18 +24,18 @@ public partial class TowerScript : Node3D
     {
         State.EnsureGroundFloor();
 
-        var fcs = this.AddedChild(new FloorsContainerScript(this));
-        var rcs = this.AddedChild(new RoomsContainerScript(this));
-        var tcs = this.AddedChild(new TransportsContainerScript(this));
+        AddChild(new FloorsContainerScript(this));
+        AddChild(new RoomsContainerScript(this));
+        AddChild(new TransportsContainerScript(this));
         AddChild(new TowerRoomBuilderOverlay(this).Configured(overlay =>
         {
-            overlay.OnRoomConstruct += rcs.OnRoomConstruct;
+            overlay.OnRoomConstruct += Actions.BuyRoom;
         }));
         AddChild(new TowerFloorBuilderOverlay(this).Configured(overlay =>
         {
-            overlay.OnFloorExtend += fcs.OnFloorExtend;
-            overlay.OnFloorReplace += fcs.OnFloorReplace;
-            overlay.OnFloorConstruct += fcs.OnFloorConstruct;
+            overlay.OnFloorExtend += Actions.ExtendFloor;
+            overlay.OnFloorReplace += Actions.ReplaceFloor;
+            overlay.OnFloorConstruct += Actions.BuyFloor;
         }));
 
         BuildMenu?.SetTower(State);

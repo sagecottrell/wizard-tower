@@ -73,19 +73,4 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
         if (@event.FloorDefinition.CostToBuildPerUnit <= State.Wallet)
             @event.IsAllowed = false;
     }
-
-    public void OnFloorExtend(FloorExtendingEvent @event)
-    {
-        Actions.ExtendFloor(State, @event);
-    }
-
-    public void OnFloorReplace(FloorReplacingEvent @event)
-    {
-        Actions.ReplaceFloor(State, @event);
-    }
-
-    public void OnFloorConstruct(FloorConstructingEvent @event)
-    {
-        Actions.BuyFloor(State, @event);
-    }
 }

@@ -79,6 +79,17 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
 
     [Signal]
+    public delegate void OnRoomDestroyingEventHandler(RoomDestroyingEvent @event);
+    public static RoomDestroyingEvent RoomDestroying(RoomDestroyingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomDestroying, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnRoomDestroyedEventHandler(RoomDestroyedEvent @event);
+    public static RoomDestroyedEvent RoomDestroyed(RoomDestroyedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomDestroyed, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
     public delegate void OnRoomConstructionPreviewEventHandler(RoomConstructionPreviewEvent @event);
     public static RoomConstructionPreviewEvent RoomConstructionPreview(RoomConstructionPreviewEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomConstructionPreview, @event, callerFile, callerLine);
 
