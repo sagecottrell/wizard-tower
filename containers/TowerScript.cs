@@ -2,6 +2,7 @@ using Godot;
 using System;
 using wizardtower.actions;
 using wizardtower.state;
+using wizardtower.UIs;
 using wizardtower.UIs.build_menu;
 
 namespace wizardtower.containers;
@@ -37,6 +38,7 @@ public partial class TowerScript : Node3D
             overlay.OnFloorReplace += Actions.ReplaceFloor;
             overlay.OnFloorConstruct += Actions.BuyFloor;
         }));
+        AddChild(new TowerCameraDragScript(Camera, State));
 
         BuildMenu?.SetTower(State);
         this.Child<UIManager>()?.ShowUI();

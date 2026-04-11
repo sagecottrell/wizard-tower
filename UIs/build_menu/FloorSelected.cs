@@ -15,17 +15,10 @@ public partial class FloorSelected : Node3D
 
     public void InputEvent(Node camera, InputEvent @event, Vector3 position, Vector3 normal, long shapeIdx)
     {
-        switch (@event)
-        {
-            case InputEventMouseButton mouseEvent when mouseEvent.Pressed:
-                {
-                    if (mouseEvent.ButtonMask == MouseButtonMask.Left)
-                        EmitSignalOnAccept(this);
-                    else if (mouseEvent.ButtonMask == MouseButtonMask.Right)
-                        EmitSignalOnCancel(this);
-                    break;
-                }
-        }
+        if (@event.IsActionReleased(InputMapConstants.RightClick))
+            EmitSignalOnCancel(this);
+        if (@event.IsActionReleased(InputMapConstants.LeftClick))
+            EmitSignalOnAccept(this);
     }
 
     public void MouseEntered()
