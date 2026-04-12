@@ -14,4 +14,6 @@ public partial class ItemDefinition : Resource, INamedResource<ItemDefinition>
     public string Description { get; set; } = "Item description.";
     [Export]
     public virtual Texture2D? Icon { get; set; }
+    [Export]
+    public bool PersistInWallet { get; set; }
 }

@@ -65,7 +65,9 @@ public partial class BuildMenu : VBoxContainer
             var value = TowerState.Wallet[key];
             if (NodeWallet.ChildControl(key.Name) is not Control child)
                 child = _addItemLabelToWallet(NodeWallet, key, value);
-            // we do not remove labels that are zero or less
+            // only remove labels that are zero or less if PersistInWallet is false
+            if (value <= 0 && !key.PersistInWallet)
+                child.QueueFree();
             child.Child<Label>()!.Text = value.ToString();
         }
     }

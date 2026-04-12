@@ -11,6 +11,7 @@
     <None Include="docs\construction-diagram.md" />
     <None Include="docs\overallgameloop.md" />
     <None Include="docs\towergameloop.md" />
+    <None Include="TODO.md" />
 	  <AdditionalFiles Include="project.godot" />
   </ItemGroup>
 
