@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TierDefinition" format=3 uid="uid://3lnqtlh06vm6"]
+
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="1_x4uj8"]
+[ext_resource type="Script" uid="uid://mkjorlbwy7he" path="res://resource_types/ResearchDefinition.cs" id="2_uw5lm"]
+[ext_resource type="Script" uid="uid://boidv674k5uao" path="res://resource_types/TierDefinition.cs" id="3_hcvrb"]
+
+[sub_resource type="Resource" id="Resource_x4uj8"]
+script = ExtResource("1_x4uj8")
+Data = Dictionary[String, int]({})
+
+[sub_resource type="Resource" id="Resource_uw5lm"]
+script = ExtResource("1_x4uj8")
+Data = Dictionary[String, int]({})
+
+[resource]
+script = ExtResource("3_hcvrb")
+Name = "Tier 0"
+metadata/_custom_type_script = "uid://boidv674k5uao"

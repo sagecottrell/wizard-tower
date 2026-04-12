@@ -4,7 +4,7 @@ namespace wizardtower.resource_types.room_functions;
 
 [Tool]
 [GlobalClass]
-public partial class RoomProvideTowerWorkers : BaseRoomFunction
+public partial class RoomProvideTowerWorkersDefinition : BaseRoomFunctionDefinition
 {
     [Export]
     public NumericDict<WorkerDefinition, uint> WorkersToProduce { get; set; } = [];

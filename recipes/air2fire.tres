@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3 uid="uid://dxmvtn5stl324"]
+
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="1_ye0h1"]
+[ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="2_ppn42"]
+[ext_resource type="Script" path="res://resource_types/RandomOutput.cs" id="2_r18d1"]
+
+[sub_resource type="Resource" id="Resource_ye0h1"]
+script = ExtResource("1_ye0h1")
+Data = Dictionary[String, int]({
+"res://items/air.tres": 1
+})
+
+[sub_resource type="Resource" id="Resource_a6447"]
+script = ExtResource("1_ye0h1")
+Data = Dictionary[String, int]({
+"res://items/fire.tres": 1
+})
+
+[sub_resource type="Resource" id="Resource_i86ji"]
+script = ExtResource("2_r18d1")
+Output = SubResource("Resource_a6447")
+metadata/_custom_type_script = "uid://blhdpbj6bpoyf"
+
+[resource]
+script = ExtResource("2_ppn42")
+Input = SubResource("Resource_ye0h1")
+Output = Array[Object]([SubResource("Resource_i86ji")])
+metadata/_custom_type_script = "uid://ysnph6jm54y6"
