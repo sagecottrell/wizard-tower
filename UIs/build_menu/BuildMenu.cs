@@ -2,7 +2,6 @@ using Godot;
 using Godot.Collections;
 using System.Linq;
 using wizardtower.actions.ui;
-using wizardtower.events;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -15,12 +14,6 @@ public partial class BuildMenu : VBoxContainer
     public TowerState? TowerState { get; set; }
 
     [Export]
-    public Label? NodeTowerName { get; set; }
-
-    [Export]
-    public Control? NodeWallet { get; set; }
-
-    [Export]
     public Control? NodeRooms { get; set; }
 
     [Export]
@@ -29,26 +22,42 @@ public partial class BuildMenu : VBoxContainer
     [Export]
     public Control? NodeTransports { get; set; }
 
+    private System.Collections.Generic.Dictionary<NumericDict<ItemDefinition, uint>, RichTextLabel> rtls = [];
+
+    public override void _EnterTree()
+    {
+        if (GlobalSignals.Singleton is GlobalSignals g)
+        {
+            g.OnTowerResourceChanged += _g_OnTowerResourceChanged;
+        }
+    }
+    public override void _ExitTree()
+    {
+        if (GlobalSignals.Singleton is GlobalSignals g)
+        {
+            g.OnTowerResourceChanged -= _g_OnTowerResourceChanged;
+        }
+    }
+
     public override void _Ready()
     {
         if (Engine.IsEditorHint())
             return;
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnTowerResourceChanged += _onTowerResourceChanged;
-        }
         if (TowerState is not null)
             SetTower(TowerState);
+    }
+
+    private void _g_OnTowerResourceChanged(events.TowerResourceChangedEvent @event)
+    {
+        foreach (var (cost, rtl) in rtls)
+        {
+            rtl.Text = _toStringAsCost(cost);
+        }
     }
 
     public void SetTower(TowerState state)
     {
         TowerState = state;
-        if (NodeWallet is not null)
-            foreach (var (key, value) in TowerState.Wallet)
-                _addItemLabelToWallet(NodeWallet, key, value);
-        if (NodeTowerName is not null)
-            NodeTowerName.Text = state.Name;
         if (NodeRooms is not null)
             _setRooms(NodeRooms, state.UnlockedRooms);
         if (NodeFloors is not null)
@@ -56,27 +65,6 @@ public partial class BuildMenu : VBoxContainer
         if (NodeTransports is not null)
             _setTransports(NodeTransports, state.UnlockedTransports);
     }
-
-    private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
-    {
-        if (TowerState is null || NodeWallet is null || @event.TowerState != TowerState) return;
-        foreach (var key in @event.Amount.Keys)
-        {
-            var value = TowerState.Wallet[key];
-            if (NodeWallet.ChildControl(key.Name) is not Control child)
-                child = _addItemLabelToWallet(NodeWallet, key, value);
-            // only remove labels that are zero or less if PersistInWallet is false
-            if (value <= 0 && !key.PersistInWallet)
-                child.QueueFree();
-            child.Child<Label>()!.Text = value.ToString();
-        }
-    }
-
-    private static HBoxContainer _addItemLabelToWallet(Control nodewallet, ItemDefinition item, uint amount) => nodewallet.AddedChild(
-        new HBoxContainer { Name = item.Name }
-            .WithChild(new TextureRect { Texture = item.Icon, TooltipText = item.Name, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
-            .WithChild(new Label { Text = $"{amount}" })
-    );
 
     private void _setRooms(Control nodeRooms, Array<RoomDefinition> rooms)
     {
@@ -93,28 +81,23 @@ public partial class BuildMenu : VBoxContainer
         foreach (var (name, def) in names)
         {
             nodeRooms.AddChild(
-                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, RoomDefinition = def }
+                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.Fill, SizeFlagsVertical = SizeFlags.Fill, CustomMinimumSize = new(300, 0), RoomDefinition = def, }
                 .Configured(x =>
                 {
                     x.OnClicked += _x_OnClicked;
                 })
                 .WithChild(new TextureRect { Texture = def.Icon, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
                 .WithChild(new Label { Text = name, SizeFlagsHorizontal = SizeFlags.ExpandFill })
-                .WithChild(new RichTextLabel { 
-                    BbcodeEnabled = true, 
-                    Text = _toStringAsCost(def.CostToBuildPerUnit), 
-                    FitContent = true, 
+                .WithChild(new RichTextLabel
+                {
+                    BbcodeEnabled = true,
+                    Text = _toStringAsCost(def.CostToBuildPerUnit),
+                    FitContent = true,
                     ClipContents = false,
                     AutowrapMode = TextServer.AutowrapMode.Off,
-                }.Configured(rtl =>
+                }.Configured(r =>
                 {
-                    if (GlobalSignals.Singleton is GlobalSignals g)
-                    {
-                        g.OnTowerResourceChanged += e =>
-                        {
-                            rtl.Text = _toStringAsCost(def.CostToBuildPerUnit);
-                        };
-                    }
+                    rtls[def.CostToBuildPerUnit] = r;
                 }))
             );
         }
@@ -135,7 +118,7 @@ public partial class BuildMenu : VBoxContainer
         foreach (var (name, def) in names)
         {
             nodeFloors.AddChild(
-                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, FloorDefinition = def }
+                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.Fill, SizeFlagsVertical = SizeFlags.Fill, CustomMinimumSize = new(300, 0), FloorDefinition = def }
                 .Configured(x =>
                 {
                     x.OnClicked += _x_OnClicked;
@@ -149,7 +132,10 @@ public partial class BuildMenu : VBoxContainer
                     FitContent = true,
                     ClipContents = false,
                     AutowrapMode = TextServer.AutowrapMode.Off,
-                })
+                }.Configured(r =>
+                {
+                    rtls[def.CostToBuildPerUnit] = r;
+                }))
             );
         }
     }
@@ -169,7 +155,7 @@ public partial class BuildMenu : VBoxContainer
         foreach (var (name, def) in names)
         {
             nodeTransports.AddChild(
-                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.ExpandFill, TransportDefinition = def }
+                new BuildButton() { Name = name, SizeFlagsHorizontal = SizeFlags.Fill, SizeFlagsVertical = SizeFlags.Fill, CustomMinimumSize = new(300, 0), TransportDefinition = def }
                 .Configured(x =>
                 {
                     x.OnClicked += _x_OnClicked;
@@ -183,7 +169,10 @@ public partial class BuildMenu : VBoxContainer
                     FitContent = true,
                     ClipContents = false,
                     AutowrapMode = TextServer.AutowrapMode.Off,
-                })
+                }.Configured(r =>
+                {
+                    rtls[def.CostToBuild] = r;
+                }))
             );
         }
     }
@@ -197,7 +186,7 @@ public partial class BuildMenu : VBoxContainer
             var color = "white";
             if (TowerState is null || !TowerState.Wallet.TryGetValue(kv.Key, out uint walletAmount) || walletAmount < kv.Value)
                 color = "red";
-            return $"[color={color}]{kv.Value}[/color][img height=24]{kv.Key.Icon?.ResourcePath}[/img]";
+            return $"[color={color}]{kv.Value}[/color] [img height=24]{kv.Key.Icon?.ResourcePath}[/img]";
         }));
     }
 

@@ -8,4 +8,5 @@ script = ExtResource("1_wi7jr")
 Name = "Fire"
 Description = "fire"
 Icon = ExtResource("1_yvs2u")
+PersistInWallet = true
 metadata/_custom_type_script = "uid://c01j7hpwt3hfa"

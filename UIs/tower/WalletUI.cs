@@ -1,0 +1,41 @@
+using Godot;
+using System.Linq;
+using wizardtower.events;
+using wizardtower.resource_types;
+using wizardtower.state;
+
+namespace wizardtower.UIs.tower;
+
+public partial class WalletUI(TowerState towerState) : VBoxContainer
+{
+    public override void _Ready()
+    {
+        foreach (var (key, value) in towerState.Wallet)
+            _addItemLabelToWallet(key, value);
+        if (GlobalSignals.Singleton is GlobalSignals g)
+        {
+            g.OnTowerResourceChanged += _onTowerResourceChanged;
+        }
+    }
+
+    private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
+    {
+        if (towerState is null || @event.TowerState != towerState) return;
+        foreach (var key in @event.Amount.Keys.OrderBy(x => x.Name))
+        {
+            var value = towerState.Wallet[key];
+            if (this.ChildControl(key.Name) is not Control child)
+                child = _addItemLabelToWallet(key, value);
+            // only remove labels that are zero or less if PersistInWallet is false
+            if (value <= 0 && !key.PersistInWallet)
+                child.QueueFree();
+            child.Child<Label>()!.Text = value.ToString();
+        }
+    }
+
+    private HBoxContainer _addItemLabelToWallet(ItemDefinition item, uint amount) => this.AddedChild(
+        new HBoxContainer { Name = item.Name, SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsVertical = SizeFlags.ExpandFill, CustomMinimumSize = new(100, 0) }
+            .WithChild(new TextureRect { Texture = item.Icon, TooltipText = item.Name, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
+            .WithChild(new Label { Text = $"{amount}" })
+    );
+}

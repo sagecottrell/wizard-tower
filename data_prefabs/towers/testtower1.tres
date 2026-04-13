@@ -99,7 +99,7 @@ metadata/_custom_type_script = "uid://b3s7iebxp5m14"
 script = ExtResource("5_8sv8r")
 Data = Dictionary[String, int]({
 "res://items/air.tres": 1000,
-"res://items/coin.tres": 100,
+"res://items/coin.tres": 20,
 "res://items/fire.tres": 100
 })
 

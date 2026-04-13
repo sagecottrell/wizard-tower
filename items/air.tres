@@ -8,4 +8,5 @@ script = ExtResource("2_3t3t8")
 Name = "Air"
 Description = "air"
 Icon = ExtResource("1_mrj7p")
+PersistInWallet = true
 metadata/_custom_type_script = "uid://c01j7hpwt3hfa"
