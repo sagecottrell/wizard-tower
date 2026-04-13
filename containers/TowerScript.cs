@@ -4,6 +4,7 @@ using wizardtower.actions;
 using wizardtower.state;
 using wizardtower.UIs;
 using wizardtower.UIs.build_menu;
+using wizardtower.UIs.tower;
 
 namespace wizardtower.containers;
 
@@ -19,7 +20,10 @@ public partial class TowerScript : Node3D
     public Node3D? Camera { get; set; }
 
     [Export]
-    public BuildMenu? BuildMenu { get; set; }
+    public Node? WalletContainer { get; set; }
+
+    [Export]
+    public UIManager? BuildMenu { get; set; }
 
     public override void _Ready()
     {
@@ -39,8 +43,7 @@ public partial class TowerScript : Node3D
             overlay.OnFloorConstruct += Actions.BuyFloor;
         }));
         AddChild(new TowerCameraDragScript(Camera, State));
-
-        BuildMenu?.SetTower(State);
+        WalletContainer?.AddChild(new WalletUI(State));
         this.Child<UIManager>()?.ShowUI();
     }
 
@@ -56,4 +59,22 @@ public partial class TowerScript : Node3D
 
         PreviousState = State.Copy();
     }
+
+
+    public override void _UnhandledKeyInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed(InputMapConstants.OpenBuildMenu) && BuildMenu is not null)
+        {
+            if (BuildMenu.Child<BuildMenu>() is BuildMenu menu)
+            {
+                menu.QueueFree();
+            }
+            else if (SceneLoader.TryLoadScene<BuildMenu>(out var bm))
+            {
+                BuildMenu.AddChild(bm);
+                bm.SetTower(State);
+            }
+        }
+    }
+
 }

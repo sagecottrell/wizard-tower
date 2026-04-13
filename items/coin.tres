@@ -8,4 +8,5 @@ script = ExtResource("1_2jpt2")
 Name = "Coin"
 Description = "Coin"
 Icon = ExtResource("1_527q1")
+PersistInWallet = true
 metadata/_custom_type_script = "uid://c01j7hpwt3hfa"
