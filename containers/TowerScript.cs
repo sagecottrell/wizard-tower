@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using wizardtower.actions;
+using wizardtower.actions.ui;
 using wizardtower.state;
 using wizardtower.UIs;
 using wizardtower.UIs.build_menu;
@@ -75,6 +76,7 @@ public partial class TowerScript : Node3D
                 bm.SetTower(State);
             }
         }
+        else if (@event.IsActionPressed(InputMapConstants.Cancel))
+            UIActions.Cancel(new());
     }
-
 }

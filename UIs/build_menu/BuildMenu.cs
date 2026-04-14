@@ -26,17 +26,20 @@ public partial class BuildMenu : VBoxContainer
 
     public override void _EnterTree()
     {
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnTowerResourceChanged += _g_OnTowerResourceChanged;
-        }
+        GlobalSignals.Singleton.OnTowerResourceChanged += _g_OnTowerResourceChanged;
+        GlobalSignals.Singleton.OnCancelledUI += _OnCancelledUI;
     }
+
     public override void _ExitTree()
     {
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnTowerResourceChanged -= _g_OnTowerResourceChanged;
-        }
+        GlobalSignals.Singleton.OnTowerResourceChanged -= _g_OnTowerResourceChanged;
+        GlobalSignals.Singleton.OnCancelledUI -= _OnCancelledUI;
+    }
+
+    private void _OnCancelledUI(events.ui.CancelledUIEvent @event)
+    {
+        UIActions.BuildDeselectForce(TowerState);
+        QueueFree();
     }
 
     public override void _Ready()

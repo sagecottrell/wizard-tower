@@ -1,10 +1,10 @@
 using Godot;
 using System;
-using System.Drawing;
 using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
 using wizardtower.events.interfaces;
+using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -25,21 +25,30 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private FloorDefinition? _currentFloorDef;
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnFloorConstructionSelected += _onFloorConstructionSelected;
-            g.OnFloorConstructionStopped += _onFloorConstructionStopped;
-            g.OnFloorExtended += _onFloorExtended;
-            g.OnFloorReplaced += _onFloorReplaced;
-            g.OnFloorConstructed += _onFloorConstructed;
-        }
+        GlobalSignals.Singleton.OnFloorConstructionSelected += _onFloorConstructionSelected;
+        GlobalSignals.Singleton.OnFloorConstructionStopped += _onFloorConstructionStopped;
+        GlobalSignals.Singleton.OnFloorExtended += _onFloorExtended;
+        GlobalSignals.Singleton.OnFloorReplaced += _onFloorReplaced;
+        GlobalSignals.Singleton.OnFloorConstructed += _onFloorConstructed;
+        GlobalSignals.Singleton.OnCancelledUI += _OnCancelledUI;
+    }
+
+    public override void _ExitTree()
+    {
+        GlobalSignals.Singleton.OnFloorConstructionSelected -= _onFloorConstructionSelected;
+        GlobalSignals.Singleton.OnFloorConstructionStopped -= _onFloorConstructionStopped;
+        GlobalSignals.Singleton.OnFloorExtended -= _onFloorExtended;
+        GlobalSignals.Singleton.OnFloorReplaced -= _onFloorReplaced;
+        GlobalSignals.Singleton.OnFloorConstructed -= _onFloorConstructed;
+        GlobalSignals.Singleton.OnCancelledUI -= _OnCancelledUI;
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _onFloorExtended(FloorExtendedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _onFloorConstructed(FloorConstructedEvent @event) => _tryStopConstruction(@event.Floor);
+    private void _OnCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
 
     private void _tryStopConstruction(FloorState floor)
     {
@@ -47,7 +56,6 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
             GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
         else
         {
-            this.Debug($"{floor.Elevation} - {floor.Definition.Name}");
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                 if (_selected.Remove((floor.Elevation, i), out var s))
                     s.QueueFree();
@@ -57,16 +65,21 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onFloorConstructionStopped(FloorConstructionStoppedEvent @event)
     {
-        this.FreeChildren(_selected.Values);
-        _selected.Clear();
+        _reset();
     }
 
     private void _onFloorConstructionSelected(FloorConstructionSelectedEvent @event)
     {
+        _reset();
         _currentFloorDef = @event.FloorDefinition;
+        _showSelectable();
+    }
+
+    private void _reset()
+    {
         this.FreeChildren(_selected.Values);
         _selected.Clear();
-        _showSelectable();
+        _currentFloorDef = null;
     }
 
     private void _showSelectable()

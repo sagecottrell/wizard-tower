@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
+using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -20,13 +21,18 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 
     private RoomDefinition? _currentRoomDef;
 
-    public override void _Ready()
+
+    public override void _EnterTree()
     {
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnRoomConstructionSelected += _onRoomConstructionSelected;
-            g.OnRoomConstructionStopped += _onRoomConstructionStopped;
-        }
+        GlobalSignals.Singleton.OnRoomConstructionSelected += _onRoomConstructionSelected;
+        GlobalSignals.Singleton.OnRoomConstructionStopped += _onRoomConstructionStopped;
+        GlobalSignals.Singleton.OnCancelledUI += _OnCancelledUI;
+    }
+    public override void _ExitTree()
+    {
+        GlobalSignals.Singleton.OnRoomConstructionSelected -= _onRoomConstructionSelected;
+        GlobalSignals.Singleton.OnRoomConstructionStopped -= _onRoomConstructionStopped;
+        GlobalSignals.Singleton.OnCancelledUI -= _OnCancelledUI;
     }
 
     private void _reset()
@@ -40,6 +46,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     }
 
     private void _onRoomConstructionStopped(RoomConstructionStoppedEvent @event) => _reset();
+    private void _OnCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
@@ -55,7 +62,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
                     {
                         var x = i;
                         var y = h;
-                        _selected[(x, y)] = s; 
+                        _selected[(x, y)] = s;
                         s.Position = s.TowerCoordToNodePosition(x, y);
                         AddChild(s);
                         s.OnMouseEntered += _ => _onMouseEnter(@event, x, y);

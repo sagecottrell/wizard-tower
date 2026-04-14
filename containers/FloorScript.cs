@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.events;
+using wizardtower.events.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
@@ -47,7 +48,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
 
     private void _g_OnFloorExtended(FloorExtendedEvent @event)
     {
-        if (@event.Floor.Elevation != FloorState.Elevation) 
+        if (@event.Floor.Elevation != FloorState.Elevation)
             return;
         SetPositionVisible(@event.Floor.LeftBound, @event.ExtendedLeft, true);
         SetPositionVisible(@event.Floor.RightBound - (int)@event.ExtendedRight + 1, @event.ExtendedRight, true);

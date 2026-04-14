@@ -12,10 +12,16 @@ public partial class WalletUI(TowerState towerState) : VBoxContainer
     {
         foreach (var (key, value) in towerState.Wallet)
             _addItemLabelToWallet(key, value);
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnTowerResourceChanged += _onTowerResourceChanged;
-        }
+    }
+
+    public override void _EnterTree()
+    {
+        GlobalSignals.Singleton.OnTowerResourceChanged += _onTowerResourceChanged;
+    }
+
+    public override void _ExitTree()
+    {
+        GlobalSignals.Singleton.OnTowerResourceChanged -= _onTowerResourceChanged;
     }
 
     private void _onTowerResourceChanged(TowerResourceChangedEvent @event)

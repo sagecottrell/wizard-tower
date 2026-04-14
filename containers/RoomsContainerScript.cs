@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using wizardtower.events;
+using wizardtower.events.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
@@ -38,7 +39,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 
     public void SetupRoomDisplay(RoomState newRoom)
     {
-        Rooms[newRoom] = this.AddedChild(new RoomScript() { State = newRoom  });
+        Rooms[newRoom] = this.AddedChild(new RoomScript() { State = newRoom });
     }
 
     private void _g_OnRoomConstructionStopping(RoomConstructionStoppingEvent @event)

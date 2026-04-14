@@ -10,9 +10,7 @@ public static partial class UIActions
 
     public static void BuildSelectRoom(TowerState state, RoomDefinition roomDef)
     {
-        var c  = _currentlyBuilding;
-        BuildDeselectForce(state);
-        if (c == roomDef)
+        if (_currentlyBuilding == roomDef)
             return;
         _currentlyBuilding = roomDef;
         var ev = GlobalSignals.RoomConstructionSelecting(new(state, roomDef));

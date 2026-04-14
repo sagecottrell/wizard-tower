@@ -3,7 +3,7 @@ using wizardtower.events.interfaces;
 using wizardtower.resource_types;
 using wizardtower.state;
 
-namespace wizardtower.events;
+namespace wizardtower.events.ui;
 
 public partial class RoomConstructionStoppingEvent(TowerState towerState, RoomDefinition roomDefinition) : GodotObject, IAllowableEvent, IDebug, ITowerEvent, IEvent
 {

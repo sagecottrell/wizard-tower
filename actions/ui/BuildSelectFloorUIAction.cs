@@ -7,9 +7,7 @@ public static partial class UIActions
 {
     public static void BuildSelectFloor(TowerState state, FloorDefinition floorDef)
     {
-        var c = _currentlyBuilding;
-        BuildDeselectForce(state);
-        if (floorDef == c)
+        if (floorDef == _currentlyBuilding)
             return;
         _currentlyBuilding = floorDef;
         var ev = GlobalSignals.FloorConstructionSelecting(new(state, floorDef));

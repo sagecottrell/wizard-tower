@@ -4,15 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using wizardtower.events;
+using wizardtower.events.ui;
 
 namespace wizardtower;
 
 [Tool]
 public partial class GlobalSignals : Node
 {
-    private static GlobalSignals? singleton;
+    private static GlobalSignals singleton;
 
-    public static GlobalSignals? Singleton {
+    public static GlobalSignals Singleton {
         get
         {
             if (Engine.IsEditorHint())
@@ -30,7 +31,7 @@ public partial class GlobalSignals : Node
         private set => singleton = value; 
     }
 
-    // Use _EnterTree to make sure the Singleton instance is avaiable in _Ready()
+    // Use _EnterTree to make sure the Singleton instance is available in _Ready()
     public override void _EnterTree()
     {
         if (Engine.IsEditorHint())
@@ -158,6 +159,13 @@ public partial class GlobalSignals : Node
     [Signal]
     public delegate void OnTowerResourceChangedEventHandler(TowerResourceChangedEvent @event);
     public static TowerResourceChangedEvent TowerResourceChanged(TowerResourceChangedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTowerResourceChanged, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnCancelledUIEventHandler(CancelledUIEvent @event);
+    public static CancelledUIEvent CancelledUI(CancelledUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnCancelledUI, @event, callerFile, callerLine);
 
     // ==================================================================================================================
     // ==================================================================================================================

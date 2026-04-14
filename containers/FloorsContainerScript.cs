@@ -1,7 +1,7 @@
 using Godot;
 using System.Collections.Generic;
-using wizardtower.actions;
 using wizardtower.events;
+using wizardtower.events.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
