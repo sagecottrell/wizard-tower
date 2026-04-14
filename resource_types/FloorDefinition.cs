@@ -35,7 +35,10 @@ public partial class FloorDefinition : Resource, INamedResource<FloorDefinition>
     [Export]
     public bool CanBuildInBasement { get; set; }
 
-    public bool CanBuildFloorAt(int elevation) 
-        => (CanBuildAtElevations is not null && CanBuildAtElevations.Contains(elevation)) 
-            || (elevation < 0) == CanBuildInBasement;
+    public bool CanBuildFloorAt(int elevation)
+    {
+        if (elevation < 0 && CanBuildInBasement)
+            return true;
+        return CanBuildAtElevations is null || CanBuildAtElevations.Contains(elevation);
+    }
 }
