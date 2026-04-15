@@ -70,8 +70,6 @@ OthersCanStack = true
 metadata/_custom_type_script = "uid://cs6dkcx2kdv1p"
 
 [node name="PanelContainer" type="PanelContainer" parent="UIManager" unique_id=1785156313]
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=170547547]
 transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.70710677, 0, -0.70710677, 0.7071067, 0, 11.315495, 10.989061)

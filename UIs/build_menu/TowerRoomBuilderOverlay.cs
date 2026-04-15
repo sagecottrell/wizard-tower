@@ -21,6 +21,26 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 
     private RoomDefinition? _currentRoomDef;
 
+    private RichTextLabel _uiLabel = new()
+    {
+        BbcodeEnabled = true,
+        FitContent = true,
+        ClipContents = false,
+        AutowrapMode = TextServer.AutowrapMode.Off,
+        Visible = false,
+    };
+
+    public override void _Ready()
+    {
+        AddChild(new PanelContainer()
+        {
+            PivotOffsetRatio = new(0.5f, 0),
+            AnchorLeft = 0.5f,
+            AnchorRight = 0.5f,
+            GrowHorizontal = Control.GrowDirection.Both,
+        }.WithChild(_uiLabel));
+    }
+
 
     public override void _EnterTree()
     {
@@ -38,6 +58,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     private void _reset()
     {
         this.FreeChildren<RoomSelected>();
+        _uiLabel.Visible = false;
         _selected.Clear();
         _revertFloorVis();
         BuildingRoom?.QueueFree();
@@ -51,6 +72,8 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
         _currentRoomDef = @event.RoomDefinition;
+        _uiLabel.Visible = true;
+        _uiLabel.Text = $"Constructing: {_uiLabel.LineHeightImage(_currentRoomDef.Icon)} {_currentRoomDef.Name}";
 
         foreach (var (h, floor) in Tower.State.Floors)
         {

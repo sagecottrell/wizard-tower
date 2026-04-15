@@ -12,6 +12,7 @@ public static partial class UIActions
     {
         if (_currentlyBuilding == roomDef)
             return;
+        BuildDeselectForce(state);
         _currentlyBuilding = roomDef;
         var ev = GlobalSignals.RoomConstructionSelecting(new(state, roomDef));
         if (state.Wallet >= roomDef.CostToBuildPerUnit && ev.IsAllowed)

@@ -18,4 +18,5 @@ Icon = ExtResource("3_yxsey")
 FloorBackgroundTileScene = ExtResource("2_blukl")
 CostToBuildPerUnit = SubResource("Resource_cf1s2")
 CanBuildAtElevations = []
-CanBuildInBasement = true
+CanBuildAboveGroundAnyElevation = false
+CanBuildInBasementAnyDepth = true

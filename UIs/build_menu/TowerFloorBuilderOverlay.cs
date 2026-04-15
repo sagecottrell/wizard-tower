@@ -25,6 +25,26 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 
     private FloorDefinition? _currentFloorDef;
 
+    private RichTextLabel _uiLabel = new()
+    {
+        BbcodeEnabled = true,
+        FitContent = true,
+        ClipContents = false,
+        AutowrapMode = TextServer.AutowrapMode.Off,
+    };
+
+    public override void _Ready()
+    {
+        AddChild(new PanelContainer()
+        {
+            PivotOffsetRatio = new(0.5f, 0),
+            AnchorLeft = 0.5f,
+            AnchorRight = 0.5f,
+            GrowHorizontal = Control.GrowDirection.Both,
+        }.WithChild(_uiLabel));
+    }
+
+
     public override void _EnterTree()
     {
         GlobalSignals.Singleton.OnFloorConstructionSelected += _onFloorConstructionSelected;
@@ -72,11 +92,14 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
     {
         _reset();
         _currentFloorDef = @event.FloorDefinition;
+        _uiLabel.Visible = true;
+        _uiLabel.Text = $"Constructing: {_uiLabel.LineHeightImage(_currentFloorDef.Icon)} {_currentFloorDef.Name}";
         _showSelectable();
     }
 
     private void _reset()
     {
+        _uiLabel.Visible = false;
         this.FreeChildren(_selected.Values);
         _selected.Clear();
         _currentFloorDef = null;

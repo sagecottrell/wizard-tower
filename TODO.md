@@ -16,10 +16,11 @@ kanban
         [assign room outputs to other rooms with priority]
         [worker pathfinding and movement]
     wip[Working]
-        [escape to stop building]
     test[Testing]
     done[Done]
         [refactor build menu to be less intrusive]
+        [escape to stop building]
+        [bug in selecting room/floors]
 
 ```
 

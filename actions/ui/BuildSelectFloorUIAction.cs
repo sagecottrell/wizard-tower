@@ -9,6 +9,7 @@ public static partial class UIActions
     {
         if (floorDef == _currentlyBuilding)
             return;
+        BuildDeselectForce(state);
         _currentlyBuilding = floorDef;
         var ev = GlobalSignals.FloorConstructionSelecting(new(state, floorDef));
         if (state.Wallet >= floorDef.CostToBuildPerUnit && ev.IsAllowed)
