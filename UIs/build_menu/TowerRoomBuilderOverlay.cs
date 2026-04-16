@@ -147,6 +147,6 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _revertFloorVis()
     {
-        GlobalSignals.RoomConstructionPreview(new(Tower.State, null));
+        GlobalSignals.RoomConstructionPreviewStopped(new(Tower.State));
     }
 }

@@ -15,8 +15,8 @@ public static partial class Actions
             floor.Definition = @event.NewDefinition;
             foreach (var room in tower.RoomsOnFloor(floor.Elevation).ToList())
                 if (!room.Definition.AllowedFloors.Contains(floor.Definition))
-                    DestroyRoom(new(tower, room, @event));
-            GlobalSignals.FloorReplaced(new(tower, floor, @event.NewDefinition));
+                    DestroyRoom(new(tower, room) { Source = @event });
+            GlobalSignals.FloorReplaced(new(tower, floor, @event.NewDefinition) { Source = @event });
         }
     }
 }

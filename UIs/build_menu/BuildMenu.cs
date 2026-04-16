@@ -198,13 +198,13 @@ public partial class BuildMenu : VBoxContainer
         if (TowerState is null)
             return;
 
-        if (btn.RoomDefinition is not null)
+        if (btn.RoomDefinition is not null) 
         {
-            UIActions.BuildSelectRoom(TowerState, btn.RoomDefinition);
+            UIActions.BuildSelectRoom(new(TowerState, btn.RoomDefinition));
         }
         else if (btn.FloorDefinition is not null)
         {
-            UIActions.BuildSelectFloor(TowerState, btn.FloorDefinition);
+            UIActions.BuildSelectFloor(new(TowerState, btn.FloorDefinition));
         }
     }
 

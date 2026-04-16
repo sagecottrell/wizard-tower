@@ -94,6 +94,10 @@ public partial class GlobalSignals : Node
     public delegate void OnRoomConstructionPreviewEventHandler(RoomConstructionPreviewEvent @event);
     public static RoomConstructionPreviewEvent RoomConstructionPreview(RoomConstructionPreviewEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomConstructionPreview, @event, callerFile, callerLine);
 
+    [Signal]
+    public delegate void OnRoomConstructionPreviewStoppedEventHandler(RoomConstructionPreviewStoppedEvent @event);
+    public static RoomConstructionPreviewStoppedEvent RoomConstructionPreviewStopped(RoomConstructionPreviewStoppedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomConstructionPreviewStopped, @event, callerFile, callerLine);
+
     // ==================================================================================================================
     // ==================================================================================================================
 
@@ -148,6 +152,57 @@ public partial class GlobalSignals : Node
     [Signal]
     public delegate void OnFloorConstructionStoppedEventHandler(FloorConstructionStoppedEvent @event);
     public static FloorConstructionStoppedEvent FloorConstructionStopped(FloorConstructionStoppedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnFloorConstructionStopped, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportConstructionSelectingEventHandler(TransportConstructionSelectingEvent @event);
+    public static TransportConstructionSelectingEvent TransportConstructionSelecting(TransportConstructionSelectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionSelecting, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportConstructionSelectedEventHandler(TransportConstructionSelectedEvent @event);
+    public static TransportConstructionSelectedEvent TransportConstructionSelected(TransportConstructionSelectedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionSelected, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportConstructionStoppingEventHandler(TransportConstructionStoppingEvent @event);
+    public static TransportConstructionStoppingEvent TransportConstructionStopping(TransportConstructionStoppingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionStopping, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportConstructionStoppedEventHandler(TransportConstructionStoppedEvent @event);
+    public static TransportConstructionStoppedEvent TransportConstructionStopped(TransportConstructionStoppedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionStopped, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportConstructingEventHandler(TransportConstructingEvent @event);
+    public static TransportConstructingEvent TransportConstructing(TransportConstructingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructing, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportConstructedEventHandler(TransportConstructedEvent @event);
+    public static TransportConstructedEvent TransportConstructed(TransportConstructedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructed, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportDestroyingEventHandler(TransportDestroyingEvent @event);
+    public static TransportDestroyingEvent TransportDestroying(TransportDestroyingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportDestroying, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportDestroyedEventHandler(TransportDestroyedEvent @event);
+    public static TransportDestroyedEvent TransportDestroyed(TransportDestroyedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportDestroyed, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportConstructionPreviewEventHandler(TransportConstructionPreviewEvent @event);
+    public static TransportConstructionPreviewEvent TransportConstructionPreview(TransportConstructionPreviewEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionPreview, @event, callerFile, callerLine);
 
     // ==================================================================================================================
     // ==================================================================================================================

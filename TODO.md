@@ -16,6 +16,7 @@ kanban
         [assign room outputs to other rooms with priority]
         [worker pathfinding and movement]
     wip[Working]
+        [build transports]
     test[Testing]
     done[Done]
         [refactor build menu to be less intrusive]

@@ -1,3 +1,4 @@
+using Godot;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -5,6 +6,7 @@ namespace wizardtower.actions.ui;
 
 public static partial class UIActions
 {
+    private static Resource? _currentlyBuilding;
     public static void BuildDeselectForce(TowerState state)
     {
         switch (_currentlyBuilding)

@@ -5,22 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://dwur7kaj1v6tf" path="res://rooms/images/room-hotel-basic-small-empty.png" id="3_ethje"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_eud12"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_1ryl7"]
-[ext_resource type="Script" uid="uid://cwrvgxy6cpb3m" path="res://resource_types/room_functions/BaseRoomFunction.cs" id="4_eud12"]
-[ext_resource type="Script" uid="uid://cqiw5vy0pkb10" path="res://resource_types/room_functions/RoomConvertResources.cs" id="5_1ryl7"]
+[ext_resource type="Script" uid="uid://b7asf65risos5" path="res://resource_types/room_functions/BaseRoomFunctionDefinition.cs" id="4_eud12"]
 
 [sub_resource type="Resource" id="Resource_todtk"]
 script = ExtResource("2_ethje")
 Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_5h6u3"]
-script = ExtResource("2_ethje")
-Data = Dictionary[String, int]({})
-
-[sub_resource type="Resource" id="Resource_tmdbe"]
-script = ExtResource("5_1ryl7")
-Input = SubResource("Resource_5h6u3")
-Output = []
-metadata/_custom_type_script = "uid://cqiw5vy0pkb10"
 
 [sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")
@@ -32,5 +21,4 @@ Name = "Room2"
 Icon = ExtResource("3_ethje")
 CostToBuildPerUnit = SubResource("Resource_todtk")
 Upgrades = SubResource("Resource_ethje")
-RoomFunctions = Array[ExtResource("4_eud12")]([SubResource("Resource_tmdbe")])
 metadata/_custom_type_script = "uid://wmhswxpf1gb5"
