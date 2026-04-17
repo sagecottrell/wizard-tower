@@ -15,6 +15,7 @@ Data = Dictionary[String, int]({
 
 [resource]
 script = ExtResource("2_qrd80")
+Name = "Stairs"
 Icon = ExtResource("3_tcp0q")
 Scene = ExtResource("4_tpbr4")
 CanStopAtFloor = Array[ExtResource("1_t61ax")]([ExtResource("2_tpbr4")])

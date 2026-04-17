@@ -1,9 +1,9 @@
 using Godot;
 using System;
+using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
-using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -12,13 +12,6 @@ namespace wizardtower.UIs.build_menu;
 
 public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
 {
-    [Signal]
-    public delegate void OnFloorConstructEventHandler(FloorConstructingEvent @event);
-    [Signal]
-    public delegate void OnFloorReplaceEventHandler(FloorReplacingEvent @event);
-    [Signal]
-    public delegate void OnFloorExtendEventHandler(FloorExtendingEvent @event);
-
     public TowerScript Tower { get; set; } = tower;
 
     private readonly System.Collections.Generic.Dictionary<(int elevation, int position), FloorSelected> _selected = [];
@@ -52,7 +45,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         GlobalSignals.Singleton.OnFloorExtended += _onFloorExtended;
         GlobalSignals.Singleton.OnFloorReplaced += _onFloorReplaced;
         GlobalSignals.Singleton.OnFloorConstructed += _onFloorConstructed;
-        GlobalSignals.Singleton.OnCancelledUI += _OnCancelledUI;
+        GlobalSignals.Singleton.OnCancelledUI += _onCancelledUI;
     }
 
     public override void _ExitTree()
@@ -62,13 +55,13 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
         GlobalSignals.Singleton.OnFloorExtended -= _onFloorExtended;
         GlobalSignals.Singleton.OnFloorReplaced -= _onFloorReplaced;
         GlobalSignals.Singleton.OnFloorConstructed -= _onFloorConstructed;
-        GlobalSignals.Singleton.OnCancelledUI -= _OnCancelledUI;
+        GlobalSignals.Singleton.OnCancelledUI -= _onCancelledUI;
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _onFloorExtended(FloorExtendedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _onFloorConstructed(FloorConstructedEvent @event) => _tryStopConstruction(@event.Floor);
-    private void _OnCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
+    private void _onCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
 
     private void _tryStopConstruction(FloorState floor)
     {
@@ -212,7 +205,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
     {
         if (Tower.State.Floors.TryGetValue(y, out var floor) && _currentFloorDef != null)
         {
-            EmitSignalOnFloorReplace(new(Tower.State, floor, _currentFloorDef));
+            Actions.ReplaceFloor(new(Tower.State, floor, _currentFloorDef));
         }
     }
 
@@ -236,18 +229,18 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D()
                 this.Error($"Clicked on an existing part of the floor at ({x}, {y}), this should not be possible");
                 return;
             }
-            EmitSignalOnFloorExtend(new(Tower.State, floor, left, right));
+            Actions.ExtendFloor(new(Tower.State, floor, left, right));
         }
     }
 
     private void _onAcceptNewBasement(int x, int y)
     {
-        EmitSignalOnFloorConstruct(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
+        Actions.BuyFloor(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
     }
 
     private void _onAcceptNewTop(int x, int y)
     {
-        EmitSignalOnFloorConstruct(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
+        Actions.BuyFloor(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
     }
 
     private bool _canBuildFloorAt(int elevation) => _currentFloorDef?.CanBuildFloorAt(elevation) ?? false;

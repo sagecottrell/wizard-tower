@@ -204,6 +204,10 @@ public partial class GlobalSignals : Node
     public delegate void OnTransportConstructionPreviewEventHandler(TransportConstructionPreviewEvent @event);
     public static TransportConstructionPreviewEvent TransportConstructionPreview(TransportConstructionPreviewEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionPreview, @event, callerFile, callerLine);
 
+    [Signal]
+    public delegate void OnTransportConstructionPreviewStoppedEventHandler(TransportConstructionPreviewStoppedEvent @event);
+    public static TransportConstructionPreviewStoppedEvent TransportConstructionPreviewStopped(TransportConstructionPreviewStoppedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportConstructionPreviewStopped, @event, callerFile, callerLine);
+
     // ==================================================================================================================
     // ==================================================================================================================
 

@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.state;
 using wizardtower.UIs;
@@ -33,16 +32,9 @@ public partial class TowerScript : Node3D
         AddChild(new FloorsContainerScript(this));
         AddChild(new RoomsContainerScript(this));
         AddChild(new TransportsContainerScript(this));
-        AddChild(new TowerRoomBuilderOverlay(this).Configured(overlay =>
-        {
-            overlay.OnRoomConstruct += Actions.BuyRoom;
-        }));
-        AddChild(new TowerFloorBuilderOverlay(this).Configured(overlay =>
-        {
-            overlay.OnFloorExtend += Actions.ExtendFloor;
-            overlay.OnFloorReplace += Actions.ReplaceFloor;
-            overlay.OnFloorConstruct += Actions.BuyFloor;
-        }));
+        AddChild(new TowerRoomBuilderOverlay(this));
+        AddChild(new TowerFloorBuilderOverlay(this));
+        AddChild(new TowerTransportBuilderOverlay(this));
         AddChild(new TowerCameraDragScript(Camera, State));
         WalletContainer?.AddChild(new WalletUI(State));
         this.Child<UIManager>()?.ShowUI();

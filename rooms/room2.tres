@@ -7,9 +7,11 @@
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_1ryl7"]
 [ext_resource type="Script" uid="uid://b7asf65risos5" path="res://resource_types/room_functions/BaseRoomFunctionDefinition.cs" id="4_eud12"]
 
-[sub_resource type="Resource" id="Resource_todtk"]
+[sub_resource type="Resource" id="Resource_eud12"]
 script = ExtResource("2_ethje")
-Data = Dictionary[String, int]({})
+Data = {
+"res://items/coin.tres": 1
+}
 
 [sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")
@@ -19,6 +21,6 @@ Data = Dictionary[String, ExtResource("2_ethje")]({})
 script = ExtResource("4_1ryl7")
 Name = "Room2"
 Icon = ExtResource("3_ethje")
-CostToBuildPerUnit = SubResource("Resource_todtk")
+CostToBuildPerUnit = SubResource("Resource_eud12")
 Upgrades = SubResource("Resource_ethje")
 metadata/_custom_type_script = "uid://wmhswxpf1gb5"

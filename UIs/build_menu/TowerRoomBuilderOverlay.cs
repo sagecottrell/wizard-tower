@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
+using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.containers;
-using wizardtower.events;
 using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -11,9 +11,6 @@ namespace wizardtower.UIs.build_menu;
 
 public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
 {
-    [Signal]
-    public delegate void OnRoomConstructEventHandler(RoomConstructingEvent @event);
-
     public TowerScript Tower { get; set; } = tower;
 
     public RoomScript? BuildingRoom { get; set; }
@@ -46,13 +43,13 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     {
         GlobalSignals.Singleton.OnRoomConstructionSelected += _onRoomConstructionSelected;
         GlobalSignals.Singleton.OnRoomConstructionStopped += _onRoomConstructionStopped;
-        GlobalSignals.Singleton.OnCancelledUI += _OnCancelledUI;
+        GlobalSignals.Singleton.OnCancelledUI += _onCancelledUI;
     }
     public override void _ExitTree()
     {
         GlobalSignals.Singleton.OnRoomConstructionSelected -= _onRoomConstructionSelected;
         GlobalSignals.Singleton.OnRoomConstructionStopped -= _onRoomConstructionStopped;
-        GlobalSignals.Singleton.OnCancelledUI -= _OnCancelledUI;
+        GlobalSignals.Singleton.OnCancelledUI -= _onCancelledUI;
     }
 
     private void _reset()
@@ -67,7 +64,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
     }
 
     private void _onRoomConstructionStopped(RoomConstructionStoppedEvent @event) => _reset();
-    private void _OnCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
+    private void _onCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
 
     private void _onRoomConstructionSelected(RoomConstructionSelectedEvent @event)
     {
@@ -114,7 +111,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D()
             Elevation = y,
             FloorPosition = x,
         };
-        EmitSignalOnRoomConstruct(new(Tower.State, room));
+        Actions.BuyRoom(new(Tower.State, room));
 
         if (GlobalSignals.RoomConstructionStopping(new(Tower.State, @event.RoomDefinition)).IsAllowed)
             GlobalSignals.RoomConstructionStopped(new(Tower.State, @event.RoomDefinition));

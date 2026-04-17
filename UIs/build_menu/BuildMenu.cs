@@ -206,6 +206,10 @@ public partial class BuildMenu : VBoxContainer
         {
             UIActions.BuildSelectFloor(new(TowerState, btn.FloorDefinition));
         }
+        else if (btn.TransportDefinition is not null)
+        {
+            UIActions.BuildSelectTransport(new(TowerState, btn.TransportDefinition));
+        }
     }
 
     //public void SetWhatAreWeBuilding(Resource? b)
