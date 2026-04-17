@@ -14,6 +14,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     private HashSet<(int elevation, int position)>? vacancies;
     private Dictionary<int, List<RoomState>>? roomsByFloor;
+    private Dictionary<int, List<TransportState>>? transportsByFloor;
 
     [Export]
     public string Name { get; set; } = "Tower";
@@ -52,6 +53,20 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     [Export]
     public Godot.Collections.Dictionary<uint, TransportState> Transports { get; set; } = [];
 
+    private Dictionary<int, List<TransportState>> TransportsByFloor
+    {
+        get
+        {
+            if (transportsByFloor is null)
+            {
+                transportsByFloor = [];
+                foreach (var transport in Transports.Values)
+                    _addTransportByFloor(transport);
+            }
+            return transportsByFloor;
+        }
+    }
+
     [Export]
     public FloorDefinition DefaultAboveGroundFloorDefinition { get; set; } = new();
 
@@ -78,6 +93,9 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     [Export]
     public uint RoomIdCounter { get; set; } = 0;
+
+    [Export]
+    public uint TransportIdCounter { get; set; } = 0;
 
     [Export]
     public int LowestFloor { get; set; } = 0;
@@ -123,7 +141,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     public void AddRoom(int elevation, int position, RoomDefinition r) => AddRoom(new RoomState()
     {
-        Id = RoomIdCounter + 1,
         Definition = r,
         Elevation = elevation,
         FloorPosition = position,
@@ -133,6 +150,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public void AddRoom(RoomState room)
     {
         RoomIdCounter++;
+        room.Id = RoomIdCounter;
         Rooms[RoomIdCounter] = room;
         vacancies?.ExceptWith(_roomRange(room));
         _addRoomByFloor(room);
@@ -173,9 +191,11 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     }
 
     private static IEnumerable<(int elevation, int position)> _roomRange(RoomState room)
-        => Enumerable.Range(room.FloorPosition, (int)room.Definition.Width).Select(p => (room.Elevation, p));
+        => Enumerable.Range(room.FloorPosition, (int)room.Definition.Width)
+            .SelectMany(p => Enumerable.Range(room.Elevation, (int)room.Height).Select(e => (e, p)));
     private static IEnumerable<(int elevation, int position)> _transportRange(TransportState transport)
-        => Enumerable.Range(transport.HorizontalPosition, (int)transport.Definition.Width).Select(p => (transport.Elevation, p));
+        => Enumerable.Range(transport.HorizontalPosition, (int)transport.Definition.Width)
+            .SelectMany(p => Enumerable.Range(transport.Elevation, (int)transport.Height).Select(e => (e, p)));
     private static IEnumerable<(int elevation, int position)> _floorRange(FloorState floor)
         => Enumerable.Range(floor.LeftBound, floor.RightBound - floor.LeftBound + 1).Select(p => (floor.Elevation, p));
 
@@ -267,6 +287,31 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public IReadOnlyList<RoomState> RoomsOnFloor(int elevation) => RoomsByFloor.TryGetValue(elevation, out var list) ? list : [];
 
     #endregion
+
+    #region Transport functions
+
+    public void AddTransport(TransportState transport)
+    {
+        TransportIdCounter++;
+        transport.Id = TransportIdCounter;
+        Transports[TransportIdCounter] = transport;
+        vacancies?.ExceptWith(_transportRange(transport));
+        _addTransportByFloor(transport);
+    }
+
+    private void _addTransportByFloor(TransportState transport)
+    {
+        if (!TransportsByFloor.TryGetValue(transport.Elevation, out var floorList))
+        {
+            floorList = [];
+            for (var e = transport.Elevation; e < transport.Elevation + transport.Height; e++)
+                TransportsByFloor[e] = floorList;
+        }
+        floorList.Add(transport);
+    }
+
+    #endregion
+
 
     #region operators
 

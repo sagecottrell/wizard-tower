@@ -1,5 +1,7 @@
 using Godot;
+using System;
 using System.Collections.Generic;
+using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events.ui;
@@ -15,7 +17,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
     public delegate void OnTransportBuildEventHandler();
     public TowerScript Tower { get; set; } = tower;
     public TransportScript? BuildingTransport { get; set; }
-    private readonly Dictionary<(int elevation, int position), TransportSelected> _selected = [];
+    private readonly Dictionary<(int elevation, int position), TransportSelected> _positionSelected = [];
+    private readonly Dictionary<(int elevation, int position), TransportSelected> _heightSelected = [];
 
     private TransportDefinition? _currentTransportDef;
 
@@ -28,6 +31,9 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
         Visible = false,
     };
 
+    private Node3D _positionSelectors = new();
+    private Node3D _heightSelectors = new();
+
     public override void _Ready()
     {
         AddChild(new PanelContainer()
@@ -37,6 +43,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
             AnchorRight = 0.5f,
             GrowHorizontal = Control.GrowDirection.Both,
         }.WithChild(_uiLabel));
+        AddChild(_positionSelectors);
+        AddChild(_heightSelectors);
     }
 
     public override void _EnterTree()
@@ -59,9 +67,11 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _reset()
     {
-        this.FreeChildren<TransportSelected>();
+        _positionSelectors.FreeChildren<TransportSelected>();
+        _heightSelectors.FreeChildren<TransportSelected>();
         _uiLabel.Visible = false;
-        _selected.Clear();
+        _positionSelected.Clear();
+        _heightSelected.Clear();
         _revertFloorVis();
         _currentTransportDef = null;
         BuildingTransport?.QueueFree();
@@ -77,6 +87,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
         _currentTransportDef = @event.TransportDefinition;
         _uiLabel.Visible = true;
         _uiLabel.Text = $"Constructing: {_uiLabel.LineHeightImage(_currentTransportDef.Icon)} {_currentTransportDef.Name}";
+        _positionSelectors.Visible = true;
+        _heightSelectors.Visible = false;
 
         foreach (var floor in Tower.State.Floors.Values)
         {
@@ -89,21 +101,23 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
                 {
                     var x = i;
                     var y = floor.Elevation;
-                    _selected[(x, y)] = s;
+                    _positionSelected[(x, y)] = s;
                     s.Position = s.TowerCoordToNodePosition(x, y);
-                    AddChild(s);
-                    s.OnMouseEntered += _ => _onMouseEnter(x, y);
-                    s.OnAccept += _ => _onAccept(x, y);
-                    s.OnCancel += _ => _onCancel(x, y);
+                    _positionSelectors.AddChild(s);
+                    s.OnMouseEntered += _ => _onMouseEnterStart(x, y);
+                    s.OnAccept += _ => _onAcceptStart(x, y);
+                    s.OnCancel += _ => _onCancel();
                 }
             }
         }
 
     }
 
-    private void _onMouseEnter(int x, int y)
+    private void _onMouseEnterStart(int x, int y)
     {
         _revertFloorVis();
+        if (_currentTransportDef is null)
+            return;
         BuildingTransport ??= this.AddedChild(new TransportScript()
         {
             HologramMode = true,
@@ -118,13 +132,83 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
         GlobalSignals.TransportConstructionPreview(new(Tower.State, BuildingTransport.State));
     }
 
-    private void _onCancel(int x, int y)
+    private void _onCancel()
     {
         UIActions.BuildDeselectForce(Tower.State);
     }
 
-    private void _onAccept(int x, int y)
+    private void _onAcceptStart(int floorPosition, int elevation)
     {
-        UIActions.BuildDeselectForce(Tower.State);
+        if (_currentTransportDef is null)
+            return;
+        for (var e = elevation - (int)_currentTransportDef.MaxHeight + 1; e < elevation + _currentTransportDef.MaxHeight; e++)
+        {
+            if (!Tower.State.Floors.TryGetValue(e, out var floor))
+                continue;
+            if (!_currentTransportDef.CanStopAtFloor.Contains(floor.Definition))
+                continue;
+
+            if (Tower.State.PositionVacant(e, floorPosition) && SceneLoader.TryLoadScene<TransportSelected>(out var s))
+            {
+                var x = floorPosition;
+                var y = Math.Max(e, elevation);
+                var y0 = Math.Min(e, elevation);
+                var height = (uint)(y - y0) + 1;
+                _heightSelected[(x, e)] = s;
+                s.Position = s.TowerCoordToNodePosition(x, e);
+                _heightSelectors.AddChild(s);
+                s.OnMouseEntered += _ => _onMouseEnterFinal(x, y0, height);
+                s.OnAccept += _ => _onAcceptFinal(x, y0, height);
+                s.OnCancel += _ => _onCancel();
+            }
+        }
+        _positionSelectors.Visible = false;
+        _heightSelectors.Visible = true;
+    }
+
+    private void _onMouseEnterFinal(int x, int y, uint height)
+    {
+        _revertFloorVis();
+        if (_currentTransportDef is null)
+            return;
+        BuildingTransport ??= this.AddedChild(new TransportScript()
+        {
+            HologramMode = true,
+            State = new TransportState()
+            {
+                Definition = _currentTransportDef,
+            }
+        });
+        BuildingTransport.State.Height = height;
+        BuildingTransport.State.Elevation = y;
+        BuildingTransport.State.HorizontalPosition = x;
+        GlobalSignals.TransportConstructionPreview(new(Tower.State, BuildingTransport.State));
+    }
+
+    private void _onAcceptFinal(int x, int y, uint height)
+    {
+        BuildingTransport?.QueueFree();
+        BuildingTransport = null;
+        if (_currentTransportDef is null)
+            return;
+        var room = new TransportState()
+        {
+            Definition = _currentTransportDef,
+            Height = height,
+            Elevation = y,
+            HorizontalPosition = x,
+        };
+        Actions.BuyTransport(new(Tower.State, room));
+
+        if (GlobalSignals.TransportConstructionStopping(new(Tower.State, _currentTransportDef)).IsAllowed)
+            GlobalSignals.TransportConstructionStopped(new(Tower.State, _currentTransportDef));
+        else
+        {
+            for (var i = 0; i < _currentTransportDef.Width; i++)
+            {
+                if (_positionSelected.Remove((x + i, y), out var s))
+                    s.QueueFree();
+            }
+        }
     }
 }

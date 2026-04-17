@@ -1,24 +1,26 @@
-using wizardtower.events.interfaces;
-using wizardtower.resource_types;
-using wizardtower.state;
+using wizardtower.events;
 
 namespace wizardtower.actions;
 
 public static partial class Actions
 {
-    public static void AddToWallet(TowerState state, NumericDict<ItemDefinition, uint> cost, IEvent @event)
+    public static void AddToWallet(TowerResourceChangingEvent @event)
     {
-        if (GlobalSignals.TowerResourceChanging(new(state, cost) { Source = @event }).IsAllowed)
+        if (GlobalSignals.TowerResourceChanging(@event).IsAllowed)
         {
+            var state = @event.TowerState;
+            var cost = @event.Amount;
             state.Wallet.Added(cost);
             GlobalSignals.TowerResourceChanged(new(state, cost) { Source = @event });
         }
     }
 
-    public static void RemoveFromWallet(TowerState state, NumericDict<ItemDefinition, uint> cost, IEvent @event)
+    public static void RemoveFromWallet(TowerResourceChangingEvent @event)
     {
-        if (GlobalSignals.TowerResourceChanging(new(state, cost) { Source = @event }).IsAllowed)
+        if (GlobalSignals.TowerResourceChanging(@event).IsAllowed)
         {
+            var state = @event.TowerState;
+            var cost = @event.Amount;
             state.Wallet.Subtracted(cost);
             GlobalSignals.TowerResourceChanged(new(state, cost) { Source = @event });
         }

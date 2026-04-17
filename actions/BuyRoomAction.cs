@@ -9,9 +9,9 @@ public static partial class Actions
         var tower = @event.TowerState;
         if (GlobalSignals.RoomConstructing(@event).IsAllowed)
         {
-            RemoveFromWallet(tower, @event.Room.Definition.CostToBuildPerUnit, @event);
+            RemoveFromWallet(new(tower, @event.Room.Definition.CostToBuildPerUnit) { Source = @event });
             tower.AddRoom(@event.Room);
-            GlobalSignals.RoomConstructed(new(tower, @event.Room));
+            GlobalSignals.RoomConstructed(new(tower, @event.Room) { Source = @event });
         }
     }
 }

@@ -12,6 +12,9 @@ public partial class TransportState : Resource, ICopy<TransportState>, IDeSerial
     public TransportDefinition Definition { get; set; } = new();
 
     [Export]
+    public uint Id { get; set; }
+
+    [Export]
     public int Elevation { get; set; }
 
     [Export]

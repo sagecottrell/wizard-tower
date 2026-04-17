@@ -11,7 +11,7 @@ public static partial class Actions
         if (GlobalSignals.FloorReplacing(@event).IsAllowed)
         {
             var floor = @event.Floor;
-            RemoveFromWallet(tower, floor.Definition.CostToBuildPerUnit * floor.Width, @event);
+            RemoveFromWallet(new(tower, floor.Definition.CostToBuildPerUnit * floor.Width) { Source = @event });
             floor.Definition = @event.NewDefinition;
             foreach (var room in tower.RoomsOnFloor(floor.Elevation).ToList())
                 if (!room.Definition.AllowedFloors.Contains(floor.Definition))

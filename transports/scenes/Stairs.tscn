@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://b7a2g7eb3if73"]
 
-[ext_resource type="Script" uid="uid://bqgjs4a5b3iwn" path="res://containers/TransportBackgroundScript.cs" id="1_4hrjh"]
+[ext_resource type="Script" uid="uid://3j44vxwknyqt" path="res://transports/scenes/Stairs.cs" id="1_1et7g"]
 [ext_resource type="ArrayMesh" uid="uid://byggaoe8sv2t1" path="res://transports/models/stairs.obj" id="1_k3l13"]
 [ext_resource type="Material" uid="uid://7yvdrrr7ro2h" path="res://rooms/scenes/hologram-material.tres" id="2_1et7g"]
 
 [node name="Stairs" type="Node3D" unique_id=1259107740 node_paths=PackedStringArray("Background")]
-script = ExtResource("1_4hrjh")
+script = ExtResource("1_1et7g")
 Background = NodePath("Stairs")
 HologramMaterial = ExtResource("2_1et7g")
 

@@ -1,4 +1,6 @@
 using Godot;
+using System.Collections.Generic;
+using System.Linq;
 using wizardtower.state;
 
 namespace wizardtower.containers;
@@ -9,7 +11,7 @@ public partial class TransportScript : Node3D
     public TransportState State { get; set; } = new();
     public TransportState PreviousState { get; set; } = new();
 
-    private TransportBackgroundScript? TransportVisualNode { get; set; }
+    private List<TransportBackgroundScript> TransportVisualNodes { get; set; } = [];
 
     public bool HologramMode { get; set; } = false;
 
@@ -25,14 +27,37 @@ public partial class TransportScript : Node3D
     {
         if (State != PreviousState && State.Compare(PreviousState))
             return;
+        if (State.Definition.Scene is not PackedScene scene)
+            return;
 
         if (PreviousState.Definition.Scene != State.Definition.Scene)
         {
-            TransportVisualNode?.QueueFree();
-            if (State.Definition.Scene is PackedScene scene)
+            this.FreeChildren(TransportVisualNodes);
+            for (var i = 0; i < State.Height; i++)
             {
-                TransportVisualNode = scene.Instantiate() as TransportBackgroundScript;
-                AddChild(TransportVisualNode);
+                if (scene.Instantiate() is not TransportBackgroundScript node)
+                    break;
+                AddChild(node);
+                TransportVisualNodes.Add(node);
+                node.Position = new(0, i, 0);
+            }
+        }
+
+        if (State.Height < TransportVisualNodes.Count)
+        {
+            var removed = TransportVisualNodes[(int)State.Height..];
+            TransportVisualNodes = [.. TransportVisualNodes.Take((int)State.Height)];
+            this.FreeChildren(removed);
+        }
+        else if (State.Height > TransportVisualNodes.Count)
+        {
+            for (var i = TransportVisualNodes.Count; i < State.Height; i++)
+            {
+                if (scene.Instantiate() is not TransportBackgroundScript node)
+                    break;
+                AddChild(node);
+                TransportVisualNodes.Add(node);
+                node.Position = new(0, i, 0);
             }
         }
 
@@ -49,14 +74,16 @@ public partial class TransportScript : Node3D
     public TransportScript AsHologram()
     {
         HologramMode = true;
-        TransportVisualNode?.AsHologram();
+        foreach (var node in TransportVisualNodes)
+            node.AsHologram();
         return this;
     }
 
     public TransportScript AsBackground()
     {
         HologramMode = false;
-        TransportVisualNode?.AsBackground();
+        foreach (var node in TransportVisualNodes)
+            node.AsBackground();
         return this;
     }
 }

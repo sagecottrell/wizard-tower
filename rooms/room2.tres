@@ -9,9 +9,9 @@
 
 [sub_resource type="Resource" id="Resource_eud12"]
 script = ExtResource("2_ethje")
-Data = {
+Data = Dictionary[String, int]({
 "res://items/coin.tres": 1
-}
+})
 
 [sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")

@@ -12,7 +12,19 @@
     <None Include="docs\overallgameloop.md" />
     <None Include="docs\towergameloop.md" />
     <None Include="TODO.md" />
+    <None Include="transports\images\stairs.png.import" />
+    <None Include="transports\models\stairs.mtl" />
+    <None Include="transports\models\stairs.obj" />
+    <None Include="transports\models\stairs.obj.import" />
+    <None Include="transports\models\stairs.png.import" />
+    <None Include="transports\models\stairs.vox" />
+    <None Include="transports\scenes\Stairs.tscn" />
+    <None Include="transports\stairs.tres" />
 	  <AdditionalFiles Include="project.godot" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="transports\images\stairs.png" />
+    <Content Include="transports\models\stairs.png" />
   </ItemGroup>
 
 	<ItemGroup>

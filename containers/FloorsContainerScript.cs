@@ -17,13 +17,22 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
     {
         foreach (var floor in State.Floors.Values)
             SetupFloorDisplay(floor);
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnFloorConstructing += _g_OnFloorConstructing;
-            g.OnFloorExtending += _g_OnFloorExtending;
-            g.OnFloorConstructionStopping += _g_OnFloorConstructionStopping;
-            g.OnFloorConstructed += _g_OnFloorConstructed;
-        }
+    }
+
+    public override void _EnterTree()
+    {
+        GlobalSignals.Singleton.OnFloorConstructing += _g_OnFloorConstructing;
+        GlobalSignals.Singleton.OnFloorExtending += _g_OnFloorExtending;
+        GlobalSignals.Singleton.OnFloorConstructionStopping += _g_OnFloorConstructionStopping;
+        GlobalSignals.Singleton.OnFloorConstructed += _g_OnFloorConstructed;
+    }
+
+    public override void _ExitTree()
+    {
+        GlobalSignals.Singleton.OnFloorConstructing -= _g_OnFloorConstructing;
+        GlobalSignals.Singleton.OnFloorExtending -= _g_OnFloorExtending;
+        GlobalSignals.Singleton.OnFloorConstructionStopping -= _g_OnFloorConstructionStopping;
+        GlobalSignals.Singleton.OnFloorConstructed -= _g_OnFloorConstructed;
     }
 
     private void _g_OnFloorConstructed(FloorConstructedEvent @event)

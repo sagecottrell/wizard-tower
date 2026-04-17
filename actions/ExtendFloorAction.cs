@@ -9,9 +9,9 @@ public static partial class Actions
         var tower = @event.TowerState;
         if (GlobalSignals.FloorExtending(@event).IsAllowed)
         {
-            RemoveFromWallet(tower, @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount, @event);
+            RemoveFromWallet(new(tower, @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount) { Source = @event });
             tower.ExtendFloor(@event.Floor, @event.ExtendedLeft, @event.ExtendedRight);
-            GlobalSignals.FloorExtended(new(tower, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight));
+            GlobalSignals.FloorExtended(new(tower, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight) { Source = @event });
         }
     }
 }
