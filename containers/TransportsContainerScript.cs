@@ -37,10 +37,19 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
 
     private void _onTransportConstructing(TransportConstructingEvent @event)
     {
+        if (@event.Transport.Definition.CostToBuild > State.Wallet)
+        {
+            this.Log("Not enough money to build this transport.");
+            @event.IsAllowed = false;
+            return;
+        }
+        // enough money means it is allowed to build
     }
 
     private void _onTransportConstructionStopping(TransportConstructionStoppingEvent @event)
     {
+        if (@event.TransportDefinition.CostToBuild <= State.Wallet)
+            @event.IsAllowed = false;
     }
 
     public void SetupTransportationDisplay(TransportState newTransport)
