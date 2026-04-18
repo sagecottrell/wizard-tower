@@ -166,12 +166,15 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     private void _addRoomByFloor(RoomState room)
     {
-        if (!RoomsByFloor.TryGetValue(room.Elevation, out var floorList))
+        for (var i = room.Elevation; i < room.Elevation + room.Height; i++)
         {
-            floorList = [];
-            RoomsByFloor[room.Elevation] = floorList;
+            if (!RoomsByFloor.TryGetValue(i, out var floorList))
+            {
+                floorList = [];
+                RoomsByFloor[i] = floorList;
+            }
+            floorList.Add(room);
         }
-        floorList.Add(room);
     }
 
     #endregion
@@ -285,6 +288,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     }
 
     public IReadOnlyList<RoomState> RoomsOnFloor(int elevation) => RoomsByFloor.TryGetValue(elevation, out var list) ? list : [];
+    public IReadOnlyList<TransportState> TransportsOnFloor(int elevation) => TransportsByFloor.TryGetValue(elevation, out var list) ? list : [];
 
     #endregion
 
@@ -301,13 +305,15 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     private void _addTransportByFloor(TransportState transport)
     {
-        if (!TransportsByFloor.TryGetValue(transport.Elevation, out var floorList))
+        for (var e = transport.Elevation; e < transport.Elevation + transport.Height; e++)
         {
-            floorList = [];
-            for (var e = transport.Elevation; e < transport.Elevation + transport.Height; e++)
+            if (!TransportsByFloor.TryGetValue(e, out var floorList))
+            {
+                floorList = [];
                 TransportsByFloor[e] = floorList;
+            }
+            floorList.Add(transport);
         }
-        floorList.Add(transport);
     }
 
     #endregion
