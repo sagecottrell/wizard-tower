@@ -1,5 +1,5 @@
 using Godot;
-using System;
+using System.Collections.Generic;
 using wizardtower.events;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -11,6 +11,8 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     public TowerScript Tower { get; } = tower;
     public TowerState State { get; } = tower.State;
 
+    private readonly Dictionary<TransportState, TransportScript> _nodes = [];
+
     public override void _Ready()
     {
         foreach (var transport in State.Transports.Values)
@@ -21,6 +23,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
         GlobalSignals.Singleton.OnTransportConstructing += _onTransportConstructing;
         GlobalSignals.Singleton.OnTransportConstructionStopping += _onTransportConstructionStopping;
         GlobalSignals.Singleton.OnTransportConstructed += _onTransportConstructed;
+        GlobalSignals.Singleton.OnTransportDestroyed += _onTransportDestroyed;
     }
 
     public override void _ExitTree()
@@ -28,6 +31,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
         GlobalSignals.Singleton.OnTransportConstructing -= _onTransportConstructing;
         GlobalSignals.Singleton.OnTransportConstructionStopping -= _onTransportConstructionStopping;
         GlobalSignals.Singleton.OnTransportConstructed -= _onTransportConstructed;
+        GlobalSignals.Singleton.OnTransportDestroyed -= _onTransportDestroyed;
     }
 
     private void _onTransportConstructed(TransportConstructedEvent @event)
@@ -58,14 +62,13 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
         {
             State = newTransport,
         };
+        _nodes[newTransport] = transport;
         AddChild(transport);
+    }
 
-        //for (var i = 0; i < newTransport.Height; i++)
-        //{
-        //    if (Floors.TryGetValue(newTransport.Elevation + i, out var fs))
-        //    {
-        //        fs.SetPositionVisible(newTransport.HorizontalPosition, newTransport.Definition.Width, false);
-        //    }
-        //}
+    private void _onTransportDestroyed(TransportDestroyedEvent @event)
+    {
+        if (_nodes.Remove(@event.Transport, out var node))
+            node.QueueFree();
     }
 }
