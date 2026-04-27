@@ -109,6 +109,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             return;
         rtl.AppendText($"Selected Room #{Room.Id}\n");
         rtl.AppendText($"{Room.Definition.Name} {rtl.LineHeightImage(Room.Definition.Icon)}\n");
+        rtl.AppendText($"Floor {Room.Elevation}, Room {Mathf.Abs(Room.FloorPosition),3:D3}{(Room.FloorPosition < 0 ? "L" : "R")}\n");
         this.Debug($"Stored items: {Room.StoredItems.Count}");
         if (Room.StoredItems.Count > 0)
         {
