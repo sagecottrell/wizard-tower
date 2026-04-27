@@ -52,7 +52,9 @@ RightBound = 10
 
 [sub_resource type="Resource" id="Resource_y253d"]
 script = ExtResource("5_8sv8r")
-Data = Dictionary[String, int]({})
+Data = Dictionary[String, int]({
+"res://items/coin.tres": 3
+})
 
 [sub_resource type="Resource" id="Resource_5gs35"]
 script = ExtResource("2_et7yl")

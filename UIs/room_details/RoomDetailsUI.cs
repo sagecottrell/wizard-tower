@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 using wizardtower.actions.ui;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
@@ -10,17 +11,17 @@ namespace wizardtower.UIs.room_details;
 public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterface
 {
     private RoomState? Room { get; set; }
-    private Control ui = new PanelContainer()
-    {
-        AnchorRight = 1,
-        AnchorLeft = 1,
-        PivotOffsetRatio = new Vector2(1, 0),
-        GrowHorizontal = Control.GrowDirection.Begin,
-    };
+    private Control ui = new VBoxContainer();
 
     public override void _Ready()
     {
-        AddChild(ui);
+        AddChild(new PanelContainer()
+        {
+            AnchorRight = 1,
+            AnchorLeft = 1,
+            PivotOffsetRatio = new Vector2(1, 0),
+            GrowHorizontal = Control.GrowDirection.Begin,
+        }.WithChild(ui));
     }
 
     public override void _EnterTree()
@@ -88,8 +89,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         Room = @event.Room;
         Visible = true;
 
-        var text = $"Selected Room #{Room.Id}: {Room.Definition.Name} {ui.LineHeightImage(Room.Definition.Icon)}";
-
         if (ui.Child<RichTextLabel>() is not RichTextLabel rtl)
             rtl = ui.AddedChild(new RichTextLabel
             {
@@ -98,8 +97,28 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
                 AutowrapMode = TextServer.AutowrapMode.Off,
                 BbcodeEnabled = true,
             });
-        rtl.Text = text;
+        rtl.Text = "";
+        _pushText(rtl);
 
         GlobalSignals.ShowedUI(new(this));
+    }
+
+    private void _pushText(RichTextLabel rtl)
+    {
+        if (Room is null)
+            return;
+        rtl.AppendText($"Selected Room #{Room.Id}\n");
+        rtl.AppendText($"{Room.Definition.Name} {rtl.LineHeightImage(Room.Definition.Icon)}\n");
+        this.Debug($"Stored items: {Room.StoredItems.Count}");
+        if (Room.StoredItems.Count > 0)
+        {
+            rtl.AddText("Stored items:\n");
+            rtl.PushList(0, RichTextLabel.ListType.Dots, false);
+            foreach (var (def, amount) in Room.StoredItems)
+            {
+                rtl.AppendText($"{amount} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
+            }
+            rtl.Pop();
+        }
     }
 }
