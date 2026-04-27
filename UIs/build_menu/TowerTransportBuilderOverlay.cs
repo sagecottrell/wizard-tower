@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.containers;
+using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -11,7 +12,7 @@ using wizardtower.state;
 namespace wizardtower.UIs.build_menu;
 
 
-public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
+public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(), IUserInterface
 {
     [Signal]
     public delegate void OnTransportBuildEventHandler();
@@ -50,20 +51,20 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
     public override void _EnterTree()
     {
         GlobalSignals.Singleton.OnTransportConstructionSelected += _onTransportConstructionSelected;
-        GlobalSignals.Singleton.OnTransportConstructionStopped += _onTransportConstructionStopped;
-        GlobalSignals.Singleton.OnCancelledUI += _onCancelledUI;
+        GlobalSignals.Singleton.OnTransportConstructionStopped += _event_reset;
+        GlobalSignals.Singleton.OnFloorConstructionSelected += _event_reset;
+        GlobalSignals.Singleton.OnRoomConstructionSelected += _event_reset;
     }
 
     public override void _ExitTree()
     {
         GlobalSignals.Singleton.OnTransportConstructionSelected -= _onTransportConstructionSelected;
-        GlobalSignals.Singleton.OnTransportConstructionStopped -= _onTransportConstructionStopped;
-        GlobalSignals.Singleton.OnCancelledUI -= _onCancelledUI;
+        GlobalSignals.Singleton.OnTransportConstructionStopped -= _event_reset;
+        GlobalSignals.Singleton.OnFloorConstructionSelected -= _event_reset;
+        GlobalSignals.Singleton.OnRoomConstructionSelected -= _event_reset;
     }
 
-    private void _onTransportConstructionStopped(TransportConstructionStoppedEvent @event) => _reset();
-
-    private void _onCancelledUI(CancelledUIEvent @event) => UIActions.BuildDeselectForce(Tower.State);
+    private void _event_reset(IEvent @event) => _reset();
 
     private void _reset()
     {
@@ -84,6 +85,10 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onTransportConstructionSelected(TransportConstructionSelectedEvent @event)
     {
+        if (_currentTransportDef == @event.TransportDefinition)
+            return;
+        _reset();
+
         _currentTransportDef = @event.TransportDefinition;
         _uiLabel.Visible = true;
         _uiLabel.Text = $"Constructing: {_uiLabel.LineHeightImage(_currentTransportDef.Icon)} {_currentTransportDef.Name}";
@@ -134,7 +139,7 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D()
 
     private void _onCancel()
     {
-        UIActions.BuildDeselectForce(Tower.State);
+        UIActions.Hide(new(this));
     }
 
     private void _onAcceptStart(int floorPosition, int elevation)

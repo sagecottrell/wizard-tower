@@ -11,7 +11,7 @@ public static partial class Actions
         {
             RemoveFromWallet(new(tower, @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount) { Source = @event });
             tower.ExtendFloor(@event.Floor, @event.ExtendedLeft, @event.ExtendedRight);
-            GlobalSignals.FloorExtended(new(tower, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight) { Source = @event });
+            GlobalSignals.FloorExtended(new(tower, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight) { Source = @event.Source });
         }
     }
 }

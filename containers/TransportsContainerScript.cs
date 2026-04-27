@@ -1,5 +1,7 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
+using wizardtower.actions.ui;
 using wizardtower.events;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -70,5 +72,19 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     {
         if (_nodes.Remove(@event.Transport, out var node))
             node.QueueFree();
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton ms && ms.IsActionPressed(InputMapConstants.LeftClick) && GetViewport().GetCamera3D() is Camera3D camera)
+        {
+            var dir = camera.ProjectRayOrigin(ms.Position);
+            var x = (int)(dir.X + 0.5f);
+            var y = (int)dir.Y;
+            if (Tower.State.TransportsOnFloor(y).FirstOrDefault(r => x >= r.HorizontalPosition && x < r.HorizontalPosition + r.Definition.Width) is TransportState transport)
+            {
+                UIActions.SelectTransport(new(Tower.State, transport) { Input = @event });
+            }
+        }
     }
 }

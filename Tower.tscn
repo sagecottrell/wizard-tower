@@ -4,7 +4,6 @@
 [ext_resource type="Script" uid="uid://csjccrhj5wnx7" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3d.gd" id="7_sqkc8"]
 [ext_resource type="Script" uid="uid://8umksf8e80fw" path="res://addons/phantom_camera/scripts/resources/tween_resource.gd" id="8_752je"]
 [ext_resource type="Script" uid="uid://b8hhnqsugykly" path="res://addons/phantom_camera/scripts/resources/camera_3d_resource.gd" id="9_djx0s"]
-[ext_resource type="Script" uid="uid://cs6dkcx2kdv1p" path="res://UIManager.cs" id="11_djx0s"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_58w82"]
 albedo_color = Color(0.20392157, 0.12156863, 0.06666667, 1)
@@ -38,11 +37,9 @@ sky_material = SubResource("ProceduralSkyMaterial_wqpcj")
 background_mode = 2
 sky = SubResource("Sky_28aoi")
 
-[node name="Tower" type="Node3D" unique_id=1310180019 node_paths=PackedStringArray("Camera", "WalletContainer", "BuildMenu")]
+[node name="Tower" type="Node3D" unique_id=1310180019 node_paths=PackedStringArray("Camera")]
 script = ExtResource("1_0ule7")
 Camera = NodePath("PhantomCamera3D")
-WalletContainer = NodePath("UIManager/PanelContainer")
-BuildMenu = NodePath("UIManager2")
 
 [node name="Ground" type="Node3D" parent="." unique_id=780252224]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4)
@@ -64,17 +61,6 @@ camera_3d_resource = SubResource("Resource_oadqw")
 environment = SubResource("Environment_ntecg")
 metadata/_custom_type_script = "uid://csjccrhj5wnx7"
 
-[node name="UIManager" type="CanvasLayer" parent="." unique_id=608780469]
-script = ExtResource("11_djx0s")
-OthersCanStack = true
-metadata/_custom_type_script = "uid://cs6dkcx2kdv1p"
-
-[node name="PanelContainer" type="PanelContainer" parent="UIManager" unique_id=1785156313]
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=170547547]
 transform = Transform3D(1, 0, 0, 0, 0.7071067, 0.70710677, 0, -0.70710677, 0.7071067, 0, 11.315495, 10.989061)
 sky_mode = 1
-
-[node name="UIManager2" type="CanvasLayer" parent="." unique_id=1850934824]
-script = ExtResource("11_djx0s")
-metadata/_custom_type_script = "uid://cs6dkcx2kdv1p"

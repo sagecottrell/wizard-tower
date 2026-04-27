@@ -1,5 +1,7 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
+using wizardtower.actions.ui;
 using wizardtower.events;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -17,22 +19,31 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
     {
         foreach (var room in State.Rooms.Values)
             SetupRoomDisplay(room);
-        if (GlobalSignals.Singleton is GlobalSignals g)
-        {
-            g.OnRoomConstructing += _g_OnRoomConstructing;
-            g.OnRoomConstructionStopping += _g_OnRoomConstructionStopping;
-            g.OnRoomConstructed += _g_OnRoomConstructed;
-            g.OnRoomDestroyed += _g_OnRoomDestroyed;
-        }
     }
 
-    private void _g_OnRoomDestroyed(RoomDestroyedEvent @event)
+    public override void _EnterTree()
+    {
+        GlobalSignals.Singleton.OnRoomConstructing += _onRoomConstructing;
+        GlobalSignals.Singleton.OnRoomConstructionStopping += _onRoomConstructionStopping;
+        GlobalSignals.Singleton.OnRoomConstructed += _onRoomConstructed;
+        GlobalSignals.Singleton.OnRoomDestroyed += _onRoomDestroyed;
+    }
+
+    public override void _ExitTree()
+    {
+        GlobalSignals.Singleton.OnRoomConstructing -= _onRoomConstructing;
+        GlobalSignals.Singleton.OnRoomConstructionStopping -= _onRoomConstructionStopping;
+        GlobalSignals.Singleton.OnRoomConstructed -= _onRoomConstructed;
+        GlobalSignals.Singleton.OnRoomDestroyed -= _onRoomDestroyed;
+    }
+
+    private void _onRoomDestroyed(RoomDestroyedEvent @event)
     {
         if (Rooms.Remove(@event.Room, out var node))
             node.QueueFree();
     }
 
-    private void _g_OnRoomConstructed(RoomConstructedEvent @event)
+    private void _onRoomConstructed(RoomConstructedEvent @event)
     {
         SetupRoomDisplay(@event.Room);
     }
@@ -42,15 +53,15 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         Rooms[newRoom] = this.AddedChild(new RoomScript() { State = newRoom });
     }
 
-    private void _g_OnRoomConstructionStopping(RoomConstructionStoppingEvent @event)
+    private void _onRoomConstructionStopping(RoomConstructionStoppingEvent @event)
     {
         if (@event.TowerState != State)
             return;
-        if (@event.RoomDefinition.CostToBuildPerUnit <= State.Wallet)
+        if (@event.RoomDefinition.CostToBuildPerUnit <= State.Wallet) 
             @event.IsAllowed = false;
     }
 
-    private void _g_OnRoomConstructing(RoomConstructingEvent @event)
+    private void _onRoomConstructing(RoomConstructingEvent @event)
     {
         if (@event.TowerState != State)
             return;
@@ -61,5 +72,19 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
             return;
         }
         // enough money means it is allowed to build
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton ms && ms.IsActionPressed(InputMapConstants.LeftClick) && GetViewport().GetCamera3D() is Camera3D camera)
+        {
+            var dir = camera.ProjectRayOrigin(ms.Position);
+            var x = (int)(dir.X + 0.5f);
+            var y = (int)dir.Y;
+            if (Tower.State.RoomsOnFloor(y).FirstOrDefault(r => x >= r.FloorPosition && x < r.FloorPosition + r.Definition.Width) is RoomState room)
+            {
+                UIActions.SelectRoom(new(Tower.State, room) { Input = @event });
+            }
+        }
     }
 }

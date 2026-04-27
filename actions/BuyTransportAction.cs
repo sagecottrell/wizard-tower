@@ -11,7 +11,7 @@ public static partial class Actions
         {
             RemoveFromWallet(new(tower, @event.Transport.Definition.CostToBuild) { Source = @event });
             tower.AddTransport(@event.Transport);
-            GlobalSignals.TransportConstructed(new(tower, @event.Transport) { Source = @event });
+            GlobalSignals.TransportConstructed(new(tower, @event.Transport) { Source = @event.Source });
         }
     }
 }

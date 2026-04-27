@@ -43,6 +43,8 @@ public partial class GlobalSignals : Node
         Singleton = this;
     }
 
+    #region Room Construction
+
     // ==================================================================================================================
     // ==================================================================================================================
 
@@ -101,6 +103,10 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
     // ==================================================================================================================
 
+    #endregion
+
+    #region Floor Construction
+
     [Signal]
     public delegate void OnFloorConstructionSelectingEventHandler(FloorConstructionSelectingEvent @event);
     public static FloorConstructionSelectingEvent FloorConstructionSelecting(FloorConstructionSelectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnFloorConstructionSelecting, @event, callerFile, callerLine);
@@ -155,6 +161,10 @@ public partial class GlobalSignals : Node
 
     // ==================================================================================================================
     // ==================================================================================================================
+
+    #endregion
+
+    #region Transport Construction
 
     [Signal]
     public delegate void OnTransportConstructionSelectingEventHandler(TransportConstructionSelectingEvent @event);
@@ -211,6 +221,10 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
     // ==================================================================================================================
 
+    #endregion
+
+    #region Tower Resource Changing
+
     [Signal]
     public delegate void OnTowerResourceChangingEventHandler(TowerResourceChangingEvent @event);
     public static TowerResourceChangingEvent TowerResourceChanging(TowerResourceChangingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTowerResourceChanging, @event, callerFile, callerLine);
@@ -222,9 +236,78 @@ public partial class GlobalSignals : Node
     // ==================================================================================================================
     // ==================================================================================================================
 
+    #endregion
+
+    #region Room Select
+
     [Signal]
-    public delegate void OnCancelledUIEventHandler(CancelledUIEvent @event);
-    public static CancelledUIEvent CancelledUI(CancelledUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnCancelledUI, @event, callerFile, callerLine);
+    public delegate void OnRoomSelectingEventHandler(RoomSelectingEvent @event);
+    public static RoomSelectingEvent RoomSelecting(RoomSelectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomSelecting, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnRoomSelectedEventHandler(RoomSelectedEvent @event);
+    public static RoomSelectedEvent RoomSelected(RoomSelectedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomSelected, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnRoomDeselectingEventHandler(RoomDeselectingEvent @event);
+    public static RoomDeselectingEvent RoomDeselecting(RoomDeselectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomDeselecting, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnRoomDeselectedEventHandler(RoomDeselectedEvent @event);
+    public static RoomDeselectedEvent RoomDeselected(RoomDeselectedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnRoomDeselected, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    #endregion
+
+    #region Transport Select
+
+    [Signal]
+    public delegate void OnTransportSelectingEventHandler(TransportSelectingEvent @event);
+    public static TransportSelectingEvent TransportSelecting(TransportSelectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportSelecting, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportSelectedEventHandler(TransportSelectedEvent @event);
+    public static TransportSelectedEvent TransportSelected(TransportSelectedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportSelected, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnTransportDeselectingEventHandler(TransportDeselectingEvent @event);
+    public static TransportDeselectingEvent TransportDeselecting(TransportDeselectingEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportDeselecting, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnTransportDeselectedEventHandler(TransportDeselectedEvent @event);
+    public static TransportDeselectedEvent TransportDeselected(TransportDeselectedEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnTransportDeselected, @event, callerFile, callerLine);
+
+    #endregion
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnShowingUIEventHandler(ShowingUIEvent @event);
+    public static ShowingUIEvent ShowingUI(ShowingUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnShowingUI, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnShowedUIEventHandler(ShowedUIEvent @event);
+    public static ShowedUIEvent ShowedUI(ShowedUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnShowedUI, @event, callerFile, callerLine);
+
+    // ==================================================================================================================
+    // ==================================================================================================================
+
+    [Signal]
+    public delegate void OnHidingUIEventHandler(HidingUIEvent @event);
+    public static HidingUIEvent HidingUI(HidingUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnHidingUI, @event, callerFile, callerLine);
+
+    [Signal]
+    public delegate void OnHiddenUIEventHandler(HiddenUIEvent @event);
+    public static HiddenUIEvent HiddenUI(HiddenUIEvent @event, [CallerFilePath] string callerFile = "", [CallerLineNumber] int callerLine = 0) => _call(SignalName.OnHiddenUI, @event, callerFile, callerLine);
 
     // ==================================================================================================================
     // ==================================================================================================================

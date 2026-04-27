@@ -2,9 +2,9 @@ using Godot;
 
 namespace wizardtower;
 
-public static class RichTextLabelExtensions
+public static class ControlExtensions
 {
-    public static string LineHeightImage(this RichTextLabel label, Texture2D? texture, int fontSize = 16, string fontName = "default", bool fullHeight = true)
+    public static string LineHeightImage(this Control label, Texture2D? texture, int fontSize = 16, string fontName = "default", bool fullHeight = true)
     {
         if (string.IsNullOrWhiteSpace(texture?.ResourcePath))
             return "[i]image not found[/i]";

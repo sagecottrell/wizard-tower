@@ -9,7 +9,7 @@ public static partial class Actions
         if (GlobalSignals.RoomDestroying(@event).IsAllowed)
         {
             @event.TowerState.RemoveRoom(@event.Room);
-            GlobalSignals.RoomDestroyed(new(@event.TowerState, @event.Room) { Source = @event });
+            GlobalSignals.RoomDestroyed(new(@event.TowerState, @event.Room) { Source = @event.Source });
         }
     }
 }

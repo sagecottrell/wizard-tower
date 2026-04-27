@@ -1,20 +1,13 @@
-using Godot;
-using wizardtower.resource_types;
-using wizardtower.state;
+using wizardtower.events.ui;
 
 namespace wizardtower.actions.ui;
 
 public static partial class UIActions
 {
-    private static Resource? _currentlyBuilding;
-    public static void BuildDeselectForce(TowerState state)
+    public static void StopBuildRoom(RoomConstructionStoppingEvent @event)
     {
-        switch (_currentlyBuilding)
-        {
-            case RoomDefinition r: GlobalSignals.RoomConstructionStopped(new(state, r)); break;
-            case FloorDefinition r: GlobalSignals.FloorConstructionStopped(new(state, r)); break;
-            case TransportDefinition r: GlobalSignals.TransportConstructionStopped(new(state, r)); break;
-        }
-        _currentlyBuilding = null;
+        if (!GlobalSignals.RoomConstructionStopping(@event).IsAllowed)
+            return;
+
     }
 }

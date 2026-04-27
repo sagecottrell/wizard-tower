@@ -15,13 +15,15 @@ kanban
     defined[Defined]
         [assign room outputs to other rooms with priority]
         [worker pathfinding and movement]
+        [open build menu with event]
     wip[Working]
-        [build transports]
+        [click on room for details and controls]
     test[Testing]
     done[Done]
         [refactor build menu to be less intrusive]
         [escape to stop building]
         [bug in selecting room/floors]
+        [build transports]
 
 ```
 

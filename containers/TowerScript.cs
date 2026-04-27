@@ -1,10 +1,11 @@
 using Godot;
 using System;
-using wizardtower.actions.ui;
 using wizardtower.state;
 using wizardtower.UIs;
 using wizardtower.UIs.build_menu;
+using wizardtower.UIs.room_details;
 using wizardtower.UIs.tower;
+using wizardtower.UIs.transport_details;
 
 namespace wizardtower.containers;
 
@@ -19,12 +20,6 @@ public partial class TowerScript : Node3D
     [Export]
     public Node3D? Camera { get; set; }
 
-    [Export]
-    public Node? WalletContainer { get; set; }
-
-    [Export]
-    public UIManager? BuildMenu { get; set; }
-
     public override void _Ready()
     {
         State.EnsureGroundFloor();
@@ -36,8 +31,10 @@ public partial class TowerScript : Node3D
         AddChild(new TowerFloorBuilderOverlay(this));
         AddChild(new TowerTransportBuilderOverlay(this));
         AddChild(new TowerCameraDragScript(Camera, State));
-        WalletContainer?.AddChild(new WalletUI(State));
-        this.Child<UIManager>()?.ShowUI();
+        AddChild(new RoomDetailsUI(State));
+        AddChild(new TransportDetailsUI(State));
+        AddChild(new BuildMenuHandler(State));
+        AddChild(new WalletUI(State));
     }
 
     public override void _Process(double delta)
@@ -51,24 +48,5 @@ public partial class TowerScript : Node3D
         }
 
         PreviousState = State.Copy();
-    }
-
-
-    public override void _UnhandledKeyInput(InputEvent @event)
-    {
-        if (@event.IsActionPressed(InputMapConstants.OpenBuildMenu) && BuildMenu is not null)
-        {
-            if (BuildMenu.Child<BuildMenu>() is BuildMenu menu)
-            {
-                menu.QueueFree();
-            }
-            else if (SceneLoader.TryLoadScene<BuildMenu>(out var bm))
-            {
-                BuildMenu.AddChild(bm);
-                bm.SetTower(State);
-            }
-        }
-        else if (@event.IsActionPressed(InputMapConstants.Cancel))
-            UIActions.Cancel(new());
     }
 }

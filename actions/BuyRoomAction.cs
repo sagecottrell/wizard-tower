@@ -11,7 +11,7 @@ public static partial class Actions
         {
             RemoveFromWallet(new(tower, @event.Room.Definition.CostToBuildPerUnit) { Source = @event });
             tower.AddRoom(@event.Room);
-            GlobalSignals.RoomConstructed(new(tower, @event.Room) { Source = @event });
+            GlobalSignals.RoomConstructed(new(tower, @event.Room) { Source = @event.Source });
         }
     }
 }

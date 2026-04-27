@@ -6,10 +6,14 @@ using wizardtower.state;
 
 namespace wizardtower.UIs.tower;
 
-public partial class WalletUI(TowerState towerState) : VBoxContainer
+public partial class WalletUI(TowerState towerState) : Node, IUserInterface
 {
+    private VBoxContainer ui = new();
+
     public override void _Ready()
     {
+        AddChild(new PanelContainer().WithChild(ui));
+
         foreach (var (key, value) in towerState.Wallet)
             _addItemLabelToWallet(key, value);
     }
@@ -30,7 +34,7 @@ public partial class WalletUI(TowerState towerState) : VBoxContainer
         foreach (var key in @event.Amount.Keys.OrderBy(x => x.Name))
         {
             var value = towerState.Wallet[key];
-            if (this.ChildControl(key.Name) is not Control child)
+            if (ui.ChildControl(key.Name) is not Control child)
                 child = _addItemLabelToWallet(key, value);
             // only remove labels that are zero or less if PersistInWallet is false
             if (value <= 0 && !key.PersistInWallet)
@@ -39,8 +43,8 @@ public partial class WalletUI(TowerState towerState) : VBoxContainer
         }
     }
 
-    private HBoxContainer _addItemLabelToWallet(ItemDefinition item, uint amount) => this.AddedChild(
-        new HBoxContainer { Name = item.Name, SizeFlagsHorizontal = SizeFlags.ExpandFill, SizeFlagsVertical = SizeFlags.ExpandFill, CustomMinimumSize = new(100, 0) }
+    private HBoxContainer _addItemLabelToWallet(ItemDefinition item, uint amount) => ui.AddedChild(
+        new HBoxContainer { Name = item.Name, SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, SizeFlagsVertical = Control.SizeFlags.ExpandFill, CustomMinimumSize = new(100, 0) }
             .WithChild(new TextureRect { Texture = item.Icon, TooltipText = item.Name, ExpandMode = TextureRect.ExpandModeEnum.FitWidth })
             .WithChild(new Label { Text = $"{amount}" })
     );
