@@ -79,8 +79,8 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         if (@event is InputEventMouseButton ms && ms.IsActionPressed(InputMapConstants.LeftClick) && GetViewport().GetCamera3D() is Camera3D camera)
         {
             var dir = camera.ProjectRayOrigin(ms.Position);
-            var x = (int)(dir.X + 0.5f);
-            var y = (int)dir.Y;
+            var x = Mathf.FloorToInt(dir.X + 0.5f);
+            var y = Mathf.FloorToInt(dir.Y);
             if (Tower.State.RoomsOnFloor(y).FirstOrDefault(r => x >= r.FloorPosition && x < r.FloorPosition + r.Definition.Width) is RoomState room)
             {
                 UIActions.SelectRoom(new(Tower.State, room) { Input = @event });

@@ -79,8 +79,8 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
         if (@event is InputEventMouseButton ms && ms.IsActionPressed(InputMapConstants.LeftClick) && GetViewport().GetCamera3D() is Camera3D camera)
         {
             var dir = camera.ProjectRayOrigin(ms.Position);
-            var x = (int)(dir.X + 0.5f);
-            var y = (int)dir.Y;
+            var x = Mathf.FloorToInt(dir.X + 0.5f);
+            var y = Mathf.FloorToInt(dir.Y);
             if (Tower.State.TransportsOnFloor(y).FirstOrDefault(r => x >= r.HorizontalPosition && x < r.HorizontalPosition + r.Definition.Width) is TransportState transport)
             {
                 UIActions.SelectTransport(new(Tower.State, transport) { Input = @event });
