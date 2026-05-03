@@ -10,7 +10,12 @@ using wizardtower.resource_types.scenes;
 
 namespace wizardtower;
 
-public interface IReadonlyNumericDict { }
+public interface IReadonlyNumericDict {
+    Type KeyType { get; }
+    Type ValueType { get; }
+}
+
+public interface INumericDict : IReadonlyNumericDict { }
 
 public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
         IComparisonOperators<TSelf, TSelf, bool>,
@@ -23,6 +28,13 @@ public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
     where TSelf : IReadonlyNumericDict<TSelf, TKey, TValue>
 { }
 
+public interface INumericDict<TSelf, TKey, TValue> :
+        IReadonlyNumericDict<TSelf, TKey, TValue>,
+        ICopy<TSelf>,
+        INumericDict
+    where TSelf : INumericDict<TSelf, TKey, TValue>
+{ }
+
 /// <summary>
 /// IMPORTANT: Make sure you supply a default value for the Data property, otherwise the editor will not be able to create a value. The default value will not be used at runtime, so it can be an empty dictionary or contain dummy data.
 /// 
@@ -32,8 +44,8 @@ public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
 /// <typeparam name="TValue"></typeparam>
 [Tool]
 public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
-        IDictionary<TKey, TValue>, 
-        IReadonlyNumericDict<NumericDict<TKey, TValue>, TKey, TValue>,
+        IDictionary<TKey, TValue>,
+        INumericDict<NumericDict<TKey, TValue>, TKey, TValue>,
         IToBBCode,
         ICopy<NumericDict<TKey, TValue>>,
         IDeSerialize<NumericDict<TKey, TValue>>
@@ -47,6 +59,8 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         IAdditiveIdentity<TValue, TValue>,
         new()
 {
+    public Type KeyType => typeof(TKey);
+    public Type ValueType => typeof(TValue);
 
     [Signal]
     public delegate void OnChangedEventHandler();
@@ -393,47 +407,6 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     IEnumerator IEnumerable.GetEnumerator()
     {
         return Data.GetEnumerator();
-    }
-
-    #endregion
-
-
-    #region Editor
-
-    [ExportToolButton("Edit Items")]
-    public Callable EditItemsButton => Callable.From(_popupEditor);
-
-    private void _saveItems(Godot.Collections.Dictionary data)
-    {
-        Clear();
-        foreach (var (key, value) in data)
-        {
-            if (key.As<TKey>() is not TKey typedKey)
-            {
-                GD.PushError($"Invalid key type {key.GetType()} in edited data, expected {typeof(TKey)}");
-                continue;
-            }
-            if (value.As<TValue>() is not TValue typedValue)
-            {
-                GD.PushError($"Invalid value type {value.GetType()} in edited data, expected {typeof(TValue)}");
-                continue;
-            }
-            this[typedKey] = typedValue;
-        }
-    }
-
-    private void _popupEditor()
-    {
-        if (SceneLoader.TryLoadScene<EditorItemWindow>(out var editor))
-        {
-            editor.Setup(ToGodotDictionary(), LoadDefs.LoadAll<TKey>());
-            var id = EditorWindowHelper.PopupEditor(editor);
-            editor.OnSave += (data) =>
-            {
-                EditorWindowHelper.Close(id);
-                _saveItems(data);
-            };
-        }
     }
 
     #endregion

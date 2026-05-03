@@ -7,7 +7,6 @@ using wizardtower.state;
 
 namespace wizardtower.UIs.build_menu;
 
-[Tool]
 public partial class BuildMenu : VBoxContainer
 {
     [Export]

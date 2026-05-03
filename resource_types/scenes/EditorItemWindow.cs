@@ -1,7 +1,6 @@
 using Godot;
 using Godot.Collections;
 using System;
-using System.Reflection;
 
 namespace wizardtower.resource_types.scenes;
 
@@ -10,24 +9,26 @@ namespace wizardtower.resource_types.scenes;
 public partial class EditorItemWindow : Control
 {
     [Signal]
-    public delegate void OnSaveEventHandler(Dictionary data);
+    public delegate void OnChangeEventHandler(Variant key, Variant value);
+
+    [Signal]
+    public delegate void OnRemoveEventHandler(Variant key);
 
     public Dictionary EditedData = [];
 
+    Control Sources => GetNode("%sources") as Control;
+    Button Collapse => GetNode("%collapse") as Button;
+
     public override void _Ready()
     {
-        GetNode<LineEdit>("%filter").TextChanged += _onFilterSubmitted;
-        GetNode<Button>("%save").Pressed += _onSaveButtonPressed;
+        Collapse.Pressed += _onCollapsePressed;
     }
 
-    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(Dictionary<TKey, TValue> data, System.Collections.Generic.IReadOnlyDictionary<string, TKey> definitions) 
+    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(Dictionary<TKey, TValue> data, System.Collections.Generic.IReadOnlyDictionary<string, TKey> definitions)
         where TKey : Resource
         where TValue : new()
     {
         EditedData = (Dictionary)data.Duplicate();
-
-        if (typeof(TKey).GetCustomAttribute<IconAttribute>() is IconAttribute iconAttribute && ResourceLoader.Singleton.Load(iconAttribute.Path) is Texture2D tx)
-            GetNode<LineEdit>("%filter").RightIcon = tx;
 
         foreach (var (name, def) in definitions)
         {
@@ -36,12 +37,7 @@ public partial class EditorItemWindow : Control
             itemSelector.Name = name;
             var value = Variant.From(data.TryGetValue(def, out var v) ? v : default);
             itemSelector.SetItemDefinition<TValue>(def, value);
-            GetNode("%sources").AddChild(itemSelector);
-
-            if (!_testZero(value))
-            {
-                _updateLabel(def, value);
-            }
+            Sources.AddChild(itemSelector);
         }
     }
 
@@ -50,65 +46,31 @@ public partial class EditorItemWindow : Control
         if (_testZero(value))
         {
             EditedData.Remove(def);
-            _updateLabel(def, value);
+            EmitSignalOnRemove(def);
         }
         else
         {
             EditedData[def] = value;
+            EmitSignalOnChange(def, value);
         }
     }
 
-    private void _updateLabel(Resource def, Variant value)
-    {
-        if (def is not INamedResource named)
-            return;
-        if (GetNode("%selected").FindChild(named.Name, owned: false) is RichTextLabel label)
-        {
-            if (_testZero(value))
-                label.QueueFree();
-            else
-                label.Text = _formatLabel(named, value);
-        }
-        else
-        {
-            GetNode("%selected").AddChild(new RichTextLabel()
-            {
-                FitContent = true,
-                BbcodeEnabled = true,
-                Name = named.Name ?? "--",
-                Text = _formatLabel(named, value),
-            });
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        foreach (var key in EditedData.Keys)
-        {
-            if (key.AsGodotObject() is Resource r && EditedData[key] is Variant v)
-            {
-                _onAmountChanged(r, v);
-                _updateLabel(r, v);
-            }
-        }
-    }
-
-    private static string _formatLabel(INamedResource def, Variant amount) => $"[img height=24]{def?.IconPathOrName}[/img] {def?.Name}: {(amount.Obj is IToBBCode bbcode ? bbcode.ToStringBBCode() : amount)}";
+    //private static string _formatLabel(INamedResource def, Variant amount) => $"[img height=24]{def?.IconPathOrName}[/img] {def?.Name}: {(amount.Obj is IToBBCode bbcode ? bbcode.ToStringBBCode() : amount)}";
 
     private static bool _testZero(Variant value) => value.Obj?.Equals(0L) ?? true;
 
     private void _onFilterSubmitted(string value)
     {
         value = value.ToLower();
-        foreach (var selector in GetNode("%sources").GetChildren())
+        foreach (var selector in Sources.GetChildren())
         {
             if (selector is Control s)
                 s.Visible = string.IsNullOrWhiteSpace(value) || s.Name.ToString().Contains(value, StringComparison.CurrentCultureIgnoreCase);
         }
     }
 
-    private void _onSaveButtonPressed()
+    private void _onCollapsePressed()
     {
-        EmitSignalOnSave(EditedData);
+        Sources.Visible = !Sources.Visible;
     }
 }

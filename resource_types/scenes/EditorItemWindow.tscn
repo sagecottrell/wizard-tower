@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://dshus7l3ammh5"]
 
 [ext_resource type="Script" uid="uid://bkrngclqdro8p" path="res://resource_types/scenes/EditorItemWindow.cs" id="1_w6msg"]
-[ext_resource type="Texture2D" uid="uid://6iskssvv43uk" path="res://resource_types/item-icon.svg" id="2_58131"]
 
 [node name="EditorItemWindow" type="VBoxContainer" unique_id=1265699384]
 anchors_preset = 15
@@ -14,20 +13,11 @@ script = ExtResource("1_w6msg")
 [node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=247230927]
 layout_mode = 2
 
-[node name="filter" type="LineEdit" parent="VBoxContainer" unique_id=1353115239]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Filter"
-keep_editing_on_text_submit = true
-right_icon = ExtResource("2_58131")
-icon_expand_mode = 1
-
-[node name="save" type="Button" parent="VBoxContainer" unique_id=1102337052]
+[node name="collapse" type="Button" parent="VBoxContainer" unique_id=1102337052]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Save"
+text = "NumericDict"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=267849206]
 layout_mode = 2
@@ -37,25 +27,3 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer/sources" unique_id=355154338]
-layout_mode = 2
-text = "Sources"
-
-[node name="Panel" type="PanelContainer" parent="HBoxContainer" unique_id=198794694]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="HBoxContainer/Panel" unique_id=329763485]
-layout_mode = 2
-text = "==>"
-
-[node name="selected" type="VBoxContainer" parent="HBoxContainer" unique_id=906830029]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="HBoxContainer/selected" unique_id=1274031208]
-layout_mode = 2
-text = "Selected"
-
-[connection signal="text_submitted" from="VBoxContainer/filter" to="." method="_on_line_edit_text_submitted"]

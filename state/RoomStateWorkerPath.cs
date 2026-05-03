@@ -11,5 +11,5 @@ public partial class RoomStateWorkerPath : Resource
     public uint TargetRoomId { get; set; }
 
     [Export]
-    public Array<uint> TransportsToTake { get; set; }
+    public Array<uint>? TransportsToTake { get; set; }
 }
