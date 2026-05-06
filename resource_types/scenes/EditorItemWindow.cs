@@ -16,11 +16,13 @@ public partial class EditorItemWindow : Control
 
     public Dictionary EditedData = [];
 
-    Control Sources => GetNode("%sources") as Control;
-    Button Collapse => GetNode("%collapse") as Button;
+    Control? Sources => GetNode("%sources") as Control;
+    Button? Collapse => GetNode("%collapse") as Button;
 
     public override void _Ready()
     {
+        if (Sources is null || Collapse is null)
+            return;
         Collapse.Pressed += _onCollapsePressed;
     }
 
@@ -37,7 +39,7 @@ public partial class EditorItemWindow : Control
             itemSelector.Name = name;
             var value = Variant.From(data.TryGetValue(def, out var v) ? v : default);
             itemSelector.SetItemDefinition<TValue>(def, value);
-            Sources.AddChild(itemSelector);
+            Sources?.AddChild(itemSelector);
         }
     }
 
@@ -62,6 +64,8 @@ public partial class EditorItemWindow : Control
     private void _onFilterSubmitted(string value)
     {
         value = value.ToLower();
+        if (Sources is null)
+            return;
         foreach (var selector in Sources.GetChildren())
         {
             if (selector is Control s)
@@ -71,6 +75,8 @@ public partial class EditorItemWindow : Control
 
     private void _onCollapsePressed()
     {
+        if (Sources is null)
+            return;
         Sources.Visible = !Sources.Visible;
     }
 }

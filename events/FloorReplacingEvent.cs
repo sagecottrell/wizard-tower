@@ -4,7 +4,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorReplacingEvent(TowerState towerState, FloorState floor, FloorDefinition newDefinition) : BaseEvent, IDebug, ITowerEvent, IAllowableEvent
+public partial class FloorReplacingEvent(TowerState towerState, FloorState floor, FloorDefinition newDefinition) : BaseEvent, IDebug, ITowerEvent, IDeniableEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = towerState;

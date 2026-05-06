@@ -30,7 +30,8 @@ public partial class TowerScript : Node3D
         AddChild(new TowerRoomBuilderOverlay(this));
         AddChild(new TowerFloorBuilderOverlay(this));
         AddChild(new TowerTransportBuilderOverlay(this));
-        AddChild(new TowerCameraDragScript(Camera, State));
+        if (Camera != null)
+            AddChild(new TowerCameraDragScript(Camera, State));
         AddChild(new RoomDetailsUI(State));
         AddChild(new TransportDetailsUI(State));
         AddChild(new BuildMenuHandler(State));

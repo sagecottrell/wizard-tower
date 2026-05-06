@@ -4,7 +4,7 @@ using wizardtower.state;
 
 namespace wizardtower.events.ui;
 
-public partial class FloorConstructionSelectingEvent(TowerState towerState, FloorDefinition floorDefinition) : BaseEvent, IDebug, IAllowableEvent, ITowerEvent, IFloorDefinitionEvent
+public partial class FloorConstructionSelectingEvent(TowerState towerState, FloorDefinition floorDefinition) : BaseEvent, IDebug, IDeniableEvent, ITowerEvent, IFloorDefinitionEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = towerState;

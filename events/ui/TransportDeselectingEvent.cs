@@ -3,7 +3,7 @@ using wizardtower.state;
 
 namespace wizardtower.events.ui;
 
-public partial class TransportDeselectingEvent(TowerState tower, TransportState transport) : BaseEvent, ITowerEvent, IAllowableEvent, ITransportEvent, IDebug
+public partial class TransportDeselectingEvent(TowerState tower, TransportState transport) : BaseEvent, ITowerEvent, IDeniableEvent, ITransportEvent, IDebug
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = tower;

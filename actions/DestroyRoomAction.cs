@@ -1,4 +1,5 @@
 using wizardtower.events;
+using wizardtower.events.handlers;
 
 namespace wizardtower.actions;
 
@@ -6,10 +7,10 @@ public static partial class Actions
 {
     public static void DestroyRoom(RoomDestroyingEvent @event)
     {
-        if (GlobalSignals.RoomDestroying(@event).IsAllowed)
+        if (RoomEvents.OnRoomDestroying(@event).IsAllowed)
         {
             @event.TowerState.RemoveRoom(@event.Room);
-            GlobalSignals.RoomDestroyed(new(@event.TowerState, @event.Room) { Source = @event.Source });
+            RoomEvents.OnRoomDestroyed(new(@event.TowerState, @event.Room) { Source = @event.Source });
         }
     }
 }

@@ -3,7 +3,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorConstructingEvent(TowerState tower, FloorState floor) : BaseEvent, IDebug, ITowerEvent, IAllowableEvent, IEvent
+public partial class FloorConstructingEvent(TowerState tower, FloorState floor) : BaseEvent, IDebug, ITowerEvent, IDeniableEvent, IEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = tower;

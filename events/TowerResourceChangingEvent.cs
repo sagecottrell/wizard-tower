@@ -4,7 +4,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class TowerResourceChangingEvent(TowerState tower, NumericDict<ItemDefinition, uint> amount) : BaseEvent, IAllowableEvent, IDebug, ITowerEvent
+public partial class TowerResourceChangingEvent(TowerState tower, NumericDict<ItemDefinition, uint> amount) : BaseEvent, IDeniableEvent, IDebug, ITowerEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = tower;

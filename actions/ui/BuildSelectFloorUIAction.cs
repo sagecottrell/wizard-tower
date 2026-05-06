@@ -1,3 +1,4 @@
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 
 namespace wizardtower.actions.ui;
@@ -8,8 +9,8 @@ public static partial class UIActions
     {
         var floorDef = @event.FloorDefinition;
         var state = @event.TowerState;
-        var ev = GlobalSignals.FloorConstructionSelecting(@event);
+        var ev = FloorEvents.UI.OnFloorConstructionSelecting(@event);
         if (state.Wallet >= floorDef.CostToBuildPerUnit && ev.IsAllowed)
-            GlobalSignals.FloorConstructionSelected(new(state, floorDef) { Source = @event });
+            FloorEvents.UI.OnFloorConstructionSelected(new(state, floorDef) { Source = @event });
     }
 }

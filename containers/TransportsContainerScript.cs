@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using wizardtower.actions.ui;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 using wizardtower.state;
 
@@ -22,18 +23,18 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     }
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnTransportConstructing += _onTransportConstructing;
-        GlobalSignals.Singleton.OnTransportConstructionStopping += _onTransportConstructionStopping;
-        GlobalSignals.Singleton.OnTransportConstructed += _onTransportConstructed;
-        GlobalSignals.Singleton.OnTransportDestroyed += _onTransportDestroyed;
+        TransportEvents.TransportConstructing += _onTransportConstructing;
+        TransportEvents.UI.TransportConstructionStopping += _onTransportConstructionStopping;
+        TransportEvents.TransportConstructed += _onTransportConstructed;
+        TransportEvents.TransportDestroyed += _onTransportDestroyed;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnTransportConstructing -= _onTransportConstructing;
-        GlobalSignals.Singleton.OnTransportConstructionStopping -= _onTransportConstructionStopping;
-        GlobalSignals.Singleton.OnTransportConstructed -= _onTransportConstructed;
-        GlobalSignals.Singleton.OnTransportDestroyed -= _onTransportDestroyed;
+        TransportEvents.TransportConstructing -= _onTransportConstructing;
+        TransportEvents.UI.TransportConstructionStopping -= _onTransportConstructionStopping;
+        TransportEvents.TransportConstructed -= _onTransportConstructed;
+        TransportEvents.TransportDestroyed -= _onTransportDestroyed;
     }
 
     private void _onTransportConstructed(TransportConstructedEvent @event)

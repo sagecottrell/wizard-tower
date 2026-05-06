@@ -1,6 +1,7 @@
 using Godot;
 using System.Linq;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -20,12 +21,12 @@ public partial class WalletUI(TowerState towerState) : Node, IUserInterface
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnTowerResourceChanged += _onTowerResourceChanged;
+        TowerEvents.TowerResourceChanged += _onTowerResourceChanged;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnTowerResourceChanged -= _onTowerResourceChanged;
+        TowerEvents.TowerResourceChanged -= _onTowerResourceChanged;
     }
 
     private void _onTowerResourceChanged(TowerResourceChangedEvent @event)

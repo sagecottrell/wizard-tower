@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using wizardtower.actions.ui;
+using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -10,7 +11,7 @@ namespace wizardtower.UIs.room_details;
 
 public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterface
 {
-    private RoomState? Room { get; set; }
+    private RoomState? RoomState { get; set; }
     private Control ui = new VBoxContainer();
 
     public override void _Ready()
@@ -26,54 +27,54 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnRoomSelected += _onRoomSelected;
-        GlobalSignals.Singleton.OnRoomDeselected += _onRoomDeselected;
-        GlobalSignals.Singleton.OnFloorConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnRoomConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnTransportConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnShowedUI += _onShowedUI;
+        RoomEvents.UI.RoomSelected += _onRoomSelected;
+        RoomEvents.UI.RoomDeselected += _onRoomDeselected;
+        FloorEvents.UI.FloorConstructionSelected += _event_hide;
+        RoomEvents.UI.RoomConstructionSelected += _event_hide;
+        TransportEvents.UI.TransportConstructionSelected += _event_hide;
+        GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnRoomSelected -= _onRoomSelected;
-        GlobalSignals.Singleton.OnRoomDeselected -= _onRoomDeselected;
-        GlobalSignals.Singleton.OnFloorConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnRoomConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnTransportConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnShowedUI -= _onShowedUI;
+        RoomEvents.UI.RoomSelected -= _onRoomSelected;
+        RoomEvents.UI.RoomDeselected -= _onRoomDeselected;
+        FloorEvents.UI.FloorConstructionSelected -= _event_hide;
+        RoomEvents.UI.RoomConstructionSelected -= _event_hide;
+        TransportEvents.UI.TransportConstructionSelected -= _event_hide;
+        GeneralEvents.ShowedUI -= _onShowedUI;
     }
 
     private void _onShowedUI(ShowedUIEvent @event)
     {
-        if (Room is null)
+        if (RoomState is null)
             return;
         switch (@event.UserInterface)
         {
             case TransportDetailsUI:
-                UIActions.DeselectRoom(new(tower, Room));
+                UIActions.DeselectRoom(new(tower, RoomState));
                 break;
         }
     }
 
     private void _reset()
     {
-        Room = null;
+        RoomState = null;
         Visible = false;
     }
 
     private void _onRoomDeselected(RoomDeselectedEvent @event)
     {
-        if (@event.Room != Room)
+        if (@event.Room != RoomState)
             return;
         _reset();
     }
 
     private void _event_hide(IEvent @event)
     {
-        if (Room is null)
+        if (RoomState is null)
             return;
-        UIActions.DeselectRoom(new(tower, Room));
+        UIActions.DeselectRoom(new(tower, RoomState));
     }
 
     private void _onRoomSelected(RoomSelectedEvent @event)
@@ -81,12 +82,12 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (@event.TowerState != tower)
             return;
 
-        if (@event.Room == Room)
+        if (@event.Room == RoomState)
         {
-            UIActions.DeselectRoom(new(tower, Room));
+            UIActions.DeselectRoom(new(tower, RoomState));
             return;
         }
-        Room = @event.Room;
+        RoomState = @event.Room;
         Visible = true;
 
         if (ui.Child<RichTextLabel>() is not RichTextLabel rtl)
@@ -100,22 +101,22 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.Text = "";
         _pushText(rtl);
 
-        GlobalSignals.ShowedUI(new(this));
+        GeneralEvents.OnShowedUI(new(this));
     }
 
     private void _pushText(RichTextLabel rtl)
     {
-        if (Room is null)
+        if (RoomState is null)
             return;
-        rtl.AppendText($"Selected Room #{Room.Id}\n");
-        rtl.AppendText($"{Room.Definition.Name} {rtl.LineHeightImage(Room.Definition.Icon)}\n");
-        rtl.AppendText($"Floor {Room.Elevation}, Room {Mathf.Abs(Room.FloorPosition),3:D3}{(Room.FloorPosition < 0 ? "L" : "R")}\n");
-        this.Debug($"Stored items: {Room.StoredItems.Count}");
-        if (Room.StoredItems.Count > 0)
+        rtl.AppendText($"Selected Room #{RoomState.Id}\n");
+        rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
+        rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");
+        this.Debug($"Stored items: {RoomState.StoredItems.Count}");
+        if (RoomState.StoredItems.Count > 0)
         {
             rtl.AddText("Stored items:\n");
             rtl.PushList(0, RichTextLabel.ListType.Dots, false);
-            foreach (var (def, amount) in Room.StoredItems)
+            foreach (var (def, amount) in RoomState.StoredItems)
             {
                 rtl.AppendText($"{amount} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
             }

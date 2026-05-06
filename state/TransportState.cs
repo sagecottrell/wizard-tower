@@ -24,7 +24,7 @@ public partial class TransportState : Resource, ICopy<TransportState>, IDeSerial
     public uint Height { get; set; } = 1;
 
     [Export]
-    public Array<int> LoadStatistics { get; set; }
+    public Array<int>? LoadStatistics { get; set; }
 
     public bool Compare(TransportState? other)
     {

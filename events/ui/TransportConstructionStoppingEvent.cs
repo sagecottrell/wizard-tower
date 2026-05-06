@@ -4,7 +4,7 @@ using wizardtower.state;
 
 namespace wizardtower.events.ui;
 
-public partial class TransportConstructionStoppingEvent(TowerState towerState, TransportDefinition transportDefinition) : BaseEvent, ITowerEvent, IAllowableEvent, ITransportDefinitionEvent, IDebug
+public partial class TransportConstructionStoppingEvent(TowerState towerState, TransportDefinition transportDefinition) : BaseEvent, ITowerEvent, IDeniableEvent, ITransportDefinitionEvent, IDebug
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; set; } = towerState;

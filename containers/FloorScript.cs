@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -28,24 +29,24 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructionPreview += _g_OnRoomConstructionPreview;
-        GlobalSignals.Singleton.OnRoomConstructed += _g_OnRoomConstructed;
-        GlobalSignals.Singleton.OnRoomDestroyed += _g_OnRoomDestroyed;
-        GlobalSignals.Singleton.OnFloorExtended += _g_OnFloorExtended;
-        GlobalSignals.Singleton.OnFloorReplaced += _g_OnFloorReplaced;
-        GlobalSignals.Singleton.OnRoomConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
-        GlobalSignals.Singleton.OnTransportConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        RoomEvents.UI.RoomConstructionPreview += _g_OnRoomConstructionPreview;
+        RoomEvents.RoomConstructed += _g_OnRoomConstructed;
+        RoomEvents.RoomDestroyed += _g_OnRoomDestroyed;
+        FloorEvents.FloorExtended += _g_OnFloorExtended;
+        FloorEvents.FloorReplaced += _g_OnFloorReplaced;
+        RoomEvents.UI.RoomConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        TransportEvents.UI.TransportConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructionPreview -= _g_OnRoomConstructionPreview;
-        GlobalSignals.Singleton.OnRoomConstructed -= _g_OnRoomConstructed;
-        GlobalSignals.Singleton.OnRoomDestroyed -= _g_OnRoomDestroyed;
-        GlobalSignals.Singleton.OnFloorExtended -= _g_OnFloorExtended;
-        GlobalSignals.Singleton.OnFloorReplaced -= _g_OnFloorReplaced;
-        GlobalSignals.Singleton.OnRoomConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
-        GlobalSignals.Singleton.OnTransportConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        RoomEvents.UI.RoomConstructionPreview -= _g_OnRoomConstructionPreview;
+        RoomEvents.RoomConstructed -= _g_OnRoomConstructed;
+        RoomEvents.RoomDestroyed -= _g_OnRoomDestroyed;
+        FloorEvents.FloorExtended -= _g_OnFloorExtended;
+        FloorEvents.FloorReplaced -= _g_OnFloorReplaced;
+        RoomEvents.UI.RoomConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        TransportEvents.UI.TransportConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
     }
 
 

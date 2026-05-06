@@ -1,7 +1,7 @@
 
 namespace wizardtower.events.interfaces;
 
-public interface IAllowableEvent
+public interface IDeniableEvent
 {
     bool IsAllowed { get; set; }
 }

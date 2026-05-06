@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Linq;
 using wizardtower.actions.ui;
+using wizardtower.events.handlers;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -25,12 +26,12 @@ public partial class BuildMenu : VBoxContainer
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnTowerResourceChanged += _g_OnTowerResourceChanged;
+        TowerEvents.TowerResourceChanged += _g_OnTowerResourceChanged;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnTowerResourceChanged -= _g_OnTowerResourceChanged;
+        TowerEvents.TowerResourceChanged -= _g_OnTowerResourceChanged;
     }
 
     public override void _Ready()

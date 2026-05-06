@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using wizardtower.actions.ui;
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 using wizardtower.state;
 
@@ -18,14 +19,14 @@ public partial class BuildMenuHandler(TowerState tower) : CanvasLayer, IUserInte
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnHidingUI += _onHidingUI;
-        GlobalSignals.Singleton.OnShowedUI += _onShowedUI;
+        GeneralEvents.HidingUI += _onHidingUI;
+        GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnHidingUI -= _onHidingUI;
-        GlobalSignals.Singleton.OnShowedUI -= _onShowedUI;
+        GeneralEvents.HidingUI  -= _onHidingUI;
+        GeneralEvents.ShowedUI -= _onShowedUI;
     }
 
     private void _onHidingUI(HidingUIEvent @event)

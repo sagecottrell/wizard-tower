@@ -3,7 +3,7 @@ using wizardtower.state;
 
 namespace wizardtower.events;
 
-public partial class FloorExtendingEvent(TowerState towerState, FloorState floor, uint extendedLeft, uint extendedRight) : BaseEvent, IDebug, ITowerEvent, IAllowableEvent, IEvent
+public partial class FloorExtendingEvent(TowerState towerState, FloorState floor, uint extendedLeft, uint extendedRight) : BaseEvent, IDebug, ITowerEvent, IDeniableEvent, IEvent
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = towerState;

@@ -2,6 +2,7 @@ using Godot;
 using System.Collections.Generic;
 using wizardtower.actions;
 using wizardtower.containers;
+using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.resource_types;
@@ -41,17 +42,17 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructionSelected += _onRoomConstructionSelected;
-        GlobalSignals.Singleton.OnRoomConstructionStopped += _event_reset;
-        GlobalSignals.Singleton.OnFloorConstructionSelected += _event_reset;
-        GlobalSignals.Singleton.OnTransportConstructionSelected += _event_reset;
+        RoomEvents.UI.RoomConstructionSelected += _onRoomConstructionSelected;
+        RoomEvents.UI.RoomConstructionStopped += _event_reset;
+        FloorEvents.UI.FloorConstructionSelected += _event_reset;
+        TransportEvents.UI.TransportConstructionSelected += _event_reset;
     }
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructionSelected -= _onRoomConstructionSelected;
-        GlobalSignals.Singleton.OnRoomConstructionStopped -= _event_reset;
-        GlobalSignals.Singleton.OnFloorConstructionSelected -= _event_reset;
-        GlobalSignals.Singleton.OnTransportConstructionSelected -= _event_reset;
+        RoomEvents.UI.RoomConstructionSelected -= _onRoomConstructionSelected;
+        RoomEvents.UI.RoomConstructionStopped -= _event_reset;
+        FloorEvents.UI.FloorConstructionSelected -= _event_reset;
+        TransportEvents.UI.TransportConstructionSelected -= _event_reset;
     }
 
     private void _reset()
@@ -102,7 +103,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
     private void _onCancel()
     {
         if (_currentRoomDef != null)
-            GlobalSignals.RoomConstructionStopped(new(Tower.State, _currentRoomDef));
+            RoomEvents.UI.OnRoomConstructionStopped(new(Tower.State, _currentRoomDef));
     }
 
     private void _onAccept(int x, int y)
@@ -120,8 +121,8 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         };
         Actions.BuyRoom(new(Tower.State, room));
 
-        if (GlobalSignals.RoomConstructionStopping(new(Tower.State, _currentRoomDef)).IsAllowed)
-            GlobalSignals.RoomConstructionStopped(new(Tower.State, _currentRoomDef));
+        if (RoomEvents.UI.OnRoomConstructionStopping(new(Tower.State, _currentRoomDef)).IsAllowed)
+            RoomEvents.UI.OnRoomConstructionStopped(new(Tower.State, _currentRoomDef));
         else
         {
             for (var i = 0; i < _currentRoomDef.Width; i++)
@@ -148,12 +149,12 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         });
         BuildingRoom.State.Elevation = y;
         BuildingRoom.State.FloorPosition = x;
-        GlobalSignals.RoomConstructionPreview(new(Tower.State, BuildingRoom.State));
+        RoomEvents.UI.OnRoomConstructionPreview(new(Tower.State, BuildingRoom.State));
     }
 
     private void _revertFloorVis()
     {
-        GlobalSignals.RoomConstructionPreviewStopped(new(Tower.State));
+        RoomEvents.UI.OnRoomConstructionPreviewStopped(new(Tower.State));
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using wizardtower.actions.ui;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 using wizardtower.state;
 
@@ -23,18 +24,18 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructing += _onRoomConstructing;
-        GlobalSignals.Singleton.OnRoomConstructionStopping += _onRoomConstructionStopping;
-        GlobalSignals.Singleton.OnRoomConstructed += _onRoomConstructed;
-        GlobalSignals.Singleton.OnRoomDestroyed += _onRoomDestroyed;
+        RoomEvents.RoomConstructing += _onRoomConstructing;
+        RoomEvents.UI.RoomConstructionStopping += _onRoomConstructionStopping;
+        RoomEvents.RoomConstructed += _onRoomConstructed;
+        RoomEvents.RoomDestroyed += _onRoomDestroyed;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnRoomConstructing -= _onRoomConstructing;
-        GlobalSignals.Singleton.OnRoomConstructionStopping -= _onRoomConstructionStopping;
-        GlobalSignals.Singleton.OnRoomConstructed -= _onRoomConstructed;
-        GlobalSignals.Singleton.OnRoomDestroyed -= _onRoomDestroyed;
+        RoomEvents.RoomConstructing -= _onRoomConstructing;
+        RoomEvents.UI.RoomConstructionStopping -= _onRoomConstructionStopping;
+        RoomEvents.RoomConstructed -= _onRoomConstructed;
+        RoomEvents.RoomDestroyed -= _onRoomDestroyed;
     }
 
     private void _onRoomDestroyed(RoomDestroyedEvent @event)

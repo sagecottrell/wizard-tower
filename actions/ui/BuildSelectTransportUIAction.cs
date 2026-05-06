@@ -1,3 +1,4 @@
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 
 namespace wizardtower.actions.ui;
@@ -8,8 +9,8 @@ public static partial class UIActions
     {
         var state = @event.TowerState;
         var transportDef = @event.TransportDefinition;
-        var ev = GlobalSignals.TransportConstructionSelecting(new(state, transportDef));
+        var ev = TransportEvents.UI.OnTransportConstructionSelecting(new(state, transportDef));
         if (state.Wallet >= transportDef.CostToBuild && ev.IsAllowed)
-            GlobalSignals.TransportConstructionSelected(new(state, transportDef) { Source = @event.Source });
+            TransportEvents.UI.OnTransportConstructionSelected(new(state, transportDef) { Source = @event.Source });
     }
 }

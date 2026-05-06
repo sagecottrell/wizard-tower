@@ -1,5 +1,6 @@
 using Godot;
 using wizardtower.actions.ui;
+using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -25,22 +26,22 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnTransportSelected += _onTransportSelected;
-        GlobalSignals.Singleton.OnTransportDeselected += _onTransportDeselected;
-        GlobalSignals.Singleton.OnFloorConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnRoomConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnTransportConstructionSelected += _event_hide;
-        GlobalSignals.Singleton.OnShowedUI += _onShowedUI;
+        TransportEvents.UI.TransportSelected += _onTransportSelected;
+        TransportEvents.UI.TransportDeselected += _onTransportDeselected;
+        FloorEvents.UI.FloorConstructionSelected += _event_hide;
+        RoomEvents.UI.RoomConstructionSelected += _event_hide;
+        TransportEvents.UI.TransportConstructionSelected += _event_hide;
+        GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnTransportSelected -= _onTransportSelected;
-        GlobalSignals.Singleton.OnTransportDeselected -= _onTransportDeselected;
-        GlobalSignals.Singleton.OnFloorConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnRoomConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnTransportConstructionSelected -= _event_hide;
-        GlobalSignals.Singleton.OnShowedUI -= _onShowedUI;
+        TransportEvents.UI.TransportSelected -= _onTransportSelected;
+        TransportEvents.UI.TransportDeselected -= _onTransportDeselected;
+        FloorEvents.UI.FloorConstructionSelected -= _event_hide;
+        RoomEvents.UI.RoomConstructionSelected -= _event_hide;
+        TransportEvents.UI.TransportConstructionSelected -= _event_hide;
+        GeneralEvents.ShowedUI -= _onShowedUI;
     }
 
     private void _onTransportDeselected(TransportDeselectedEvent @event)
@@ -98,6 +99,6 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
                 BbcodeEnabled = true,
             });
         rtl.Text = text;
-        GlobalSignals.ShowedUI(new(this));
+        GeneralEvents.OnShowedUI(new(this));
     }
 }

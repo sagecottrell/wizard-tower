@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.events.ui;
 using wizardtower.state;
 
@@ -21,18 +22,18 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnFloorConstructing += _g_OnFloorConstructing;
-        GlobalSignals.Singleton.OnFloorExtending += _g_OnFloorExtending;
-        GlobalSignals.Singleton.OnFloorConstructionStopping += _g_OnFloorConstructionStopping;
-        GlobalSignals.Singleton.OnFloorConstructed += _g_OnFloorConstructed;
+        FloorEvents.FloorConstructing += _g_OnFloorConstructing;
+        FloorEvents.FloorExtending += _g_OnFloorExtending;
+        FloorEvents.UI.FloorConstructionStopping += _g_OnFloorConstructionStopping;
+        FloorEvents.FloorConstructed += _g_OnFloorConstructed;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnFloorConstructing -= _g_OnFloorConstructing;
-        GlobalSignals.Singleton.OnFloorExtending -= _g_OnFloorExtending;
-        GlobalSignals.Singleton.OnFloorConstructionStopping -= _g_OnFloorConstructionStopping;
-        GlobalSignals.Singleton.OnFloorConstructed -= _g_OnFloorConstructed;
+        FloorEvents.FloorConstructing -= _g_OnFloorConstructing;
+        FloorEvents.FloorExtending -= _g_OnFloorExtending;
+        FloorEvents.UI.FloorConstructionStopping -= _g_OnFloorConstructionStopping;
+        FloorEvents.FloorConstructed -= _g_OnFloorConstructed;
     }
 
     private void _g_OnFloorConstructed(FloorConstructedEvent @event)

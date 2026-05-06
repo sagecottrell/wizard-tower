@@ -14,13 +14,13 @@ public partial class EditorAddRoom : Control
     public TowerState? TowerState { get; set; }
 
     [Export]
-    public CheckBox roomPickerPrefab { get; set; }
+    public CheckBox? roomPickerPrefab { get; set; }
 
     [Export]
-    public SpinBox ev { get; set; }
+    public SpinBox? ev { get; set; }
 
     [Export]
-    public SpinBox fp { get; set; }
+    public SpinBox? fp { get; set; }
 
     public ButtonGroup group { get; set; } = new();
     public RoomDefinition? pickedRoom { get; set; }
@@ -29,7 +29,7 @@ public partial class EditorAddRoom : Control
     {
         foreach (var (name, def) in LoadDefs.LoadAll<RoomDefinition>())
         {
-            if (roomPickerPrefab.Duplicate() is CheckBox dup)
+            if (roomPickerPrefab?.Duplicate() is CheckBox dup)
             {
                 dup.ButtonGroup = group;
                 dup.Text = name;
@@ -40,12 +40,13 @@ public partial class EditorAddRoom : Control
             }
         }
 
-        roomPickerPrefab.Visible = false;
+        if (roomPickerPrefab != null)
+            roomPickerPrefab.Visible = false;
     }
 
     public override void _Process(double delta)
     {
-        if (TowerState is null)
+        if (TowerState is null || ev is null || fp is null)
             return;
         ev.MinValue = -TowerState.MaxBasement;
         ev.MaxValue = TowerState.MaxHeight;
@@ -55,6 +56,8 @@ public partial class EditorAddRoom : Control
 
     public void Save()
     {
+        if (TowerState is null || ev is null || fp is null)
+            return;
         EmitSignalOnSave((int)ev.Value, (int)fp.Value, pickedRoom);
     }
 }

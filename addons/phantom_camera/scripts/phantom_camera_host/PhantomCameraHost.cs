@@ -2,6 +2,10 @@ using Godot;
 
 #nullable enable
 
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS0169 // Field is never assigned to, and will always have its default value null.
+
 namespace PhantomCamera;
 
 public enum InterpolationMode

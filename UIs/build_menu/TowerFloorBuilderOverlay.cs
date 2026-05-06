@@ -4,6 +4,7 @@ using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events;
+using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.ui;
 using wizardtower.resource_types;
@@ -43,28 +44,27 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     public override void _EnterTree()
     {
-        GlobalSignals.Singleton.OnFloorConstructionSelected += _onFloorConstructionSelected;
-        GlobalSignals.Singleton.OnFloorExtended += _onFloorExtended;
-        GlobalSignals.Singleton.OnFloorReplaced += _onFloorReplaced;
-        GlobalSignals.Singleton.OnFloorConstructed += _onFloorConstructed;
-        GlobalSignals.Singleton.OnShowingUI += _onShowingUI;
+        FloorEvents.UI.FloorConstructionSelected += _onFloorConstructionSelected;
+        FloorEvents.FloorExtended += _onFloorExtended;
+        FloorEvents.FloorReplaced += _onFloorReplaced;
+        FloorEvents.FloorConstructed += _onFloorConstructed;
+        GeneralEvents.ShowingUIEvent += _onShowingUI;
 
-        GlobalSignals.Singleton.OnFloorConstructionStopped += _event_reset;
-        GlobalSignals.Singleton.OnTransportConstructionSelected += _event_reset;
-        GlobalSignals.Singleton.OnRoomConstructionSelected += _event_reset;
+        FloorEvents.UI.FloorConstructionStopped += _event_reset;
+        TransportEvents.UI.TransportConstructionSelected += _event_reset;
+        RoomEvents.UI.RoomConstructionSelected += _event_reset;
     }
 
     public override void _ExitTree()
     {
-        GlobalSignals.Singleton.OnFloorConstructionSelected -= _onFloorConstructionSelected;
-        GlobalSignals.Singleton.OnFloorExtended -= _onFloorExtended;
-        GlobalSignals.Singleton.OnFloorReplaced -= _onFloorReplaced;
-        GlobalSignals.Singleton.OnFloorConstructed -= _onFloorConstructed;
-        GlobalSignals.Singleton.OnShowingUI -= _onShowingUI;
-
-        GlobalSignals.Singleton.OnFloorConstructionStopped -= _event_reset;
-        GlobalSignals.Singleton.OnTransportConstructionSelected -= _event_reset;
-        GlobalSignals.Singleton.OnRoomConstructionSelected -= _event_reset;
+        FloorEvents.UI.FloorConstructionSelected -= _onFloorConstructionSelected;
+        FloorEvents.FloorExtended -= _onFloorExtended;
+        FloorEvents.FloorReplaced -= _onFloorReplaced;
+        FloorEvents.FloorConstructed -= _onFloorConstructed;
+        GeneralEvents.ShowingUIEvent -= _onShowingUI;
+        FloorEvents.UI.FloorConstructionStopped -= _event_reset;
+        TransportEvents.UI.TransportConstructionSelected -= _event_reset;
+        RoomEvents.UI.RoomConstructionSelected -= _event_reset;
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
@@ -83,8 +83,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     private void _tryStopConstruction(FloorState floor)
     {
-        if (GlobalSignals.FloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
-            GlobalSignals.FloorConstructionStopped(new(Tower.State, floor.Definition));
+        if (FloorEvents.UI.OnFloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
+            FloorEvents.UI.OnFloorConstructionStopped(new(Tower.State, floor.Definition));
         else
         {
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
