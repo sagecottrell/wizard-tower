@@ -1,5 +1,4 @@
 using Godot;
-using System.Collections.Generic;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
@@ -87,6 +86,9 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             UIActions.DeselectRoom(new(tower, RoomState));
             return;
         }
+        if (RoomState is not null)
+            UIActions.DeselectRoom(new(tower, RoomState));
+
         RoomState = @event.Room;
         Visible = true;
 
@@ -101,6 +103,8 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.Text = "";
         _pushText(rtl);
 
+        // if (ui.Child<Button>())
+
         GeneralEvents.OnShowedUI(new(this));
     }
 
@@ -111,7 +115,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.AppendText($"Selected Room #{RoomState.Id}\n");
         rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
         rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");
-        this.Debug($"Stored items: {RoomState.StoredItems.Count}");
         if (RoomState.StoredItems.Count > 0)
         {
             rtl.AddText("Stored items:\n");

@@ -1,5 +1,8 @@
 using Godot;
+using wizardtower.events.handlers;
+using wizardtower.events.ui;
 using wizardtower.state;
+using wizardtower.UIs.room_details;
 
 namespace wizardtower.containers;
 
@@ -21,6 +24,50 @@ public partial class RoomScript : Node3D
             AsHologram();
          else
             AsBackground();
+    }
+
+    public override void _EnterTree()
+    {
+        RoomEvents.UI.RoomSelected += _onRoomSelected;
+        RoomEvents.UI.RoomDeselected += _onRoomDeselected;
+    }
+
+    public override void _ExitTree()
+    {
+        RoomEvents.UI.RoomSelected -= _onRoomSelected;
+        RoomEvents.UI.RoomDeselected -= _onRoomDeselected;
+    }
+
+    private void _onRoomSelected(RoomSelectedEvent @event)
+    { 
+        if (@event.Room.Id != State.Id) return;
+        if (State.WorkerPaths is null || State.WorkerPaths.Count == 0) return;
+
+        var offset = 0f;
+        foreach (var workerPath in State.WorkerPaths)
+        {
+            var vis = new ResourceDeliveryVisualizer()
+            {
+                WorkerPath = workerPath,
+                FromRoomId = State.Id,
+                TowerState = @event.TowerState,
+                Speed = 0.5f,
+                ItemDistance = 2f,
+                ItemScale = new(0.5f, 0.5f),
+                Easing = 0.147f,
+                TimeOffset = offset,
+            };
+            offset += 1f;
+            vis.SetupPath();
+            vis.Position = new(0, 0.5f, 2);
+            AddChild(vis);
+        }
+    }
+
+    private void _onRoomDeselected(RoomDeselectedEvent @event)
+    {
+        if (@event.Room.Id != State.Id) return;
+        this.FreeChildren<ResourceDeliveryVisualizer>();
     }
 
     public override void _Process(double delta)

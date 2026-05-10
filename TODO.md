@@ -16,6 +16,8 @@ kanban
         [assign room outputs to other rooms with priority]
         [worker pathfinding and movement]
         [open build menu with event]
+        [bug when cancel of building transports]
+        [highlight room/transport when selected]
     wip[Working]
         [click on room for details and controls]
     test[Testing]

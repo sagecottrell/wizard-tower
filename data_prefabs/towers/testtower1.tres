@@ -9,8 +9,11 @@
 [ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_oywi7"]
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_sstfk"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_5gs35"]
+[ext_resource type="Resource" uid="uid://pq32jmna4frf" path="res://items/fire.tres" id="6_32nna"]
+[ext_resource type="Script" uid="uid://ysu67f4yon" path="res://state/RoomStateWorkerPath.cs" id="6_831pd"]
 [ext_resource type="Resource" uid="uid://dqsm1a0fqu8y1" path="res://transports/stairs.tres" id="7_5gs35"]
 [ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_tq78q"]
+[ext_resource type="Resource" uid="uid://b1vk1lmtohm0h" path="res://items/coin.tres" id="8_7dg5d"]
 [ext_resource type="Script" uid="uid://dr02erkwv8yks" path="res://resource_types/TransportDefinition.cs" id="8_e38s3"]
 [ext_resource type="Resource" uid="uid://r8kuxc366tti" path="res://floors/basicfloor2.tres" id="9_tq78q"]
 [ext_resource type="Resource" uid="uid://b8k44nh1gp7h5" path="res://floors/basement.tres" id="10_e38s3"]
@@ -56,6 +59,22 @@ Data = Dictionary[String, int]({
 "res://items/coin.tres": 3
 })
 
+[sub_resource type="Resource" id="Resource_441v5"]
+script = ExtResource("6_831pd")
+TargetRoomId = 2
+ItemDefinition = ExtResource("6_32nna")
+TransportsToTake = [0]
+ToWhichFloors = [1]
+metadata/_custom_type_script = "uid://ysu67f4yon"
+
+[sub_resource type="Resource" id="Resource_6xmfl"]
+script = ExtResource("6_831pd")
+TargetRoomId = 3
+ItemDefinition = ExtResource("8_7dg5d")
+TransportsToTake = Array[int]([0])
+ToWhichFloors = Array[int]([2])
+metadata/_custom_type_script = "uid://ysu67f4yon"
+
 [sub_resource type="Resource" id="Resource_5gs35"]
 script = ExtResource("2_et7yl")
 Definition = ExtResource("7_tq78q")
@@ -63,7 +82,8 @@ Id = 1
 Height = 1
 FloorPosition = 2
 StoredItems = SubResource("Resource_y253d")
-WorkerPaths = []
+StoredWorkers = []
+WorkerPaths = [SubResource("Resource_441v5"), SubResource("Resource_6xmfl")]
 
 [sub_resource type="Resource" id="Resource_831pd"]
 script = ExtResource("5_8sv8r")
@@ -76,6 +96,7 @@ Id = 2
 Elevation = 1
 Height = 1
 StoredItems = SubResource("Resource_831pd")
+StoredWorkers = []
 WorkerPaths = []
 
 [sub_resource type="Resource" id="Resource_32nna"]
@@ -90,11 +111,14 @@ Elevation = 2
 Height = 1
 FloorPosition = 4
 StoredItems = SubResource("Resource_32nna")
+StoredWorkers = []
 WorkerPaths = []
 
 [sub_resource type="Resource" id="Resource_7dg5d"]
 script = ExtResource("3_8sv8r")
 Definition = ExtResource("7_5gs35")
+HorizontalPosition = -2
+Height = 5
 LoadStatistics = []
 metadata/_custom_type_script = "uid://b3s7iebxp5m14"
 
