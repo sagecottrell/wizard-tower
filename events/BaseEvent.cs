@@ -3,7 +3,7 @@ using wizardtower.events.interfaces;
 
 namespace wizardtower.events;
 
-public abstract partial class BaseEvent : IEvent
+public abstract class BaseEvent : IEvent
 {
     public IEvent? Source { get; set; }
 

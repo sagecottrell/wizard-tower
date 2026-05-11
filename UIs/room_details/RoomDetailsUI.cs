@@ -2,6 +2,7 @@ using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
+using wizardtower.events.Room.ui;
 using wizardtower.events.ui;
 using wizardtower.state;
 using wizardtower.UIs.transport_details;
@@ -64,7 +65,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     private void _onRoomDeselected(RoomDeselectedEvent @event)
     {
-        if (@event.Room != RoomState)
+        if (@event.RoomState != RoomState)
             return;
         _reset();
     }
@@ -81,7 +82,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (@event.TowerState != tower)
             return;
 
-        if (@event.Room == RoomState)
+        if (@event.RoomState == RoomState)
         {
             UIActions.DeselectRoom(new(tower, RoomState));
             return;
@@ -89,7 +90,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (RoomState is not null)
             UIActions.DeselectRoom(new(tower, RoomState));
 
-        RoomState = @event.Room;
+        RoomState = @event.RoomState;
         Visible = true;
 
         if (ui.Child<RichTextLabel>() is not RichTextLabel rtl)

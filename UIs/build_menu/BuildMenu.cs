@@ -3,6 +3,7 @@ using Godot.Collections;
 using System.Linq;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
+using wizardtower.events.Tower;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -42,7 +43,7 @@ public partial class BuildMenu : VBoxContainer
             SetTower(TowerState);
     }
 
-    private void _g_OnTowerResourceChanged(events.TowerResourceChangedEvent @event)
+    private void _g_OnTowerResourceChanged(TowerResourceChangedEvent @event)
     {
         foreach (var (cost, rtl) in rtls)
         {

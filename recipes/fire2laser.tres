@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="RecipeDefinition" format=3 uid="uid://cjlddoe8sffhc"]
+
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="1_4tfqu"]
+[ext_resource type="Texture2D" uid="uid://cves1k3lpri4q" path="res://items/images/laser.png" id="1_6ytsf"]
+[ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="2_6ytsf"]
+[ext_resource type="Script" uid="uid://b7h7cui7s3kem" path="res://resource_types/RandomOutputDefinition.cs" id="3_w4i1h"]
+
+[sub_resource type="Resource" id="Resource_w4i1h"]
+script = ExtResource("1_4tfqu")
+Data = Dictionary[String, int]({
+"res://items/fire.tres": 2
+})
+
+[sub_resource type="Resource" id="Resource_yynfs"]
+script = ExtResource("1_4tfqu")
+Data = Dictionary[String, int]({
+"res://items/laser.tres": 1
+})
+
+[sub_resource type="Resource" id="Resource_l8x8r"]
+script = ExtResource("3_w4i1h")
+Output = SubResource("Resource_yynfs")
+metadata/_custom_type_script = "uid://b7h7cui7s3kem"
+
+[resource]
+script = ExtResource("2_6ytsf")
+Name = "Laser"
+Icon = ExtResource("1_6ytsf")
+Input = SubResource("Resource_w4i1h")
+Output = Array[Object]([SubResource("Resource_l8x8r")])
+metadata/_custom_type_script = "uid://ysnph6jm54y6"

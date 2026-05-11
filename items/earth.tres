@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://cn47aasjp1kys"]
+
+[ext_resource type="Texture2D" uid="uid://bmb1rk6ofpfuc" path="res://items/images/earth.png" id="1_l7crh"]
+[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://resource_types/ItemDefinition.cs" id="2_7ce7g"]
+
+[resource]
+script = ExtResource("2_7ce7g")
+Name = "Earth"
+Description = "earth"
+Icon = ExtResource("1_l7crh")
+PersistInWallet = true
+metadata/_custom_type_script = "uid://c01j7hpwt3hfa"

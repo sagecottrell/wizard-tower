@@ -1,8 +1,8 @@
 using Godot;
 using System.Collections.Generic;
-using wizardtower.events;
+using wizardtower.events.Floor;
+using wizardtower.events.Floor.ui;
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;

@@ -6,7 +6,7 @@ using wizardtower.actions.ui;
 using wizardtower.containers;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
-using wizardtower.events.ui;
+using wizardtower.events.Transport.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 

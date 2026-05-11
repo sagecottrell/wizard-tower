@@ -11,4 +11,13 @@ public partial class RoomConvertResourcesDefinition : BaseRoomFunctionDefinition
 
     [Export]
     public bool ToTowerWallet { get; set; }
+
+    [Export]
+    public int ProcessingTimeSeconds { get; set; } = 10;
+
+    /// <summary>
+    /// If zero, then there is no limit
+    /// </summary>
+    [Export]
+    public uint MaxTimesPerDay { get; set; } = 0;
 }

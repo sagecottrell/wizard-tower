@@ -1,5 +1,6 @@
 using wizardtower.events.features;
-using wizardtower.events.ui;
+using wizardtower.events.Floor;
+using wizardtower.events.Floor.ui;
 
 namespace wizardtower.events.handlers;
 

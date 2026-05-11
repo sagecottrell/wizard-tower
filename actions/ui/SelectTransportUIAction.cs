@@ -1,5 +1,5 @@
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Transport.ui;
 
 namespace wizardtower.actions.ui;
 

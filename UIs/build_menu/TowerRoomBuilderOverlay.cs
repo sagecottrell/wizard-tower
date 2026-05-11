@@ -4,7 +4,7 @@ using wizardtower.actions;
 using wizardtower.containers;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
-using wizardtower.events.ui;
+using wizardtower.events.Room.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -138,7 +138,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         if (_currentRoomDef == null)
             return;
         _revertFloorVis();
-        BuildingRoom ??= this.AddedChild(new RoomScript()
+        BuildingRoom ??= this.AddedChild(new RoomScript(Tower)
         {
             HologramMode = true,
             State = new RoomState()

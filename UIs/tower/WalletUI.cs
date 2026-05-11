@@ -1,7 +1,7 @@
 using Godot;
 using System.Linq;
-using wizardtower.events;
 using wizardtower.events.handlers;
+using wizardtower.events.Tower;
 using wizardtower.resource_types;
 using wizardtower.state;
 

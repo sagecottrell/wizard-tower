@@ -5,5 +5,5 @@ namespace wizardtower.events.interfaces;
 
 public interface IRoomEvent
 {
-    RoomState Room { get; set; }
+    RoomState RoomState { get; set; }
 }

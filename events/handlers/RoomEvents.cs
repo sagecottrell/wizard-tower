@@ -1,5 +1,6 @@
 using wizardtower.events.features;
-using wizardtower.events.ui;
+using wizardtower.events.Room;
+using wizardtower.events.Room.ui;
 
 namespace wizardtower.events.handlers;
 
@@ -35,9 +36,15 @@ public static class RoomEvents
     public static Event<RoomDestroyingEvent> RoomDestroying { get; set; } = new();
     public static Event<RoomDestroyedEvent> RoomDestroyed { get; set; } = new();
 
+    public static Event<RoomProducingResourcesEvent> RoomProducingResources { get; set; } = new();
+    public static Event<RoomProducedResourcesEvent> RoomProducedResources { get; set; } = new();
+
     public static RoomConstructingEvent OnRoomConstructing(RoomConstructingEvent e) => RoomConstructing.InvokeSafely(e);
     public static RoomConstructedEvent OnRoomConstructed(RoomConstructedEvent e) => RoomConstructed.InvokeSafely(e);
 
     public static RoomDestroyingEvent OnRoomDestroying(RoomDestroyingEvent e) => RoomDestroying.InvokeSafely(e);
     public static RoomDestroyedEvent OnRoomDestroyed(RoomDestroyedEvent e) => RoomDestroyed.InvokeSafely(e);
+
+    public static RoomProducingResourcesEvent OnRoomProducingResources(RoomProducingResourcesEvent e) => RoomProducingResources.InvokeSafely(e);
+    public static RoomProducedResourcesEvent OnRoomProducedResources(RoomProducedResourcesEvent e) => RoomProducedResources.InvokeSafely(e);
 }

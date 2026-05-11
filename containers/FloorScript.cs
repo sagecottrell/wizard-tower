@@ -1,10 +1,11 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
-using wizardtower.events;
+using wizardtower.events.Floor;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
-using wizardtower.events.ui;
+using wizardtower.events.Room;
+using wizardtower.events.Room.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
@@ -92,9 +93,9 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     private void _g_OnRoomConstructionPreview(RoomConstructionPreviewEvent @event)
     {
         MakeAllVisible();
-        if (@event.Room.Elevation == FloorState.Elevation)
+        if (@event.RoomState.Elevation == FloorState.Elevation)
         {
-            SetPositionVisible(@event.Room.FloorPosition, @event.Room.Definition.Width, false);
+            SetPositionVisible(@event.RoomState.FloorPosition, @event.RoomState.Definition.Width, false);
         }
     }
 

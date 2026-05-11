@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.resource_types;
@@ -31,7 +32,8 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     [Export]
     public Godot.Collections.Dictionary<uint, RoomState> Rooms { get; set; } = [];
 
-    private Dictionary<int, List<RoomState>> RoomsByFloor { 
+    private Dictionary<int, List<RoomState>> RoomsByFloor
+    {
         get
         {
             if (roomsByFloor is null)
@@ -121,6 +123,27 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         }
     }
 
+    #region Random State
+    private RandomNumberGenerator? rgen;
+
+    [Export]
+    public ulong StartingSeed { get; set; } = 0;
+    [Export]
+    public ulong CurrentSeed { get; set; } = 0;
+
+    public RandomNumberGenerator RandomNumberGenerator { get
+        {
+            if (rgen is null)
+            {
+                rgen = new RandomNumberGenerator();
+                if (CurrentSeed == 0)
+                    rgen.Seed = StartingSeed;
+                else
+                    rgen.State = CurrentSeed;
+            }
+            return rgen;
+        } }
+    #endregion
 
     #region Room functions
 

@@ -1,0 +1,11 @@
+using wizardtower.events.interfaces;
+using wizardtower.resource_types;
+using wizardtower.state;
+
+namespace wizardtower.events.Floor.ui;
+
+public partial class FloorConstructionSelectedEvent(TowerState towerState, FloorDefinition floorDefinition) : BaseEvent, IDebug, ITowerEvent, IFloorDefinitionEvent
+{
+    public TowerState TowerState { get; } = towerState;
+    public FloorDefinition FloorDefinition { get; set; } = floorDefinition;
+}

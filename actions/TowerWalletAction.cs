@@ -1,5 +1,5 @@
-using wizardtower.events;
 using wizardtower.events.handlers;
+using wizardtower.events.Tower;
 
 namespace wizardtower.actions;
 

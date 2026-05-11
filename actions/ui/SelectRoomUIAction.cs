@@ -1,5 +1,5 @@
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Room.ui;
 
 namespace wizardtower.actions.ui;
 
@@ -9,7 +9,7 @@ public static partial class UIActions
     {
         if (!RoomEvents.UI.OnRoomSelecting(@event).IsAllowed)
             return false;
-        RoomEvents.UI.OnRoomSelected(new RoomSelectedEvent(@event.TowerState, @event.Room) { Source = @event.Source });
+        RoomEvents.UI.OnRoomSelected(new RoomSelectedEvent(@event.TowerState, @event.RoomState) { Source = @event.Source });
         return true;
     }
 
@@ -17,7 +17,7 @@ public static partial class UIActions
     {
         if (!RoomEvents.UI.OnRoomDeselecting(@event).IsAllowed)
             return false;
-        RoomEvents.UI.OnRoomDeselected(new RoomDeselectedEvent(@event.TowerState, @event.Room) { Source = @event.Source });
+        RoomEvents.UI.OnRoomDeselected(new RoomDeselectedEvent(@event.TowerState, @event.RoomState) { Source = @event.Source });
         return true;
     }
 }

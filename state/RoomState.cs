@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System.Diagnostics;
 using wizardtower.resource_types;
+using wizardtower.state.room_functions;
 
 namespace wizardtower.state;
 
@@ -29,10 +30,13 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     public NumericDict<ItemDefinition, uint> StoredItems { get; set; } = [];
 
     [Export]
-    public Array<WorkerState>? StoredWorkers { get; set; }
+    public Array<WorkerState> StoredWorkers { get; set; } = [];
 
     [Export]
-    public Array<RoomStateWorkerPath>? WorkerPaths { get; set; }
+    public Array<RoomStateWorkerPath> WorkerPaths { get; set; } = [];
+
+    [Export]
+    public Array<BaseRoomFunctionState> FunctionStates { get; set; } = [];
 
     public bool Compare(RoomState? other)
     {

@@ -1,14 +1,18 @@
 using Godot;
+using System.Linq;
+using wizardtower.actions;
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Room.ui;
+using wizardtower.resource_types.room_functions;
 using wizardtower.state;
+using wizardtower.state.room_functions;
 using wizardtower.UIs.room_details;
 
 namespace wizardtower.containers;
 
 [Tool]
 [GlobalClass]
-public partial class RoomScript : Node3D
+public partial class RoomScript(TowerScript tower) : Node3D
 {
     public RoomState State { get; set; } = new();
 
@@ -17,9 +21,11 @@ public partial class RoomScript : Node3D
     private RoomBackgroundScript? RoomScene { get; set; }
 
     public bool HologramMode { get; set; } = false;
+    public TowerScript Tower { get; } = tower;
 
     public override void _Ready()
     {
+        Name = $"Room{State.Id}";
         if (HologramMode)
             AsHologram();
          else
@@ -39,8 +45,8 @@ public partial class RoomScript : Node3D
     }
 
     private void _onRoomSelected(RoomSelectedEvent @event)
-    { 
-        if (@event.Room.Id != State.Id) return;
+    {
+        if (@event.RoomState.Id != State.Id) return;
         if (State.WorkerPaths is null || State.WorkerPaths.Count == 0) return;
 
         var offset = 0f;
@@ -66,7 +72,7 @@ public partial class RoomScript : Node3D
 
     private void _onRoomDeselected(RoomDeselectedEvent @event)
     {
-        if (@event.Room.Id != State.Id) return;
+        if (@event.RoomState.Id != State.Id) return;
         this.FreeChildren<ResourceDeliveryVisualizer>();
     }
 
@@ -107,5 +113,30 @@ public partial class RoomScript : Node3D
         HologramMode = false;
         RoomScene?.AsBackground();
         return this;
+    }
+
+    public void ProcessRoomFunctions(double delta)
+    {
+        foreach (var (def, state) in State.Definition.RoomFunctions.Zip(State.FunctionStates))
+        {
+            switch ((def, state))
+            {
+                case (RoomConvertResourcesDefinition convertDef, RoomConvertResourcesState convertState):
+                    {
+                        if (convertDef.MaxTimesPerDay > 0 && convertState.TimesProducedToday >= convertDef.MaxTimesPerDay)
+                            break;
+                        if (convertDef.ProcessingTimeSeconds > 0)
+                        {
+                            convertState.ProductionProgress += delta;
+                            if (convertState.ProductionProgress > convertDef.ProcessingTimeSeconds)
+                            {
+                                Actions.RoomProduceResources(new(Tower.State, State, convertDef, convertState));
+                            }
+                        }
+
+                        break;
+                    }
+            }
+        }
     }
 }

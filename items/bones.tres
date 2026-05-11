@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ItemDefinition" format=3 uid="uid://bnbal76e8syoq"]
+
+[ext_resource type="Texture2D" uid="uid://c1wkj1hsaxser" path="res://items/images/bones.png" id="1_7qe42"]
+[ext_resource type="Script" uid="uid://c01j7hpwt3hfa" path="res://resource_types/ItemDefinition.cs" id="2_3ohr1"]
+
+[resource]
+script = ExtResource("2_3ohr1")
+Name = "Bones"
+Description = "bones"
+Icon = ExtResource("1_7qe42")
+PersistInWallet = true
+metadata/_custom_type_script = "uid://c01j7hpwt3hfa"

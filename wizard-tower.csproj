@@ -32,4 +32,8 @@
          It needs the additional 'OutputItemType' and 'ReferenceOutputAssmbly' attributes. -->
 		<ProjectReference Include="../GodotSourceGenerators/GodotSourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="events\Tower\ui\" />
+	</ItemGroup>
 </Project>

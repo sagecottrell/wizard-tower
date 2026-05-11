@@ -2,6 +2,7 @@ using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
+using wizardtower.events.Transport.ui;
 using wizardtower.events.ui;
 using wizardtower.state;
 using wizardtower.UIs.room_details;

@@ -2,9 +2,9 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.actions.ui;
-using wizardtower.events;
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Transport;
+using wizardtower.events.Transport.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
