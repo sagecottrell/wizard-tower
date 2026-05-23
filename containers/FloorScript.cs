@@ -30,24 +30,24 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
 
     public override void _EnterTree()
     {
-        RoomEvents.UI.RoomConstructionPreview += _g_OnRoomConstructionPreview;
-        RoomEvents.RoomConstructed += _g_OnRoomConstructed;
-        RoomEvents.RoomDestroyed += _g_OnRoomDestroyed;
-        FloorEvents.FloorExtended += _g_OnFloorExtended;
-        FloorEvents.FloorReplaced += _g_OnFloorReplaced;
-        RoomEvents.UI.RoomConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
-        TransportEvents.UI.TransportConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        RoomEvents.UI.ConstructionPreview += _g_OnRoomConstructionPreview;
+        RoomEvents.Constructed += _g_OnRoomConstructed;
+        RoomEvents.Destroyed += _g_OnRoomDestroyed;
+        FloorEvents.Extended += _g_OnFloorExtended;
+        FloorEvents.Replaced += _g_OnFloorReplaced;
+        RoomEvents.UI.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        TransportEvents.UI.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
     }
 
     public override void _ExitTree()
     {
-        RoomEvents.UI.RoomConstructionPreview -= _g_OnRoomConstructionPreview;
-        RoomEvents.RoomConstructed -= _g_OnRoomConstructed;
-        RoomEvents.RoomDestroyed -= _g_OnRoomDestroyed;
-        FloorEvents.FloorExtended -= _g_OnFloorExtended;
-        FloorEvents.FloorReplaced -= _g_OnFloorReplaced;
-        RoomEvents.UI.RoomConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
-        TransportEvents.UI.TransportConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        RoomEvents.UI.ConstructionPreview -= _g_OnRoomConstructionPreview;
+        RoomEvents.Constructed -= _g_OnRoomConstructed;
+        RoomEvents.Destroyed -= _g_OnRoomDestroyed;
+        FloorEvents.Extended -= _g_OnFloorExtended;
+        FloorEvents.Replaced -= _g_OnFloorReplaced;
+        RoomEvents.UI.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        TransportEvents.UI.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
     }
 
 

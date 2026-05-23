@@ -7,5 +7,5 @@ public partial class TransportDestroyingEvent(TowerState towerState, TransportSt
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = towerState;
-    public TransportState Transport { get; set; } = transportState;
+    public TransportState TransportState { get; set; } = transportState;
 }

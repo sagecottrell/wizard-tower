@@ -27,21 +27,21 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     public override void _EnterTree()
     {
-        RoomEvents.UI.RoomSelected += _onRoomSelected;
-        RoomEvents.UI.RoomDeselected += _onRoomDeselected;
-        FloorEvents.UI.FloorConstructionSelected += _event_hide;
-        RoomEvents.UI.RoomConstructionSelected += _event_hide;
-        TransportEvents.UI.TransportConstructionSelected += _event_hide;
+        RoomEvents.UI.Selected += _onRoomSelected;
+        RoomEvents.UI.Deselected += _onRoomDeselected;
+        FloorEvents.UI.ConstructionSelected += _event_hide;
+        RoomEvents.UI.ConstructionSelected += _event_hide;
+        TransportEvents.UI.ConstructionSelected += _event_hide;
         GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        RoomEvents.UI.RoomSelected -= _onRoomSelected;
-        RoomEvents.UI.RoomDeselected -= _onRoomDeselected;
-        FloorEvents.UI.FloorConstructionSelected -= _event_hide;
-        RoomEvents.UI.RoomConstructionSelected -= _event_hide;
-        TransportEvents.UI.TransportConstructionSelected -= _event_hide;
+        RoomEvents.UI.Selected -= _onRoomSelected;
+        RoomEvents.UI.Deselected -= _onRoomDeselected;
+        FloorEvents.UI.ConstructionSelected -= _event_hide;
+        RoomEvents.UI.ConstructionSelected -= _event_hide;
+        TransportEvents.UI.ConstructionSelected -= _event_hide;
         GeneralEvents.ShowedUI -= _onShowedUI;
     }
 

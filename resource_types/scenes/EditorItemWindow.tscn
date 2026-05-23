@@ -13,11 +13,24 @@ script = ExtResource("1_w6msg")
 [node name="VBoxContainer" type="HBoxContainer" parent="." unique_id=247230927]
 layout_mode = 2
 
-[node name="collapse" type="Button" parent="VBoxContainer" unique_id=1102337052]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer" unique_id=369186629]
 layout_mode = 2
-text = "NumericDict"
+size_flags_horizontal = 3
+
+[node name="collapse" type="Button" parent="VBoxContainer/PanelContainer" unique_id=1102337052]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="collapseLabel" type="RichTextLabel" parent="VBoxContainer/PanelContainer" unique_id=116396039]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+bbcode_enabled = true
+text = "ffff"
+fit_content = true
+scroll_active = false
+autowrap_trim_flags = 0
+shortcut_keys_enabled = false
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=267849206]
 layout_mode = 2
@@ -25,5 +38,6 @@ size_flags_vertical = 3
 
 [node name="sources" type="VBoxContainer" parent="HBoxContainer" unique_id=1648184112]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3

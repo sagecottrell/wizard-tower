@@ -7,5 +7,5 @@ public partial class TransportDeselectingEvent(TowerState tower, TransportState 
 {
     public bool IsAllowed { get; set; } = true;
     public TowerState TowerState { get; } = tower;
-    public TransportState Transport { get; set; } = transport;
+    public TransportState TransportState { get; set; } = transport;
 }

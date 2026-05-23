@@ -45,27 +45,27 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     public override void _EnterTree()
     {
-        FloorEvents.UI.FloorConstructionSelected += _onFloorConstructionSelected;
-        FloorEvents.FloorExtended += _onFloorExtended;
-        FloorEvents.FloorReplaced += _onFloorReplaced;
-        FloorEvents.FloorConstructed += _onFloorConstructed;
+        FloorEvents.UI.ConstructionSelected += _onFloorConstructionSelected;
+        FloorEvents.Extended += _onFloorExtended;
+        FloorEvents.Replaced += _onFloorReplaced;
+        FloorEvents.Constructed += _onFloorConstructed;
         GeneralEvents.ShowingUIEvent += _onShowingUI;
 
-        FloorEvents.UI.FloorConstructionStopped += _event_reset;
-        TransportEvents.UI.TransportConstructionSelected += _event_reset;
-        RoomEvents.UI.RoomConstructionSelected += _event_reset;
+        FloorEvents.UI.ConstructionStopped += _event_reset;
+        TransportEvents.UI.ConstructionSelected += _event_reset;
+        RoomEvents.UI.ConstructionSelected += _event_reset;
     }
 
     public override void _ExitTree()
     {
-        FloorEvents.UI.FloorConstructionSelected -= _onFloorConstructionSelected;
-        FloorEvents.FloorExtended -= _onFloorExtended;
-        FloorEvents.FloorReplaced -= _onFloorReplaced;
-        FloorEvents.FloorConstructed -= _onFloorConstructed;
+        FloorEvents.UI.ConstructionSelected -= _onFloorConstructionSelected;
+        FloorEvents.Extended -= _onFloorExtended;
+        FloorEvents.Replaced -= _onFloorReplaced;
+        FloorEvents.Constructed -= _onFloorConstructed;
         GeneralEvents.ShowingUIEvent -= _onShowingUI;
-        FloorEvents.UI.FloorConstructionStopped -= _event_reset;
-        TransportEvents.UI.TransportConstructionSelected -= _event_reset;
-        RoomEvents.UI.RoomConstructionSelected -= _event_reset;
+        FloorEvents.UI.ConstructionStopped -= _event_reset;
+        TransportEvents.UI.ConstructionSelected -= _event_reset;
+        RoomEvents.UI.ConstructionSelected -= _event_reset;
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
@@ -84,8 +84,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     private void _tryStopConstruction(FloorState floor)
     {
-        if (FloorEvents.UI.OnFloorConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
-            FloorEvents.UI.OnFloorConstructionStopped(new(Tower.State, floor.Definition));
+        if (FloorEvents.UI.OnConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
+            FloorEvents.UI.OnConstructionStopped(new(Tower.State, floor.Definition));
         else
         {
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
@@ -221,7 +221,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
     {
         if (Tower.State.Floors.TryGetValue(y, out var floor) && _currentFloorDef != null)
         {
-            Actions.ReplaceFloor(new(Tower.State, floor, _currentFloorDef));
+            FloorActions.Replace(new(Tower.State, floor, _currentFloorDef));
         }
     }
 
@@ -245,18 +245,18 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
                 this.Error($"Clicked on an existing part of the floor at ({x}, {y}), this should not be possible");
                 return;
             }
-            Actions.ExtendFloor(new(Tower.State, floor, left, right));
+            FloorActions.Extend(new(Tower.State, floor, left, right));
         }
     }
 
     private void _onAcceptNewBasement(int x, int y)
     {
-        Actions.BuyFloor(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
+        FloorActions.Construct(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
     }
 
     private void _onAcceptNewTop(int x, int y)
     {
-        Actions.BuyFloor(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
+        FloorActions.Construct(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
     }
 
     private bool _canBuildFloorAt(int elevation) => _currentFloorDef?.CanBuildFloorAt(elevation) ?? false;

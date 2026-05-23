@@ -21,4 +21,11 @@ public static class ICollectionExtensions
         }
         return values.FirstOrDefault();
     }
+
+    public static T? PickRandom<T>(this ICollection<T> values, RandomNumberGenerator random)
+    {
+        if (values.Count <= 1)
+            return values.FirstOrDefault();
+        return values.ElementAt(random.RandiRange(0, values.Count - 1));
+    }
 }

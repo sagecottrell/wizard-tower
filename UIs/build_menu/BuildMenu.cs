@@ -27,12 +27,12 @@ public partial class BuildMenu : VBoxContainer
 
     public override void _EnterTree()
     {
-        TowerEvents.TowerResourceChanged += _g_OnTowerResourceChanged;
+        TowerEvents.ResourceChanged += _g_OnTowerResourceChanged;
     }
 
     public override void _ExitTree()
     {
-        TowerEvents.TowerResourceChanged -= _g_OnTowerResourceChanged;
+        TowerEvents.ResourceChanged -= _g_OnTowerResourceChanged;
     }
 
     public override void _Ready()

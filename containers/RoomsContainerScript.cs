@@ -14,6 +14,9 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
     public TowerScript Tower { get; } = tower;
     public TowerState State { get; } = tower.State;
 
+    public int RoomsPerCycle = 4;
+    public int RoomCycle = 0;
+
     public Dictionary<RoomState, RoomScript> Rooms { get; } = [];
 
     public override void _Ready()
@@ -25,18 +28,18 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 
     public override void _EnterTree()
     {
-        RoomEvents.RoomConstructing += _onRoomConstructing;
-        RoomEvents.UI.RoomConstructionStopping += _onRoomConstructionStopping;
-        RoomEvents.RoomConstructed += _onRoomConstructed;
-        RoomEvents.RoomDestroyed += _onRoomDestroyed;
+        RoomEvents.Constructing += _onRoomConstructing;
+        RoomEvents.UI.ConstructionStopping += _onRoomConstructionStopping;
+        RoomEvents.Constructed += _onRoomConstructed;
+        RoomEvents.Destroyed += _onRoomDestroyed;
     }
 
     public override void _ExitTree()
     {
-        RoomEvents.RoomConstructing -= _onRoomConstructing;
-        RoomEvents.UI.RoomConstructionStopping -= _onRoomConstructionStopping;
-        RoomEvents.RoomConstructed -= _onRoomConstructed;
-        RoomEvents.RoomDestroyed -= _onRoomDestroyed;
+        RoomEvents.Constructing -= _onRoomConstructing;
+        RoomEvents.UI.ConstructionStopping -= _onRoomConstructionStopping;
+        RoomEvents.Constructed -= _onRoomConstructed;
+        RoomEvents.Destroyed -= _onRoomDestroyed;
     }
 
     private void _onRoomDestroyed(RoomDestroyedEvent @event)
@@ -87,6 +90,22 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
             {
                 UIActions.SelectRoom(new(Tower.State, room) { Input = @event });
             }
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        var d = delta * RoomsPerCycle;
+        var simultaneous = Rooms.Count / RoomsPerCycle;
+        var rooms = Rooms.Values.ToList();
+        RoomCycle = (RoomCycle + 1) % RoomsPerCycle;
+        for (int i = 0; i < simultaneous; i++)
+        {
+            var id = i * RoomsPerCycle + RoomCycle;
+            if (id >= rooms.Count)
+                break;
+            var room = rooms[id];
+            room.ProcessRoomFunctions(d);
         }
     }
 }

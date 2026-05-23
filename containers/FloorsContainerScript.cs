@@ -22,18 +22,18 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     public override void _EnterTree()
     {
-        FloorEvents.FloorConstructing += _g_OnFloorConstructing;
-        FloorEvents.FloorExtending += _g_OnFloorExtending;
-        FloorEvents.UI.FloorConstructionStopping += _g_OnFloorConstructionStopping;
-        FloorEvents.FloorConstructed += _g_OnFloorConstructed;
+        FloorEvents.Constructing += _g_OnFloorConstructing;
+        FloorEvents.Extending += _g_OnFloorExtending;
+        FloorEvents.UI.ConstructionStopping += _g_OnFloorConstructionStopping;
+        FloorEvents.Constructed += _g_OnFloorConstructed;
     }
 
     public override void _ExitTree()
     {
-        FloorEvents.FloorConstructing -= _g_OnFloorConstructing;
-        FloorEvents.FloorExtending -= _g_OnFloorExtending;
-        FloorEvents.UI.FloorConstructionStopping -= _g_OnFloorConstructionStopping;
-        FloorEvents.FloorConstructed -= _g_OnFloorConstructed;
+        FloorEvents.Constructing -= _g_OnFloorConstructing;
+        FloorEvents.Extending -= _g_OnFloorExtending;
+        FloorEvents.UI.ConstructionStopping -= _g_OnFloorConstructionStopping;
+        FloorEvents.Constructed -= _g_OnFloorConstructed;
     }
 
     private void _g_OnFloorConstructed(FloorConstructedEvent @event)

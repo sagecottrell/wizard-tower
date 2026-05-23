@@ -6,13 +6,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using wizardtower.resource_types;
-using wizardtower.resource_types.scenes;
 
 namespace wizardtower;
 
-public interface IReadonlyNumericDict {
+public interface IReadonlyNumericDict : IToBBCode
+{
     Type KeyType { get; }
     Type ValueType { get; }
+
+    bool TryGetValueUntyped<[MustBeVariant] TKey, [MustBeVariant] TValue>(TKey key, out TValue value);
 }
 
 public interface INumericDict : IReadonlyNumericDict { }
@@ -46,7 +48,6 @@ public interface INumericDict<TSelf, TKey, TValue> :
 public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TValue> : Resource,
         IDictionary<TKey, TValue>,
         INumericDict<NumericDict<TKey, TValue>, TKey, TValue>,
-        IToBBCode,
         ICopy<NumericDict<TKey, TValue>>,
         IDeSerialize<NumericDict<TKey, TValue>>
     where TKey : Resource, INamedResource, new()
@@ -66,12 +67,14 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public delegate void OnChangedEventHandler();
 
     [Export]
-    public Godot.Collections.Dictionary<string, TValue> Data { 
-        get {
+    public Godot.Collections.Dictionary<string, TValue> Data
+    {
+        get
+        {
             data ??= [];
             return data;
-        } 
-        set => data = value; 
+        }
+        set => data = value;
     }
 
     private static readonly Dictionary<string, TKey> _keyCache = [];
@@ -96,8 +99,10 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     private static NumericDict<TKey, TValue>? _additiveIdentity;
     private Godot.Collections.Dictionary<string, TValue>? data;
 
-    public static NumericDict<TKey, TValue> AdditiveIdentity { 
-        get {
+    public static NumericDict<TKey, TValue> AdditiveIdentity
+    {
+        get
+        {
             if (_additiveIdentity is null || _additiveIdentity.Count != 0)
                 // just in case someone modifies the additive identity, we want to be able to recreate it
                 _additiveIdentity = [];
@@ -111,7 +116,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     /// Note that this modifies the current instance, it does not return a new instance. It returns this instance for chaining purposes.
     /// </summary>
     /// <returns></returns>
-    public NumericDict<TKey, TValue> RemoveZeroes()
+    public NumericDict<TKey, TValue> RemovedZeroes()
     {
         foreach (var (key, value) in Data)
         {
@@ -312,7 +317,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     #region IDictionary<TKey, TValue> implementation
 
-    public ICollection<TKey> Keys => [..Data.Keys.Select(_loadKey)];
+    public ICollection<TKey> Keys => [.. Data.Keys.Select(_loadKey)];
 
     public ICollection<TValue> Values => Data.Values;
 
@@ -332,7 +337,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     public TValue this[TKey key]
     {
-        get => Data[key.ResourcePath]; 
+        get => Data[key.ResourcePath];
         set
         {
             _set(key, value);
@@ -366,6 +371,17 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return Data.TryGetValue(key.ResourcePath, out value);
     }
 
+    public bool TryGetValueUntyped<[MustBeVariant] TKey2, [MustBeVariant] TValue2>(TKey2 key, out TValue2 value)
+    {
+        value = default;
+        if (key is not TKey tkey)
+            return false;
+        if (!TryGetValue(tkey, out var value2) || value2 is not TValue2 value3)
+            return false;
+        value = value3;
+        return true;
+    }
+
     public void Add(KeyValuePair<TKey, TValue> item)
     {
         Data.Add(item.Key.ResourcePath, item.Value);
@@ -393,7 +409,8 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
     public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
     {
         return Data
-            .Select(kvp => {
+            .Select(kvp =>
+            {
                 var key = _loadKey(kvp.Key);
                 if (key is null)
                     GD.PushError($"Failed to load key of type {typeof(TKey)} with path {kvp.Key}");
@@ -413,17 +430,14 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     #region IToBBCode
 
-    public string ToStringBBCode() => typeof(TValue).IsAssignableTo(typeof(Resource)) ? $"{{{string.Join(
-        ",",
-        Data.Select(x => $"[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]:{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}")
-        )}}}" : string.Join(" ", Data.Select(x => $"{(x.Value is IToBBCode bbcode ? bbcode.ToStringBBCode() : x.Value)}[img height=24]{NumericDict<TKey, TValue>._loadKey(x.Key)?.IconPathOrName}[/img]"));
+    public string ToStringBBCode() => ToStringAsCost();
 
     #endregion
 
     #region IDeSerialize
 
     public Godot.Collections.Dictionary<string, Variant> Serialize() => new(Data.ToDictionary(
-        kvp => kvp.Key, 
+        kvp => kvp.Key,
         kvp => kvp.Value is ISerialize serializable ? Variant.From(serializable.Serialize()) : Variant.From(kvp.Value)
         ));
 
@@ -442,8 +456,9 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
 
     #region ICopy
 
-    public NumericDict<TKey, TValue> Copy() => new() { 
-        Data = new(Data.ToDictionary()), 
+    public NumericDict<TKey, TValue> Copy() => new()
+    {
+        Data = new(Data.ToDictionary()),
     };
 
     #endregion

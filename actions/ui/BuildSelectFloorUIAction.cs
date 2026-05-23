@@ -9,8 +9,8 @@ public static partial class UIActions
     {
         var floorDef = @event.FloorDefinition;
         var state = @event.TowerState;
-        var ev = FloorEvents.UI.OnFloorConstructionSelecting(@event);
+        var ev = FloorEvents.UI.OnConstructionSelecting(@event);
         if (state.Wallet >= floorDef.CostToBuildPerUnit && ev.IsAllowed)
-            FloorEvents.UI.OnFloorConstructionSelected(new(state, floorDef) { Source = @event });
+            FloorEvents.UI.OnConstructionSelected(new(state, floorDef) { Source = @event });
     }
 }

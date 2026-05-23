@@ -6,5 +6,5 @@ namespace wizardtower.events.Transport;
 public partial class TransportConstructedEvent(TowerState tower, TransportState transport) : BaseEvent, IDebug, ITowerEvent, ITransportEvent
 {
     public TowerState TowerState { get; } = tower;
-    public TransportState Transport { get; set; } = transport;
+    public TransportState TransportState { get; set; } = transport;
 }

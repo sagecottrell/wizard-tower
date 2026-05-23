@@ -7,7 +7,7 @@ public static partial class UIActions
 {
     public static void StopBuildRoom(RoomConstructionStoppingEvent @event)
     {
-        if (!RoomEvents.UI.OnRoomConstructionStopping(@event).IsAllowed)
+        if (!RoomEvents.UI.OnConstructionStopping(@event).IsAllowed)
             return;
 
     }

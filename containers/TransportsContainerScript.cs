@@ -23,28 +23,28 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     }
     public override void _EnterTree()
     {
-        TransportEvents.TransportConstructing += _onTransportConstructing;
-        TransportEvents.UI.TransportConstructionStopping += _onTransportConstructionStopping;
-        TransportEvents.TransportConstructed += _onTransportConstructed;
-        TransportEvents.TransportDestroyed += _onTransportDestroyed;
+        TransportEvents.Constructing += _onTransportConstructing;
+        TransportEvents.UI.ConstructionStopping += _onTransportConstructionStopping;
+        TransportEvents.Constructed += _onTransportConstructed;
+        TransportEvents.Destroyed += _onTransportDestroyed;
     }
 
     public override void _ExitTree()
     {
-        TransportEvents.TransportConstructing -= _onTransportConstructing;
-        TransportEvents.UI.TransportConstructionStopping -= _onTransportConstructionStopping;
-        TransportEvents.TransportConstructed -= _onTransportConstructed;
-        TransportEvents.TransportDestroyed -= _onTransportDestroyed;
+        TransportEvents.Constructing -= _onTransportConstructing;
+        TransportEvents.UI.ConstructionStopping -= _onTransportConstructionStopping;
+        TransportEvents.Constructed -= _onTransportConstructed;
+        TransportEvents.Destroyed -= _onTransportDestroyed;
     }
 
     private void _onTransportConstructed(TransportConstructedEvent @event)
     {
-        SetupTransportationDisplay(@event.Transport);
+        SetupTransportationDisplay(@event.TransportState);
     }
 
     private void _onTransportConstructing(TransportConstructingEvent @event)
     {
-        if (@event.Transport.Definition.CostToBuild > State.Wallet)
+        if (@event.TransportState.Definition.CostToBuild > State.Wallet)
         {
             this.Log("Not enough money to build this transport.");
             @event.IsAllowed = false;
@@ -71,7 +71,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
 
     private void _onTransportDestroyed(TransportDestroyedEvent @event)
     {
-        if (_nodes.Remove(@event.Transport, out var node))
+        if (_nodes.Remove(@event.TransportState, out var node))
             node.QueueFree();
     }
 

@@ -14,52 +14,61 @@ public partial class EditorItemWindow : Control
     [Signal]
     public delegate void OnRemoveEventHandler(Variant key);
 
-    public Dictionary EditedData = [];
+    public IReadonlyNumericDict? EditedData;
 
     Control? Sources => GetNode("%sources") as Control;
     Button? Collapse => GetNode("%collapse") as Button;
+    RichTextLabel? CollapseLabel => GetNode("%collapseLabel") as RichTextLabel;
 
     public override void _Ready()
     {
         if (Sources is null || Collapse is null)
             return;
         Collapse.Pressed += _onCollapsePressed;
+        Sources.Visible = false;
     }
 
-    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(Dictionary<TKey, TValue> data, System.Collections.Generic.IReadOnlyDictionary<string, TKey> definitions)
+    public void Setup<[MustBeVariant] TKey, [MustBeVariant] TValue>(IReadonlyNumericDict data, System.Collections.Generic.IReadOnlyDictionary<string, TKey> definitions)
         where TKey : Resource
         where TValue : new()
     {
-        EditedData = (Dictionary)data.Duplicate();
+        EditedData = data;
 
         foreach (var (name, def) in definitions)
         {
             var itemSelector = ResourceLoader.Load<PackedScene>("res://resource_types/scenes/EditorItemSelector.tscn").Instantiate<EditorItemSelector>();
             itemSelector.OnAmountChanged += _onAmountChanged;
             itemSelector.Name = name;
-            var value = Variant.From(data.TryGetValue(def, out var v) ? v : default);
+            var value = Variant.From(data.TryGetValueUntyped<TKey, TValue>(def, out var v) ? v : default);
             itemSelector.SetItemDefinition<TValue>(def, value);
             Sources?.AddChild(itemSelector);
         }
+        _updateLabel();
     }
 
     private void _onAmountChanged(Resource def, Variant value)
     {
         if (_testZero(value))
         {
-            EditedData.Remove(def);
             EmitSignalOnRemove(def);
         }
         else
         {
-            EditedData[def] = value;
             EmitSignalOnChange(def, value);
         }
+        _updateLabel();
     }
 
-    //private static string _formatLabel(INamedResource def, Variant amount) => $"[img height=24]{def?.IconPathOrName}[/img] {def?.Name}: {(amount.Obj is IToBBCode bbcode ? bbcode.ToStringBBCode() : amount)}";
-
     private static bool _testZero(Variant value) => value.Obj?.Equals(0L) ?? true;
+
+    private void _updateLabel()
+    {
+        if (CollapseLabel is not null)
+        {
+            CollapseLabel.Text = EditedData is IToBBCode bbcode ? bbcode.ToStringBBCode() : EditedData?.GetType().Name;
+            CollapseLabel.Text = string.IsNullOrWhiteSpace(CollapseLabel.Text) ? "<nothing>" : CollapseLabel.Text;
+        }
+    }
 
     private void _onFilterSubmitted(string value)
     {

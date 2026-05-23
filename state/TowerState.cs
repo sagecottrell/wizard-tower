@@ -49,8 +49,11 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     [ExportToolButton("Add New Room")]
     public Callable addroom => Callable.From(EditorAddRoom);
 
+    /// <summary>
+    /// The list of workers that are currently on the floor; not inside a room or transport
+    /// </summary>
     [Export]
-    public Godot.Collections.Dictionary<uint, WorkerState> Workers { get; set; } = [];
+    public Godot.Collections.Array<WorkerState> Workers { get; set; } = [];
 
     [Export]
     public Godot.Collections.Dictionary<uint, TransportState> Transports { get; set; } = [];
@@ -341,6 +344,15 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     #endregion
 
+    #region Worker functions
+
+    public void SpawnWorker(WorkerState workerState)
+    {
+        Workers.Add(workerState);
+    }
+
+    #endregion
+
 
     #region operators
 
@@ -354,7 +366,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             && Floors.Keys.SequenceEqual(other.Floors.Keys)
             && Rooms.Keys.SequenceEqual(other.Rooms.Keys)
             && Transports.Keys.SequenceEqual(other.Transports.Keys)
-            && Workers.Keys.SequenceEqual(other.Workers.Keys)
+            && Workers.SequenceEqual(other.Workers)
             && Wallet == other.Wallet
             && MaxBasement == other.MaxBasement
             && MaxHeight == other.MaxHeight
@@ -385,7 +397,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         { nameof(Floors), Floors.Serialize() },
         { nameof(Rooms), Rooms.Serialize() },
         { nameof(Transports), Transports.Serialize() },
-        { nameof(Workers), Workers.Serialize() },
+        { nameof(Workers), Workers },
         { nameof(RoomIdCounter), RoomIdCounter },
         { nameof(LowestFloor), LowestFloor },
         { nameof(HighestFloor), HighestFloor },
@@ -400,7 +412,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         Floors = dict[nameof(Floors)].AsSaveFormatDict().DeSerialize<int, FloorState>(int.Parse);
         Rooms = dict[nameof(Rooms)].AsSaveFormatDict().DeSerialize<uint, RoomState>(uint.Parse);
         Transports = dict[nameof(Transports)].AsSaveFormatDict().DeSerialize<uint, TransportState>(uint.Parse);
-        Workers = dict[nameof(Workers)].AsSaveFormatDict().DeSerialize<uint, WorkerState>(uint.Parse);
         Wallet.Deserialize(dict[nameof(Wallet)].AsSaveFormatDict());
         RoomIdCounter = dict[nameof(RoomIdCounter)].AsUInt32();
         LowestFloor = dict[nameof(LowestFloor)].AsInt32();

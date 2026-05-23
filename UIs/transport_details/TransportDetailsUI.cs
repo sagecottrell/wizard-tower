@@ -27,27 +27,27 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
 
     public override void _EnterTree()
     {
-        TransportEvents.UI.TransportSelected += _onTransportSelected;
-        TransportEvents.UI.TransportDeselected += _onTransportDeselected;
-        FloorEvents.UI.FloorConstructionSelected += _event_hide;
-        RoomEvents.UI.RoomConstructionSelected += _event_hide;
-        TransportEvents.UI.TransportConstructionSelected += _event_hide;
+        TransportEvents.UI.Selected += _onTransportSelected;
+        TransportEvents.UI.Deselected += _onTransportDeselected;
+        FloorEvents.UI.ConstructionSelected += _event_hide;
+        RoomEvents.UI.ConstructionSelected += _event_hide;
+        TransportEvents.UI.ConstructionSelected += _event_hide;
         GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        TransportEvents.UI.TransportSelected -= _onTransportSelected;
-        TransportEvents.UI.TransportDeselected -= _onTransportDeselected;
-        FloorEvents.UI.FloorConstructionSelected -= _event_hide;
-        RoomEvents.UI.RoomConstructionSelected -= _event_hide;
-        TransportEvents.UI.TransportConstructionSelected -= _event_hide;
+        TransportEvents.UI.Selected -= _onTransportSelected;
+        TransportEvents.UI.Deselected -= _onTransportDeselected;
+        FloorEvents.UI.ConstructionSelected -= _event_hide;
+        RoomEvents.UI.ConstructionSelected -= _event_hide;
+        TransportEvents.UI.ConstructionSelected -= _event_hide;
         GeneralEvents.ShowedUI -= _onShowedUI;
     }
 
     private void _onTransportDeselected(TransportDeselectedEvent @event)
     {
-        if (@event.Transport != Transport)
+        if (@event.TransportState != Transport)
             return;
         _reset();
     }
@@ -81,12 +81,12 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
     {
         if (@event.TowerState != tower)
             return;
-        if (@event.Transport == Transport)
+        if (@event.TransportState == Transport)
         {
             UIActions.DeselectTransport(new(tower, Transport));
             return;
         }
-        Transport = @event.Transport;
+        Transport = @event.TransportState;
         Visible = true;
 
         var text = $"Selected Transport #{Transport.Id}: {Transport.Definition.Name}  {ui.LineHeightImage(Transport.Definition.Icon)}";

@@ -19,4 +19,7 @@ public partial class RoomStateWorkerPath : Resource
 
     [Export]
     public Array<int>? ToWhichFloors { get; set; }
+
+    [Export]
+    public Array<float> TimeTakenRecords { get; set; } = [];
 }

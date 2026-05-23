@@ -8,29 +8,29 @@ public static class FloorEvents
 {
     public static class UI
     {
-        public static Event<FloorConstructionSelectingEvent> FloorConstructionSelecting { get; set; } = new();
-        public static Event<FloorConstructionSelectedEvent> FloorConstructionSelected { get; set; } = new();
+        public static Event<FloorConstructionSelectingEvent> ConstructionSelecting { get; set; } = new();
+        public static Event<FloorConstructionSelectedEvent> ConstructionSelected { get; set; } = new();
 
-        public static Event<FloorConstructionStoppingEvent> FloorConstructionStopping { get; set; } = new();
-        public static Event<FloorConstructionStoppedEvent> FloorConstructionStopped { get; set; } = new();
+        public static Event<FloorConstructionStoppingEvent> ConstructionStopping { get; set; } = new();
+        public static Event<FloorConstructionStoppedEvent> ConstructionStopped { get; set; } = new();
 
-        public static FloorConstructionSelectingEvent OnFloorConstructionSelecting(FloorConstructionSelectingEvent e) => FloorConstructionSelecting.InvokeSafely(e);
-        public static FloorConstructionSelectedEvent OnFloorConstructionSelected(FloorConstructionSelectedEvent e) => FloorConstructionSelected.InvokeSafely(e);
-        public static FloorConstructionStoppingEvent OnFloorConstructionStopping(FloorConstructionStoppingEvent e) => FloorConstructionStopping.InvokeSafely(e);
-        public static FloorConstructionStoppedEvent OnFloorConstructionStopped(FloorConstructionStoppedEvent e) => FloorConstructionStopped.InvokeSafely(e);
+        public static FloorConstructionSelectingEvent OnConstructionSelecting(FloorConstructionSelectingEvent e) => ConstructionSelecting.InvokeSafely(e);
+        public static FloorConstructionSelectedEvent OnConstructionSelected(FloorConstructionSelectedEvent e) => ConstructionSelected.InvokeSafely(e);
+        public static FloorConstructionStoppingEvent OnConstructionStopping(FloorConstructionStoppingEvent e) => ConstructionStopping.InvokeSafely(e);
+        public static FloorConstructionStoppedEvent OnConstructionStopped(FloorConstructionStoppedEvent e) => ConstructionStopped.InvokeSafely(e);
     }
 
-    public static Event<FloorConstructingEvent> FloorConstructing { get; set; } = new();
-    public static Event<FloorConstructedEvent> FloorConstructed { get; set; } = new();
-    public static Event<FloorExtendingEvent> FloorExtending { get; set; } = new();
-    public static Event<FloorExtendedEvent> FloorExtended { get; set; } = new();
-    public static Event<FloorReplacingEvent> FloorReplacing { get; set; } = new();
-    public static Event<FloorReplacedEvent> FloorReplaced { get; set; } = new();
+    public static Event<FloorConstructingEvent> Constructing { get; set; } = new();
+    public static Event<FloorConstructedEvent> Constructed { get; set; } = new();
+    public static Event<FloorExtendingEvent> Extending { get; set; } = new();
+    public static Event<FloorExtendedEvent> Extended { get; set; } = new();
+    public static Event<FloorReplacingEvent> Replacing { get; set; } = new();
+    public static Event<FloorReplacedEvent> Replaced { get; set; } = new();
 
-    public static FloorConstructingEvent OnFloorConstructing(FloorConstructingEvent e) => FloorConstructing.InvokeSafely(e);
-    public static FloorConstructedEvent OnFloorConstructed(FloorConstructedEvent e) => FloorConstructed.InvokeSafely(e);
-    public static FloorExtendingEvent OnFloorExtending(FloorExtendingEvent e) => FloorExtending.InvokeSafely(e);
-    public static FloorExtendedEvent OnFloorExtended(FloorExtendedEvent e) => FloorExtended.InvokeSafely(e);
-    public static FloorReplacingEvent OnFloorReplacing(FloorReplacingEvent e) => FloorReplacing.InvokeSafely(e);
-    public static FloorReplacedEvent OnFloorReplaced(FloorReplacedEvent e) => FloorReplaced.InvokeSafely(e);
+    public static FloorConstructingEvent OnConstructing(FloorConstructingEvent e) => Constructing.InvokeSafely(e);
+    public static FloorConstructedEvent OnConstructed(FloorConstructedEvent e) => Constructed.InvokeSafely(e);
+    public static FloorExtendingEvent OnExtending(FloorExtendingEvent e) => Extending.InvokeSafely(e);
+    public static FloorExtendedEvent OnExtended(FloorExtendedEvent e) => Extended.InvokeSafely(e);
+    public static FloorReplacingEvent OnReplacing(FloorReplacingEvent e) => Replacing.InvokeSafely(e);
+    public static FloorReplacedEvent OnReplaced(FloorReplacedEvent e) => Replaced.InvokeSafely(e);
 }

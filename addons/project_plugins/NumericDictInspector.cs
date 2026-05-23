@@ -35,7 +35,7 @@ public partial class NumericDictInspector : EditorInspectorPlugin
             IAdditiveIdentity<TValue, TValue>,
             new()
     {
-        editor.Setup(dict.ToGodotDictionary(), LoadDefs.LoadAll<TKey>());
+        editor.Setup<TKey, TValue>(dict, LoadDefs.LoadAll<TKey>());
         var editorProperty = new EditorProperty();
         editorProperty.AddChild(editor);
         editor.OnChange += (def, value) =>

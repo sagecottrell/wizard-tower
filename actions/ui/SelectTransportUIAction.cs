@@ -7,17 +7,17 @@ public static partial class UIActions
 {
     public static bool SelectTransport(TransportSelectingEvent @event)
     {
-        if (!TransportEvents.UI.OnTransportSelecting(@event).IsAllowed)
+        if (!TransportEvents.UI.OnSelecting(@event).IsAllowed)
             return false;
-        TransportEvents.UI.OnTransportSelected(new TransportSelectedEvent(@event.TowerState, @event.Transport) { Source = @event.Source });
+        TransportEvents.UI.OnSelected(new TransportSelectedEvent(@event.TowerState, @event.TransportState) { Source = @event.Source });
         return true;
     }
 
     public static bool DeselectTransport(TransportDeselectingEvent @event)
     {
-        if (!TransportEvents.UI.OnTransportDeselecting(@event).IsAllowed)
+        if (!TransportEvents.UI.OnDeselecting(@event).IsAllowed)
             return false;
-        TransportEvents.UI.OnTransportDeselected(new TransportDeselectedEvent(@event.TowerState, @event.Transport) { Source = @event.Source });
+        TransportEvents.UI.OnDeselected(new TransportDeselectedEvent(@event.TowerState, @event.TransportState) { Source = @event.Source });
         return true;
     }
 }

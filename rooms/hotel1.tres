@@ -8,8 +8,7 @@
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_hj88f"]
 [ext_resource type="PackedScene" uid="uid://chn4rti55n71q" path="res://rooms/scenes/Hotel1.tscn" id="4_tlh4u"]
 [ext_resource type="Script" uid="uid://b7asf65risos5" path="res://resource_types/room_functions/BaseRoomFunctionDefinition.cs" id="5_i2gvq"]
-[ext_resource type="Texture2D" uid="uid://cjfxdbn5nq5lg" path="res://items/images/coin.png" id="6_lic1n"]
-[ext_resource type="Script" uid="uid://b7h7cui7s3kem" path="res://resource_types/RandomOutputDefinition.cs" id="7_sl6t5"]
+[ext_resource type="Script" uid="uid://draj1yxsnn0co" path="res://resource_types/WorkerDefinition.cs" id="7_lic1n"]
 [ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="8_sl6t5"]
 [ext_resource type="Script" uid="uid://b8rifg7cnaj7i" path="res://resource_types/room_functions/RoomConvertResourcesDefinition.cs" id="9_yims7"]
 
@@ -24,27 +23,20 @@ Data = Dictionary[String, int]({
 script = ExtResource("2_rcq2y")
 Data = Dictionary[String, int]({})
 
-[sub_resource type="Resource" id="Resource_l3vka"]
-script = ExtResource("2_rcq2y")
-Data = Dictionary[String, int]({
-"res://items/coin.tres": 50
-})
-
-[sub_resource type="Resource" id="Resource_kfkwf"]
-script = ExtResource("7_sl6t5")
-Output = SubResource("Resource_l3vka")
-metadata/_custom_type_script = "uid://b7h7cui7s3kem"
-
 [sub_resource type="Resource" id="Resource_yims7"]
 script = ExtResource("8_sl6t5")
-Name = "hotel1"
-Icon = ExtResource("6_lic1n")
 Input = SubResource("Resource_sl6t5")
-Output = Array[Object]([SubResource("Resource_kfkwf")])
+Output = []
+
+[sub_resource type="Resource" id="Resource_l3vka"]
+script = ExtResource("7_lic1n")
 
 [sub_resource type="Resource" id="Resource_s8kn8"]
 script = ExtResource("9_yims7")
+Recipe = SubResource("Resource_yims7")
 ToTowerWallet = true
+MaxTimesPerDay = 1
+WorkerKind = SubResource("Resource_l3vka")
 metadata/_custom_type_script = "uid://b8rifg7cnaj7i"
 
 [sub_resource type="Resource" id="Resource_tlh4u"]

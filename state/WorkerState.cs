@@ -12,7 +12,7 @@ public partial class WorkerState : Resource, ICopy<WorkerState>, IDeSerialize<Wo
     public WorkerDefinition? WorkerDefinition { get; set; }
 
     [Export]
-    public uint AssignedRoomId { get; set; }
+    public uint DestinationRoomId { get; set; }
 
     [Export]
     public uint SourceRoomId { get; set; }

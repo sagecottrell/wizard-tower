@@ -9,8 +9,8 @@ public static partial class UIActions
     {
         var roomDef = @event.RoomDefinition;
         var state = @event.TowerState;
-        var ev = RoomEvents.UI.OnRoomConstructionSelecting(@event);
+        var ev = RoomEvents.UI.OnConstructionSelecting(@event);
         if (state.Wallet >= roomDef.CostToBuildPerUnit && ev.IsAllowed)
-            RoomEvents.UI.OnRoomConstructionSelected(new(state, roomDef) { Source = @event.Source });
+            RoomEvents.UI.OnConstructionSelected(new(state, roomDef) { Source = @event.Source });
     }
 }

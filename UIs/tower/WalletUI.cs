@@ -21,12 +21,12 @@ public partial class WalletUI(TowerState towerState) : Node, IUserInterface
 
     public override void _EnterTree()
     {
-        TowerEvents.TowerResourceChanged += _onTowerResourceChanged;
+        TowerEvents.ResourceChanged += _onTowerResourceChanged;
     }
 
     public override void _ExitTree()
     {
-        TowerEvents.TowerResourceChanged -= _onTowerResourceChanged;
+        TowerEvents.ResourceChanged -= _onTowerResourceChanged;
     }
 
     private void _onTowerResourceChanged(TowerResourceChangedEvent @event)
