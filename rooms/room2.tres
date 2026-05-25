@@ -6,7 +6,11 @@
 [ext_resource type="Texture2D" uid="uid://dwur7kaj1v6tf" path="res://rooms/images/room-hotel-basic-small-empty.png" id="3_ethje"]
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_eud12"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_1ryl7"]
-[ext_resource type="Script" uid="uid://b7asf65risos5" path="res://resource_types/room_functions/BaseRoomFunctionDefinition.cs" id="4_eud12"]
+[ext_resource type="Script" uid="uid://b7h7cui7s3kem" path="res://resource_types/RandomOutputDefinition.cs" id="6_kmba1"]
+[ext_resource type="PackedScene" uid="uid://1it0weq500dv" path="res://rooms/scenes/Firepit.tscn" id="6_todtk"]
+[ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="7_h84pp"]
+[ext_resource type="Script" uid="uid://bar6xqakjf637" path="res://resource_types/RecipeSetDefinition.cs" id="7_im3ec"]
+[ext_resource type="Script" uid="uid://b8rifg7cnaj7i" path="res://resource_types/room_functions/RoomConvertResourcesDefinition.cs" id="9_4mn3a"]
 
 [sub_resource type="Resource" id="Resource_eud12"]
 script = ExtResource("2_ethje")
@@ -14,15 +18,47 @@ Data = Dictionary[String, int]({
 "res://items/coin.tres": 1
 })
 
+[sub_resource type="Resource" id="Resource_kmba1"]
+script = ExtResource("2_ethje")
+Data = Dictionary[String, int]({})
+
+[sub_resource type="Resource" id="Resource_h84pp"]
+script = ExtResource("2_ethje")
+Data = Dictionary[String, int]({
+"res://items/fire.tres": 2
+})
+
+[sub_resource type="Resource" id="Resource_uj8sr"]
+script = ExtResource("6_kmba1")
+Output = SubResource("Resource_h84pp")
+metadata/_custom_type_script = "uid://b7h7cui7s3kem"
+
+[sub_resource type="Resource" id="Resource_4mn3a"]
+script = ExtResource("7_h84pp")
+Input = SubResource("Resource_kmba1")
+Output = Array[Object]([SubResource("Resource_uj8sr")])
+metadata/_custom_type_script = "uid://ysnph6jm54y6"
+
+[sub_resource type="Resource" id="Resource_e2msf"]
+script = ExtResource("7_im3ec")
+Recipes = Array[ExtResource("7_h84pp")]([SubResource("Resource_4mn3a")])
+
+[sub_resource type="Resource" id="Resource_175e0"]
+script = ExtResource("9_4mn3a")
+Recipes = SubResource("Resource_e2msf")
+metadata/_custom_type_script = "uid://b8rifg7cnaj7i"
+
 [sub_resource type="Resource" id="Resource_ethje"]
 script = ExtResource("3_eud12")
 Data = Dictionary[String, ExtResource("2_ethje")]({})
 
 [resource]
 script = ExtResource("4_1ryl7")
-Name = "Room2"
+Name = "Fire Pit"
 Icon = ExtResource("3_ethje")
+RoomScene = ExtResource("6_todtk")
 CostToBuildPerUnit = SubResource("Resource_eud12")
 AllowedFloors = Array[ExtResource("1_780rp")]([ExtResource("2_1ryl7")])
 Upgrades = SubResource("Resource_ethje")
+ResourceConversion = SubResource("Resource_175e0")
 metadata/_custom_type_script = "uid://wmhswxpf1gb5"

@@ -8,10 +8,8 @@
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="5_8sv8r"]
 [ext_resource type="Script" uid="uid://mv22mxallfm6" path="res://state/TowerState.cs" id="5_oywi7"]
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_sstfk"]
-[ext_resource type="Script" uid="uid://ca2j7nlkfjp7m" path="res://state/room_functions/BaseRoomFunctionState.cs" id="5_wxpot"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_5gs35"]
 [ext_resource type="Resource" uid="uid://pq32jmna4frf" path="res://items/fire.tres" id="6_32nna"]
-[ext_resource type="Script" uid="uid://4fa6yb4eswrm" path="res://state/room_functions/RoomConvertResourcesState.cs" id="6_441v5"]
 [ext_resource type="Script" uid="uid://ysu67f4yon" path="res://state/RoomStateWorkerPath.cs" id="6_831pd"]
 [ext_resource type="Resource" uid="uid://dqsm1a0fqu8y1" path="res://transports/stairs.tres" id="7_5gs35"]
 [ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_tq78q"]
@@ -55,10 +53,6 @@ Elevation = 4
 LeftBound = -6
 RightBound = 10
 
-[sub_resource type="Resource" id="Resource_thpar"]
-script = ExtResource("6_441v5")
-metadata/_custom_type_script = "uid://4fa6yb4eswrm"
-
 [sub_resource type="Resource" id="Resource_y253d"]
 script = ExtResource("5_8sv8r")
 Data = Dictionary[String, int]({
@@ -89,7 +83,6 @@ Height = 1
 FloorPosition = 2
 StoredItems = SubResource("Resource_y253d")
 WorkerPaths = Array[ExtResource("6_831pd")]([SubResource("Resource_441v5"), SubResource("Resource_6xmfl")])
-FunctionStates = Array[ExtResource("5_wxpot")]([SubResource("Resource_thpar")])
 
 [sub_resource type="Resource" id="Resource_831pd"]
 script = ExtResource("5_8sv8r")

@@ -42,13 +42,14 @@ public static class RoomEvents
     public static Event<RoomReceivingResourcesEvent> ReceivingResources { get; set; } = new();
     public static Event<RoomReceivedResourcesEvent> ReceivedResources { get; set; } = new();
 
-    public static Event<RoomDispatchingWorkerEvent> DispatchingWorker { get; set; } = new();
-
     public static Event<RoomConsumingResourcesEvent> ConsumingResources { get; set; } = new();
     public static Event<RoomConsumedResourcesEvent> ConsumedResources { get; set; } = new();
 
     public static Event<RoomStartingWorkEvent> StartingWork { get; set; } = new();
     public static Event<RoomStartedWorkEvent> StartedWork { get; set; } = new();
+
+    public static Event<RoomProcessingIncreasingEvent> ProcessingIncreasing { get; set; } = new();
+    public static Event<RoomProcessingIncreasedEvent> ProcessingIncreased { get; set; } = new();
 
     public static RoomConstructingEvent OnConstructing(RoomConstructingEvent e) => Constructing.InvokeSafely(e);
     public static RoomConstructedEvent OnConstructed(RoomConstructedEvent e) => Constructed.InvokeSafely(e);
@@ -62,11 +63,12 @@ public static class RoomEvents
     public static RoomReceivingResourcesEvent OnRoomReceivingResources(RoomReceivingResourcesEvent e) => ReceivingResources.InvokeSafely(e);
     public static RoomReceivedResourcesEvent OnRoomReceivedResources(RoomReceivedResourcesEvent e) => ReceivedResources.InvokeSafely(e);
 
-    public static RoomDispatchingWorkerEvent OnRoomDispatchingWorker(RoomDispatchingWorkerEvent e) => DispatchingWorker.InvokeSafely(e);
-
     public static RoomConsumingResourcesEvent OnConsumingResources(RoomConsumingResourcesEvent e) => ConsumingResources.InvokeSafely(e);
     public static RoomConsumedResourcesEvent OnConsumedResources(RoomConsumedResourcesEvent e) => ConsumedResources.InvokeSafely(e);
 
-    public static RoomStartingWorkEvent OnRoomStartingWork(RoomStartingWorkEvent e) => StartingWork.InvokeSafely(e);
-    public static RoomStartedWorkEvent OnRoomStartedWork(RoomStartedWorkEvent e) => StartedWork.InvokeSafely(e);
+    public static RoomStartingWorkEvent OnStartingWork(RoomStartingWorkEvent e) => StartingWork.InvokeSafely(e);
+    public static RoomStartedWorkEvent OnStartedWork(RoomStartedWorkEvent e) => StartedWork.InvokeSafely(e);
+
+    public static RoomProcessingIncreasingEvent OnProcessingIncreasing(RoomProcessingIncreasingEvent e) => ProcessingIncreasing.InvokeSafely(e);
+    public static RoomProcessingIncreasedEvent OnProcessingIncreased(RoomProcessingIncreasedEvent e) => ProcessingIncreased.InvokeSafely(e);
 }

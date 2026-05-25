@@ -20,6 +20,8 @@ size_flags_horizontal = 3
 [node name="collapse" type="Button" parent="VBoxContainer/PanelContainer" unique_id=1102337052]
 unique_name_in_owner = true
 layout_mode = 2
+mouse_default_cursor_shape = 2
+flat = true
 
 [node name="collapseLabel" type="RichTextLabel" parent="VBoxContainer/PanelContainer" unique_id=116396039]
 unique_name_in_owner = true

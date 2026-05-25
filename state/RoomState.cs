@@ -36,7 +36,7 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     public Array<RoomStateWorkerPath> WorkerPaths { get; set; } = [];
 
     [Export]
-    public Array<BaseRoomFunctionState> FunctionStates { get; set; } = [];
+    public RoomConvertResourcesState? ConvertResourcesState { get; set; }
 
     public bool Compare(RoomState? other)
     {

@@ -4,5 +4,5 @@ namespace wizardtower.events.interfaces;
 
 public interface IFloorDefinitionEvent
 {
-    FloorDefinition FloorDefinition { get; set; }
+    FloorDefinition FloorDefinition { get; }
 }

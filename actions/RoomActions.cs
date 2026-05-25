@@ -1,5 +1,6 @@
 using wizardtower.events.handlers;
 using wizardtower.events.Room;
+using wizardtower.resource_types;
 using wizardtower.state;
 
 namespace wizardtower.actions;
@@ -13,6 +14,12 @@ public static class RoomActions
         {
             TowerActions.RemoveFromWallet(new(tower, ev.Room.Definition.CostToBuildPerUnit) { Source = ev });
             tower.AddRoom(ev.Room);
+            if (ev.Room.Definition.ResourceConversion is not null)
+            {
+                ev.Room.ConvertResourcesState = new();
+                if (ev.Room.ConvertResourcesState.SelectedRecipe is null && ev.Room.Definition.ResourceConversion.Recipes.Recipes.Count == 1)
+                    ev.Room.ConvertResourcesState.SelectedRecipe = ev.Room.Definition.ResourceConversion.Recipes.Recipes[0];
+            }
             RoomEvents.OnConstructed(new(tower, ev.Room) { Source = ev.Source });
         }
     }
@@ -26,13 +33,23 @@ public static class RoomActions
         }
     }
 
+    public static void ProductionProgress(RoomProcessingIncreasingEvent ev)
+    {
+        if (!RoomEvents.OnProcessingIncreasing(ev).IsAllowed)
+            return;
+        ev.State.ProductionProgress += ev.AmountIncreased;
+        RoomEvents.OnProcessingIncreased(new(ev.RoomState, ev.State) { Source = ev });
+    }
+
     public static void ProduceResources(RoomProducingResourcesEvent ev)
     {
         if (!RoomEvents.OnProducingResources(ev).IsAllowed)
             return;
+        if (ev.RoomConvertResourcesState.SelectedRecipe is null)
+            return;
         if (ev.ResetProductionProgress)
             ev.RoomConvertResourcesState.ProductionProgress = 0;
-        ev.Output ??= ev.RoomConvertResourcesDefinition.Recipe.Output?.PickWeightedRandom(ev.TowerState.RandomNumberGenerator, x => x.Weight)?.Output;
+        ev.Output ??= ev.RoomConvertResourcesState.SelectedRecipe.Output?.PickWeightedRandom(ev.TowerState.RandomNumberGenerator, x => x.Weight)?.Output;
         if (ev.Output is not null)
         {
             if (ev.RoomConvertResourcesDefinition.ToTowerWallet)
@@ -60,28 +77,26 @@ public static class RoomActions
         RoomEvents.OnRoomReceivedResources(new(ev.TowerState, ev.RoomState, ev.Resources) { Source = ev });
     }
 
-    public static void SpawnWorkerWithPayload(RoomDispatchingWorkerEvent ev)
+    public static void SpawnWorkerWithPayload(TowerState towerState, RoomState roomState, RoomState targetRoom, ItemDefinition item, uint amount, WorkerDefinition def)
     {
-        if (!RoomEvents.OnRoomDispatchingWorker(ev).IsAllowed)
-            return;
         var worker = new WorkerState()
         {
-            DestinationRoomId = ev.TargetRoom.Id,
-            FloorPosition = ev.RoomState.FloorPosition,
-            Elevation = ev.RoomState.Elevation,
-            PayloadAmount = ev.Amount,
-            PayloadKind = ev.Item,
-            SourceRoomId = ev.RoomState.Id,
-            WorkerDefinition = ev.WorkerDefinition,
+            DestinationRoomId = targetRoom.Id,
+            FloorPosition = roomState.FloorPosition,
+            Elevation = roomState.Elevation,
+            PayloadAmount = amount,
+            PayloadKind = item,
+            SourceRoomId = roomState.Id,
+            WorkerDefinition = def,
         };
-        WorkerActions.Dispatch(new(ev.TowerState, worker) { Source = ev });
+        WorkerActions.Dispatch(new(towerState, worker));
     }
 
     public static void StartWork(RoomStartingWorkEvent ev)
     {
-        if (!RoomEvents.OnRoomStartingWork(ev).IsAllowed)
+        if (!RoomEvents.OnStartingWork(ev).IsAllowed)
             return;
         ev.RoomConvertResourcesState.CurrentlyWorking = true;
-        RoomEvents.OnRoomStartedWork(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev });
+        RoomEvents.OnStartedWork(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev });
     }
 }

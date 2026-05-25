@@ -4,16 +4,16 @@ namespace wizardtower.resource_types.room_functions;
 
 [Tool]
 [GlobalClass]
-public partial class RoomConvertResourcesDefinition : BaseRoomFunctionDefinition
+public partial class RoomConvertResourcesDefinition : Resource
 {
     [Export]
-    public RecipeDefinition Recipe { get; set; } = new();
+    public RecipeSetDefinition Recipes { get; set; } = new();
 
     [Export]
     public bool ToTowerWallet { get; set; }
 
     [Export]
-    public uint ProcessingTimeSeconds { get; set; } = 10;
+    public float ProcessingTimeMultiplier { get; set; } = 1;
 
     /// <summary>
     /// If zero, then there is no limit
@@ -22,7 +22,7 @@ public partial class RoomConvertResourcesDefinition : BaseRoomFunctionDefinition
     public uint MaxTimesPerDay { get; set; } = 0;
 
     [Export]
-    public WorkerDefinition WorkerKind { get; set; } = new();
+    public WorkerDefinition? WorkerKind { get; set; }
 
     [Export]
     public uint WorkersCount { get; set; } = 1;

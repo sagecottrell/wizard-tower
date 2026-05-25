@@ -2,6 +2,7 @@ using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
+using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
 using wizardtower.events.ui;
 using wizardtower.state;
@@ -29,6 +30,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         RoomEvents.UI.Selected += _onRoomSelected;
         RoomEvents.UI.Deselected += _onRoomDeselected;
+        RoomEvents.ProducedResources += _onProducedResources;
         FloorEvents.UI.ConstructionSelected += _event_hide;
         RoomEvents.UI.ConstructionSelected += _event_hide;
         TransportEvents.UI.ConstructionSelected += _event_hide;
@@ -39,6 +41,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         RoomEvents.UI.Selected -= _onRoomSelected;
         RoomEvents.UI.Deselected -= _onRoomDeselected;
+        RoomEvents.ProducedResources -= _onProducedResources;
         FloorEvents.UI.ConstructionSelected -= _event_hide;
         RoomEvents.UI.ConstructionSelected -= _event_hide;
         TransportEvents.UI.ConstructionSelected -= _event_hide;
@@ -77,6 +80,13 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         UIActions.DeselectRoom(new(tower, RoomState));
     }
 
+    private void _onProducedResources(RoomProducedResourcesEvent ev)
+    {
+        if (ev.RoomState != RoomState)
+            return;
+        _pushText();
+    }
+
     private void _onRoomSelected(RoomSelectedEvent @event)
     {
         if (@event.TowerState != tower)
@@ -93,6 +103,18 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         RoomState = @event.RoomState;
         Visible = true;
 
+        _pushText();
+
+        // if (ui.Child<Button>())
+
+        GeneralEvents.OnShowedUI(new(this));
+    }
+
+    private void _pushText()
+    {
+        if (RoomState is null)
+            return;
+
         if (ui.Child<RichTextLabel>() is not RichTextLabel rtl)
             rtl = ui.AddedChild(new RichTextLabel
             {
@@ -102,17 +124,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
                 BbcodeEnabled = true,
             });
         rtl.Text = "";
-        _pushText(rtl);
 
-        // if (ui.Child<Button>())
-
-        GeneralEvents.OnShowedUI(new(this));
-    }
-
-    private void _pushText(RichTextLabel rtl)
-    {
-        if (RoomState is null)
-            return;
         rtl.AppendText($"Selected Room #{RoomState.Id}\n");
         rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
         rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");

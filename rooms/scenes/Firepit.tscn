@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://1it0weq500dv"]
+
+[ext_resource type="Script" uid="uid://bnu1oq0kfql8b" path="res://containers/RoomBackgroundScript.cs" id="1_71vi8"]
+[ext_resource type="Material" uid="uid://7yvdrrr7ro2h" path="res://rooms/scenes/hologram-material.tres" id="2_2xn07"]
+[ext_resource type="PackedScene" uid="uid://ctpn4plbalp22" path="res://rooms/models/fire-pit.gltf" id="2_loduq"]
+
+[node name="Firepit" type="Node3D" unique_id=333330981 node_paths=PackedStringArray("Background", "Animations")]
+script = ExtResource("1_71vi8")
+Background = NodePath("blockbench_export/root/Skeleton3D/root")
+HologramMaterial = ExtResource("2_2xn07")
+Animations = NodePath("blockbench_export/AnimationPlayer")
+
+[node name="blockbench_export" parent="." unique_id=1057835715 instance=ExtResource("2_loduq")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Skeleton3D" parent="blockbench_export/root" parent_id_path=PackedInt32Array(1057835715, 1283057187) index="0" unique_id=725432243]
+bones/1/position = Vector3(0, 0.436173, 0)
+
+[editable path="blockbench_export"]

@@ -23,6 +23,9 @@ public partial class RecipeDefinition : Resource, INamedResource<RecipeDefinitio
     public string? Description { get; set; }
 
     [Export]
+    public uint ProcessingTimeSeconds { get; set; } = 10;
+
+    [Export]
     public NumericDict<ItemDefinition, uint> Input { get; set; } = [];
 
     [Export]

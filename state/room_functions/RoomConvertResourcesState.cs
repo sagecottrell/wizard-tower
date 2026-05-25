@@ -1,10 +1,11 @@
 using Godot;
+using wizardtower.resource_types;
 
 namespace wizardtower.state.room_functions;
 
 [Tool]
 [GlobalClass]
-public partial class RoomConvertResourcesState : BaseRoomFunctionState
+public partial class RoomConvertResourcesState : Resource
 {
     [Export]
     public uint TimesProducedToday { get; set; } = 0;
@@ -17,4 +18,7 @@ public partial class RoomConvertResourcesState : BaseRoomFunctionState
 
     [Export]
     public uint WorkersPresent { get; set; }
+
+    [Export]
+    public RecipeDefinition? SelectedRecipe { get; set; }
 }

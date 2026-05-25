@@ -4,5 +4,5 @@ namespace wizardtower.events.interfaces;
 
 public interface ITransportDefinitionEvent
 {
-    TransportDefinition TransportDefinition { get; set; }
+    TransportDefinition TransportDefinition { get; }
 }

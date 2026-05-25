@@ -7,9 +7,7 @@ using wizardtower.events.handlers;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
 using wizardtower.resource_types;
-using wizardtower.resource_types.room_functions;
 using wizardtower.state;
-using wizardtower.state.room_functions;
 using wizardtower.UIs.room_details;
 
 namespace wizardtower.containers;
@@ -154,41 +152,32 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public void ProcessRoomFunctions(double delta)
     {
-        foreach (var pair in State.Definition.RoomFunctions.Zip(State.FunctionStates))
+        var convertDef = State.Definition.ResourceConversion;
+        var convertState = State.ConvertResourcesState;
+        if (convertState is not null && convertDef is not null && convertState.SelectedRecipe is not null)
         {
-            switch (pair)
+            if (convertDef.MaxTimesPerDay > 0 && convertState.TimesProducedToday >= convertDef.MaxTimesPerDay)
+                return;
+
+            if (convertState.CurrentlyWorking)
             {
-                case (RoomConvertResourcesDefinition convertDef, RoomConvertResourcesState convertState):
-                    {
-                        if (convertDef.MaxTimesPerDay > 0 && convertState.TimesProducedToday >= convertDef.MaxTimesPerDay)
-                            break;
-
-                        if (convertState.CurrentlyWorking)
-                        {
-                            if (convertDef.ProcessingTimeSeconds > 0)
-                            {
-                                convertState.ProductionProgress += delta;
-                                if (convertState.ProductionProgress > convertDef.ProcessingTimeSeconds)
-                                {
-                                    RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
-                                }
-                            }
-                            else
-                            {
-                                RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
-                            }
-                        }
-                        else
-                        {
-                            if (State.StoredItems >= convertDef.Recipe.Input)
-                            {
-                                RoomActions.ConsumeResources(new(Tower.State, State, convertDef.Recipe.Input));
-                                RoomActions.StartWork(new(Tower.State, State, convertDef, convertState));
-                            }
-                        }
-
-                        break;
-                    }
+                if (convertState.SelectedRecipe.ProcessingTimeSeconds > 0)
+                {
+                    var time = (uint)(convertState.SelectedRecipe.ProcessingTimeSeconds * convertDef.ProcessingTimeMultiplier);
+                    RoomActions.ProductionProgress(new(State, convertState) { AmountIncreased = delta });
+                    if (convertState.ProductionProgress > time)
+                        RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
+                }
+                else
+                    RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
+            }
+            else
+            {
+                if (State.StoredItems >= convertState.SelectedRecipe.Input)
+                {
+                    RoomActions.ConsumeResources(new(Tower.State, State, convertState.SelectedRecipe.Input));
+                    RoomActions.StartWork(new(Tower.State, State, convertDef, convertState));
+                }
             }
         }
     }
@@ -197,28 +186,22 @@ public partial class RoomScript(TowerScript tower) : Node3D
     {
         var targetRoom = Tower.State.Rooms[wp.TargetRoomId];
         var avgTime = wp.TimeTakenRecords.Average();
-
-        foreach (var def in targetRoom.Definition.RoomFunctions)
+        var convertDef = State.Definition.ResourceConversion;
+        var convertState = State.ConvertResourcesState;
+        if (convertDef is null || convertState?.SelectedRecipe is null)
+            return;
+        var time = (uint)(convertState.SelectedRecipe.ProcessingTimeSeconds * convertDef.ProcessingTimeMultiplier);
+        var avgReq = (uint)avgTime / time * convertState.SelectedRecipe.Input;
+        var onTheWay = new NumericDict<ItemDefinition, uint>();
+        var stillRequired = avgReq - onTheWay;
+        foreach (var (item, requiredAmount) in stillRequired)
         {
-            switch (def)
+            if (requiredAmount > 0 && State.StoredItems.GetOrDefault(item) > 0)
             {
-                case RoomConvertResourcesDefinition convertDef:
-                    {
-                        var avgReq = (uint)avgTime / convertDef.ProcessingTimeSeconds * convertDef.Recipe.Input;
-                        var onTheWay = new NumericDict<ItemDefinition, uint>();
-                        var stillRequired = avgReq - onTheWay;
-                        foreach (var (item, requiredAmount) in stillRequired)
-                        {
-                            if (requiredAmount > 0 && State.StoredItems.GetOrDefault(item) > 0)
-                            {
-                                var amount = System.Math.Min(requiredAmount, State.StoredItems.GetOrDefault(item));
+                var amount = System.Math.Min(requiredAmount, State.StoredItems.GetOrDefault(item));
 
-                                RoomActions.ConsumeResources(new(Tower.State, State, new() { [item] = amount }));
-                                RoomActions.SpawnWorkerWithPayload(new(Tower.State, State, targetRoom, item, amount, convertDef.WorkerKind));
-                            }
-                        }
-                        break;
-                    }
+                RoomActions.ConsumeResources(new(Tower.State, State, new() { [item] = amount }));
+                RoomActions.SpawnWorkerWithPayload(Tower.State, State, targetRoom, item, amount, convertDef.WorkerKind);
             }
         }
     }

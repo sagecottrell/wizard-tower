@@ -4,5 +4,5 @@ namespace wizardtower.events.interfaces;
 
 public interface IWorkerEvent
 {
-    WorkerState WorkerState { get; set; }
+    WorkerState WorkerState { get; }
 }

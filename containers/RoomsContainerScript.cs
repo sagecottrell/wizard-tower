@@ -1,4 +1,6 @@
 using Godot;
+using MEC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using wizardtower.actions.ui;
@@ -14,10 +16,9 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
     public TowerScript Tower { get; } = tower;
     public TowerState State { get; } = tower.State;
 
-    public int RoomsPerCycle = 4;
-    public int RoomCycle = 0;
-
     public Dictionary<RoomState, RoomScript> Rooms { get; } = [];
+
+    CoroutineHandle processing;
 
     public override void _Ready()
     {
@@ -32,6 +33,9 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         RoomEvents.UI.ConstructionStopping += _onRoomConstructionStopping;
         RoomEvents.Constructed += _onRoomConstructed;
         RoomEvents.Destroyed += _onRoomDestroyed;
+        GameEvents.ToggledPause += _onToggledPause;
+
+        processing = Timing.RunCoroutine(processRooms(4).CancelWith(this));
     }
 
     public override void _ExitTree()
@@ -40,12 +44,25 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         RoomEvents.UI.ConstructionStopping -= _onRoomConstructionStopping;
         RoomEvents.Constructed -= _onRoomConstructed;
         RoomEvents.Destroyed -= _onRoomDestroyed;
+        GameEvents.ToggledPause -= _onToggledPause;
+
+        Timing.KillCoroutines(processing);
     }
 
     private void _onRoomDestroyed(RoomDestroyedEvent @event)
     {
         if (Rooms.Remove(@event.Room, out var node))
             node.QueueFree();
+    }
+
+    private void _onToggledPause(events.Game.ToggledPauseGameEvent ev)
+    {
+        if (!processing.IsValid)
+            return;
+        if (ev.Paused)
+            Timing.PauseCoroutines(processing);
+        else
+            Timing.ResumeCoroutines(processing);
     }
 
     private void _onRoomConstructed(RoomConstructedEvent @event)
@@ -93,19 +110,28 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
         }
     }
 
-    public override void _Process(double delta)
+    public IEnumerator<double> processRooms(int roomsPerCycle)
     {
-        var d = delta * RoomsPerCycle;
-        var simultaneous = Rooms.Count / RoomsPerCycle;
-        var rooms = Rooms.Values.ToList();
-        RoomCycle = (RoomCycle + 1) % RoomsPerCycle;
-        for (int i = 0; i < simultaneous; i++)
+        var time = DateTime.Now;
+        var roomCycle = 0;
+        while (true)
         {
-            var id = i * RoomsPerCycle + RoomCycle;
-            if (id >= rooms.Count)
-                break;
-            var room = rooms[id];
-            room.ProcessRoomFunctions(d);
+            var delta = (DateTime.Now - time).TotalSeconds;
+            time = DateTime.Now;
+            var d = delta * roomsPerCycle;
+            var simultaneous = Rooms.Count / roomsPerCycle;
+            var rooms = Rooms.Values.ToList();
+            roomCycle = (roomCycle + 1) % roomsPerCycle;
+            for (int i = 0; i <= simultaneous; i++)
+            {
+                var id = i * roomsPerCycle + roomCycle;
+                if (id >= rooms.Count)
+                    break;
+                var room = rooms[id];
+                room.ProcessRoomFunctions(d);
+            }
+
+            yield return Timing.WaitForSeconds(0.1f);
         }
     }
 }

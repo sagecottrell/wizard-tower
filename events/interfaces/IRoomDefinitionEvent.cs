@@ -4,5 +4,5 @@ namespace wizardtower.events.interfaces;
 
 public interface IRoomDefinitionEvent
 {
-    RoomDefinition RoomDefinition { get; set; }
+    RoomDefinition RoomDefinition { get; }
 }

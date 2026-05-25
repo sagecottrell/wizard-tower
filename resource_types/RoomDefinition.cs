@@ -43,5 +43,8 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
     public NumericDict<RoomDefinition, NumericDict<ItemDefinition, uint>> Upgrades { get; set; } = [];
 
     [Export]
-    public Array<BaseRoomFunctionDefinition> RoomFunctions { get; set; } = [];
+    public RoomConvertResourcesDefinition? ResourceConversion { get; set; }
+
+    [Export]
+    public RoomProvideTowerWorkersDefinition? ProvideWorkers { get; set; }
 }
