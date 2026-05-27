@@ -42,7 +42,7 @@ public partial class WorkersContainerScript(TowerScript towerScript) : Node3D
 
     private void _onWorkerDispatched(WorkerDispatchedEvent e)
     {
-        var s = new WorkerScript();
+        var s = new WorkerScript(TowerScript.State, e.WorkerState);
         _workers[e.WorkerState] = s;
         AddChild(s);
     }

@@ -7,6 +7,11 @@ namespace wizardtower;
 
 public static class NodeExtensions
 {
+    public static void SetParent(this Node node, Node parent)
+    {
+        parent.AddChild(node);
+    }
+
     public static TNode WithChild<TNode>(this TNode node, Node child, bool owned = false)
         where TNode : Node
     {

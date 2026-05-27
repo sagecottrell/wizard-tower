@@ -72,8 +72,7 @@ folder_colors={
 "res://transports/scenes/": "gray",
 "res://workers/": "teal",
 "res://workers/images/": "gray",
-"res://workers/models/": "gray",
-"res://workers/scenes/": "gray"
+"res://workers/models/": "gray"
 }
 
 [gui]
