@@ -7,10 +7,10 @@
 [ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_eud12"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_1ryl7"]
 [ext_resource type="Script" uid="uid://b7h7cui7s3kem" path="res://resource_types/RandomOutputDefinition.cs" id="6_kmba1"]
-[ext_resource type="PackedScene" uid="uid://1it0weq500dv" path="res://rooms/scenes/Firepit.tscn" id="6_todtk"]
 [ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="7_h84pp"]
 [ext_resource type="Script" uid="uid://bar6xqakjf637" path="res://resource_types/RecipeSetDefinition.cs" id="7_im3ec"]
 [ext_resource type="Script" uid="uid://b8rifg7cnaj7i" path="res://resource_types/room_functions/RoomConvertResourcesDefinition.cs" id="9_4mn3a"]
+[ext_resource type="PackedScene" uid="uid://ctpn4plbalp22" path="res://rooms/models/fire-pit.gltf" id="9_im3ec"]
 
 [sub_resource type="Resource" id="Resource_eud12"]
 script = ExtResource("2_ethje")
@@ -56,7 +56,7 @@ Data = Dictionary[String, ExtResource("2_ethje")]({})
 script = ExtResource("4_1ryl7")
 Name = "Fire Pit"
 Icon = ExtResource("3_ethje")
-RoomScene = ExtResource("6_todtk")
+RoomScene = ExtResource("9_im3ec")
 CostToBuildPerUnit = SubResource("Resource_eud12")
 AllowedFloors = Array[ExtResource("1_780rp")]([ExtResource("2_1ryl7")])
 Upgrades = SubResource("Resource_ethje")

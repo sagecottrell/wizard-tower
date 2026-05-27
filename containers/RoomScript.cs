@@ -20,7 +20,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public RoomState PreviousState { get; set; } = new();
 
-    private RoomBackgroundScript? RoomScene { get; set; }
+    private Node? RoomScene { get; set; }
+    private GLTFImport? GLTFRoomScene => RoomScene as GLTFImport;
 
     public bool HologramMode { get; set; } = false;
     public TowerScript Tower { get; } = tower;
@@ -41,6 +42,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
         RoomEvents.ProducedResources += _onProducedResources;
         RoomEvents.ConsumedResources += _onConsumedResources;
+        RoomEvents.StartedWork += _onStartedWork;
     }
 
     public override void _ExitTree()
@@ -50,6 +52,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
         RoomEvents.ProducedResources -= _onProducedResources;
         RoomEvents.ConsumedResources -= _onConsumedResources;
+        RoomEvents.StartedWork -= _onStartedWork;
     }
 
     private void _onRoomSelected(RoomSelectedEvent @event)
@@ -94,8 +97,9 @@ public partial class RoomScript(TowerScript tower) : Node3D
             RoomScene?.QueueFree();
             if (State.Definition.RoomScene is PackedScene scene)
             {
-                RoomScene = scene.Instantiate() as RoomBackgroundScript;
+                RoomScene = scene.Instantiate();
                 AddChild(RoomScene);
+                GLTFRoomScene?.Play("idle");
             }
         }
 
@@ -112,14 +116,15 @@ public partial class RoomScript(TowerScript tower) : Node3D
     public RoomScript AsHologram()
     {
         HologramMode = true;
-        RoomScene?.AsHologram();
+        if (Tower.HologramMaterial is not null)
+            GLTFRoomScene?.ApplyMaterial(Tower.HologramMaterial);
         return this;
     }
 
     public RoomScript AsBackground()
     {
         HologramMode = false;
-        RoomScene?.AsBackground();
+        GLTFRoomScene?.ResetMaterial();
         return this;
     }
 
@@ -135,6 +140,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
             foreach (var dest in destinations)
                 _tryDistributeResources(dest);
         }
+        GLTFRoomScene?.Play("idle");
     }
 
     private IEnumerator<double> _onConsumedResources(RoomConsumedResourcesEvent ev)
@@ -148,6 +154,13 @@ public partial class RoomScript(TowerScript tower) : Node3D
                 _tryDistributeResources(dest);
             }
         }
+    }
+
+    private void _onStartedWork(RoomStartedWorkEvent ev)
+    {
+        if (ev.RoomState != State)
+            return;
+        GLTFRoomScene?.Play("work");
     }
 
     public void ProcessRoomFunctions(double delta)

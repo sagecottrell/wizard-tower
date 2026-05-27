@@ -18,6 +18,9 @@ public partial class TowerScript : Node3D
     private TowerState PreviousState { get; set; } = new();
 
     [Export]
+    public Material? HologramMaterial { get; set; }
+
+    [Export]
     public Node3D? Camera { get; set; }
 
     public override void _Ready()
