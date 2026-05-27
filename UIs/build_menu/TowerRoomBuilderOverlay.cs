@@ -84,7 +84,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
             {
                 for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                 {
-                    if (Tower.State.PositionVacant(h, i) && SceneLoader.TryLoadScene<RoomSelected>(out var s))
+                    if (Tower.State.PositionVacant(h, i, _currentRoomDef.Width, _currentRoomDef.Height) && SceneLoader.TryLoadScene<RoomSelected>(out var s))
                     {
                         var x = i;
                         var y = h;
@@ -127,8 +127,13 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         {
             for (var i = 0; i < _currentRoomDef.Width; i++)
             {
-                if (_selected.Remove((x + i, y), out var s))
-                    s.QueueFree();
+                for (var j = 0; j < _currentRoomDef.Height; j++)
+                {
+                    if (_selected.Remove((x + i, y + j), out var s))
+                        s.QueueFree();
+                    if ((j != 0 || i != 0) && _selected.Remove((x - i, y - j), out var s2))
+                        s2.QueueFree();
+                }
             }
         }
     }

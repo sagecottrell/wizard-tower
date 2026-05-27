@@ -57,7 +57,8 @@ public static class RoomActions
             else
                 ev.RoomState.StoredItems += ev.Output;
             ev.RoomConvertResourcesState.CurrentlyWorking = false;
-            RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev });
+            ev.RoomConvertResourcesState.TimesProducedToday++;
+            RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev, Output = ev.Output });
         }
     }
 

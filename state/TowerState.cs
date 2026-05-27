@@ -207,7 +207,7 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
 
     #region Vacancies
 
-    public bool PositionVacant(int elevation, int position)
+    public bool PositionVacant(int elevation, int position, uint width = 1, uint height = 1)
     {
         if (vacancies is null)
         {
@@ -215,6 +215,15 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
             var transports = Transports.Values.SelectMany(_transportRange).ToHashSet();
             var floorSpots = Floors.Values.SelectMany(_floorRange).ToHashSet();
             vacancies = [.. floorSpots.Except(rooms).Except(transports)];
+        }
+        if (width > 1 || height > 1)
+        {
+            // TODO: make this better
+            for (var i = 0; i < width; i++)
+                for (var j = 0; j < height; j++)
+                    if (!vacancies.Contains((elevation + j, position + i)))
+                        return false;
+            return true;
         }
         return vacancies.Contains((elevation, position));
     }

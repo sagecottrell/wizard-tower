@@ -165,6 +165,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public void ProcessRoomFunctions(double delta)
     {
+        if (!IsNodeReady())
+            return;
         var convertDef = State.Definition.ResourceConversion;
         var convertState = State.ConvertResourcesState;
         if (convertState is not null && convertDef is not null && convertState.SelectedRecipe is not null)
