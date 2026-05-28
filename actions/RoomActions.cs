@@ -45,20 +45,23 @@ public static class RoomActions
     {
         if (!RoomEvents.OnProducingResources(ev).IsAllowed)
             return;
-        if (ev.RoomConvertResourcesState.SelectedRecipe is null)
+        var conv = ev.RoomState.ConvertResourcesState;
+        if (conv is null)
+            return;
+        if (conv.SelectedRecipe is null)
             return;
         if (ev.ResetProductionProgress)
-            ev.RoomConvertResourcesState.ProductionProgress = 0;
-        ev.Output ??= ev.RoomConvertResourcesState.SelectedRecipe.Output?.PickWeightedRandom(ev.TowerState.RandomNumberGenerator, x => x.Weight)?.Output;
+            conv.ProductionProgress = 0;
+        ev.Output ??= conv.SelectedRecipe.Output?.PickWeightedRandom(ev.TowerState.RandomNumberGenerator, x => x.Weight)?.Output;
         if (ev.Output is not null)
         {
-            if (ev.RoomConvertResourcesDefinition.ToTowerWallet)
+            if (ev.RoomState.Definition.ResourceConversion?.ToTowerWallet == true)
                 TowerActions.AddToWallet(new(ev.TowerState, ev.Output) { Source = ev });
             else
                 ev.RoomState.StoredItems += ev.Output;
-            ev.RoomConvertResourcesState.CurrentlyWorking = false;
-            ev.RoomConvertResourcesState.TimesProducedToday++;
-            RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev, Output = ev.Output });
+            StopWork(new(ev.TowerState, ev.RoomState) { Source = ev });
+            conv.TimesProducedToday++;
+            RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState) { Source = ev, Output = ev.Output });
         }
     }
 
@@ -97,7 +100,19 @@ public static class RoomActions
     {
         if (!RoomEvents.OnStartingWork(ev).IsAllowed)
             return;
-        ev.RoomConvertResourcesState.CurrentlyWorking = true;
-        RoomEvents.OnStartedWork(new(ev.TowerState, ev.RoomState, ev.RoomConvertResourcesDefinition, ev.RoomConvertResourcesState) { Source = ev });
+        if (ev.RoomState.ConvertResourcesState is null)
+            return;
+        ev.RoomState.ConvertResourcesState.CurrentlyWorking = true;
+        RoomEvents.OnStartedWork(new(ev.TowerState, ev.RoomState) { Source = ev });
+    }
+
+    public static void StopWork(RoomStoppingWorkEvent ev)
+    {
+        if (!RoomEvents.OnStoppingWork(ev).IsAllowed)
+            return;
+        if (ev.RoomState.ConvertResourcesState is null)
+            return;
+        ev.RoomState.ConvertResourcesState.CurrentlyWorking = false;
+        RoomEvents.OnStoppedWork(new(ev.TowerState, ev.RoomState) { Source = ev });
     }
 }

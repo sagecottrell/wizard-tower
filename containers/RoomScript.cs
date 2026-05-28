@@ -29,10 +29,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
     public override void _Ready()
     {
         Name = $"Room{State.Id}";
-        if (HologramMode)
-            AsHologram();
-        else
-            AsBackground();
+        _update();
     }
 
     public override void _EnterTree()
@@ -43,6 +40,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         RoomEvents.ProducedResources += _onProducedResources;
         RoomEvents.ConsumedResources += _onConsumedResources;
         RoomEvents.StartedWork += _onStartedWork;
+        RoomEvents.StoppedWork += _onStoppedWork;
     }
 
     public override void _ExitTree()
@@ -53,6 +51,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         RoomEvents.ProducedResources -= _onProducedResources;
         RoomEvents.ConsumedResources -= _onConsumedResources;
         RoomEvents.StartedWork -= _onStartedWork;
+        RoomEvents.StoppedWork -= _onStoppedWork;
     }
 
     private void _onRoomSelected(RoomSelectedEvent @event)
@@ -91,7 +90,12 @@ public partial class RoomScript(TowerScript tower) : Node3D
     {
         if (State != PreviousState && State.Compare(PreviousState))
             return;
+        _update();
+        PreviousState = State.Copy();
+    }
 
+    private void _update()
+    {
         if (PreviousState.Definition.RoomScene != State.Definition.RoomScene)
         {
             RoomScene?.QueueFree();
@@ -109,8 +113,6 @@ public partial class RoomScript(TowerScript tower) : Node3D
             AsBackground();
 
         Position = this.TowerCoordToNodePosition(x: State.FloorPosition, y: State.Elevation);
-
-        PreviousState = State.Copy();
     }
 
     public RoomScript AsHologram()
@@ -140,7 +142,6 @@ public partial class RoomScript(TowerScript tower) : Node3D
             foreach (var dest in destinations)
                 _tryDistributeResources(dest);
         }
-        GLTFRoomScene?.Play("idle");
     }
 
     private IEnumerator<double> _onConsumedResources(RoomConsumedResourcesEvent ev)
@@ -163,6 +164,13 @@ public partial class RoomScript(TowerScript tower) : Node3D
         GLTFRoomScene?.Play("work");
     }
 
+    private void _onStoppedWork(RoomStoppedWorkEvent ev)
+    {
+        if (ev.RoomState != State)
+            return;
+        GLTFRoomScene?.Play("idle");
+    }
+
     public void ProcessRoomFunctions(double delta)
     {
         if (!IsNodeReady())
@@ -181,17 +189,17 @@ public partial class RoomScript(TowerScript tower) : Node3D
                     var time = (uint)(convertState.SelectedRecipe.ProcessingTimeSeconds * convertDef.ProcessingTimeMultiplier);
                     RoomActions.ProductionProgress(new(State, convertState) { AmountIncreased = delta });
                     if (convertState.ProductionProgress > time)
-                        RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
+                        RoomActions.ProduceResources(new(Tower.State, State));
                 }
                 else
-                    RoomActions.ProduceResources(new(Tower.State, State, convertDef, convertState));
+                    RoomActions.ProduceResources(new(Tower.State, State));
             }
             else
             {
                 if (State.StoredItems >= convertState.SelectedRecipe.Input)
                 {
                     RoomActions.ConsumeResources(new(Tower.State, State, convertState.SelectedRecipe.Input));
-                    RoomActions.StartWork(new(Tower.State, State, convertDef, convertState));
+                    RoomActions.StartWork(new(Tower.State, State));
                 }
             }
         }
