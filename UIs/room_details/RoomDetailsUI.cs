@@ -105,8 +105,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
         _pushText();
 
-        // if (ui.Child<Button>())
-
         GeneralEvents.OnShowedUI(new(this));
     }
 
@@ -115,7 +113,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (RoomState is null)
             return;
 
-        if (ui.Child<RichTextLabel>() is not RichTextLabel rtl)
+        if (ui.Child<RichTextLabel>() is not { } rtl)
             rtl = ui.AddedChild(new RichTextLabel
             {
                 FitContent = true,
@@ -128,6 +126,10 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.AppendText($"Selected Room #{RoomState.Id}\n");
         rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
         rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");
+        if (!RoomState.HasSufficientMaterials())
+            rtl.AppendText("Awaiting Materials");
+        if (!RoomState.HasSufficientWorkers())
+            rtl.AppendText("Awaiting Workers");
         if (RoomState.StoredItems.Count > 0)
         {
             rtl.AddText("Stored items:\n");

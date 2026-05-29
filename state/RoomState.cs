@@ -1,8 +1,10 @@
 using Godot;
 using Godot.Collections;
+using System;
 using System.Diagnostics;
 using wizardtower.resource_types;
 using wizardtower.state.room_functions;
+using static Godot.WebSocketPeer;
 
 namespace wizardtower.state;
 
@@ -30,13 +32,26 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     public NumericDict<ItemDefinition, uint> StoredItems { get; set; } = [];
 
     [Export]
-    public Array<WorkerState> StoredWorkers { get; set; } = [];
+    public NumericDict<WorkerDefinition, uint> StoredWorkers { get; set; } = [];
 
     [Export]
     public Array<RoomStateWorkerPath> WorkerPaths { get; set; } = [];
 
     [Export]
     public RoomConvertResourcesState? ConvertResourcesState { get; set; }
+
+    /// <summary>
+    /// useful for game logic as well as the UI to display status
+    /// </summary>
+    /// <returns></returns>
+    public bool HasSufficientWorkers() => Definition.ResourceConversion?.WorkerKind is null 
+        || (StoredWorkers.TryGetValue(Definition.ResourceConversion.WorkerKind, out var workersPresent) && workersPresent >= Definition.ResourceConversion.WorkersCount);
+
+    /// <summary>
+    /// useful for game logic as well as the UI to display status
+    /// </summary>
+    /// <returns></returns>
+    public bool HasSufficientMaterials() => ConvertResourcesState?.SelectedRecipe is null || StoredItems >= ConvertResourcesState.SelectedRecipe.Input;
 
     public bool Compare(RoomState? other)
     {

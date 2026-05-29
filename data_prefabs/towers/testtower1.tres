@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="5_sstfk"]
 [ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="6_5gs35"]
 [ext_resource type="Resource" uid="uid://pq32jmna4frf" path="res://items/fire.tres" id="6_32nna"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.WorkerDefinition,System.UInt32].cs" id="6_441v5"]
 [ext_resource type="Script" uid="uid://ysu67f4yon" path="res://state/RoomStateWorkerPath.cs" id="6_831pd"]
 [ext_resource type="Resource" uid="uid://dqsm1a0fqu8y1" path="res://transports/stairs.tres" id="7_5gs35"]
 [ext_resource type="Resource" uid="uid://dgywvojheeuxe" path="res://rooms/hotel1.tres" id="7_tq78q"]
@@ -60,6 +61,10 @@ Data = Dictionary[String, int]({
 "res://items/coin.tres": 3
 })
 
+[sub_resource type="Resource" id="Resource_thpar"]
+script = ExtResource("6_441v5")
+Data = Dictionary[String, int]({})
+
 [sub_resource type="Resource" id="Resource_441v5"]
 script = ExtResource("6_831pd")
 TargetRoomId = 2
@@ -83,6 +88,7 @@ Id = 1
 Height = 1
 FloorPosition = 2
 StoredItems = SubResource("Resource_y253d")
+StoredWorkers = SubResource("Resource_thpar")
 WorkerPaths = Array[ExtResource("6_831pd")]([SubResource("Resource_441v5"), SubResource("Resource_6xmfl")])
 
 [sub_resource type="Resource" id="Resource_831pd"]
@@ -92,6 +98,10 @@ Data = Dictionary[String, int]({
 "res://items/deathmagic.tres": 3
 })
 
+[sub_resource type="Resource" id="Resource_t12d1"]
+script = ExtResource("6_441v5")
+Data = Dictionary[String, int]({})
+
 [sub_resource type="Resource" id="Resource_tq78q"]
 script = ExtResource("2_et7yl")
 Definition = ExtResource("7_tq78q")
@@ -99,9 +109,14 @@ Id = 2
 Elevation = 1
 Height = 1
 StoredItems = SubResource("Resource_831pd")
+StoredWorkers = SubResource("Resource_t12d1")
 
 [sub_resource type="Resource" id="Resource_32nna"]
 script = ExtResource("5_8sv8r")
+Data = Dictionary[String, int]({})
+
+[sub_resource type="Resource" id="Resource_v021x"]
+script = ExtResource("6_441v5")
 Data = Dictionary[String, int]({})
 
 [sub_resource type="Resource" id="Resource_e38s3"]
@@ -112,6 +127,7 @@ Elevation = 2
 Height = 1
 FloorPosition = 4
 StoredItems = SubResource("Resource_32nna")
+StoredWorkers = SubResource("Resource_v021x")
 
 [sub_resource type="Resource" id="Resource_7dg5d"]
 script = ExtResource("3_8sv8r")

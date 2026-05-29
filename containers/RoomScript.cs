@@ -196,7 +196,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
             }
             else
             {
-                if (State.StoredItems >= convertState.SelectedRecipe.Input)
+                if (State.HasSufficientMaterials() && State.HasSufficientWorkers())
                 {
                     RoomActions.ConsumeResources(new(Tower.State, State, convertState.SelectedRecipe.Input));
                     RoomActions.StartWork(new(Tower.State, State));

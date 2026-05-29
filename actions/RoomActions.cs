@@ -10,27 +10,25 @@ public static class RoomActions
     public static void Construct(RoomConstructingEvent ev)
     {
         var tower = ev.TowerState;
-        if (RoomEvents.OnConstructing(ev).IsAllowed)
+        if (!RoomEvents.OnConstructing(ev).IsAllowed)
+            return;
+        TowerActions.RemoveFromWallet(new(tower, ev.Room.Definition.CostToBuildPerUnit) { Source = ev });
+        tower.AddRoom(ev.Room);
+        if (ev.Room.Definition.ResourceConversion is not null)
         {
-            TowerActions.RemoveFromWallet(new(tower, ev.Room.Definition.CostToBuildPerUnit) { Source = ev });
-            tower.AddRoom(ev.Room);
-            if (ev.Room.Definition.ResourceConversion is not null)
-            {
-                ev.Room.ConvertResourcesState = new();
-                if (ev.Room.ConvertResourcesState.SelectedRecipe is null && ev.Room.Definition.ResourceConversion.Recipes.Recipes.Count == 1)
-                    ev.Room.ConvertResourcesState.SelectedRecipe = ev.Room.Definition.ResourceConversion.Recipes.Recipes[0];
-            }
-            RoomEvents.OnConstructed(new(tower, ev.Room) { Source = ev.Source });
+            ev.Room.ConvertResourcesState = new();
+            if (ev.Room.ConvertResourcesState.SelectedRecipe is null && ev.Room.Definition.ResourceConversion.Recipes.Recipes.Count == 1)
+                ev.Room.ConvertResourcesState.SelectedRecipe = ev.Room.Definition.ResourceConversion.Recipes.Recipes[0];
         }
+        RoomEvents.OnConstructed(new(tower, ev.Room) { Source = ev.Source });
     }
 
     public static void Destroy(RoomDestroyingEvent ev)
     {
-        if (RoomEvents.OnDestroying(ev).IsAllowed)
-        {
-            ev.TowerState.RemoveRoom(ev.Room);
-            RoomEvents.OnDestroyed(new(ev.TowerState, ev.Room) { Source = ev.Source });
-        }
+        if (!RoomEvents.OnDestroying(ev).IsAllowed)
+            return;
+        ev.TowerState.RemoveRoom(ev.Room);
+        RoomEvents.OnDestroyed(new(ev.TowerState, ev.Room) { Source = ev.Source });
     }
 
     public static void ProductionProgress(RoomProcessingIncreasingEvent ev)
@@ -53,16 +51,16 @@ public static class RoomActions
         if (ev.ResetProductionProgress)
             conv.ProductionProgress = 0;
         ev.Output ??= conv.SelectedRecipe.Output?.PickWeightedRandom(ev.TowerState.RandomNumberGenerator, x => x.Weight)?.Output;
-        if (ev.Output is not null)
-        {
-            if (ev.RoomState.Definition.ResourceConversion?.ToTowerWallet == true)
-                TowerActions.AddToWallet(new(ev.TowerState, ev.Output) { Source = ev });
-            else
-                ev.RoomState.StoredItems += ev.Output;
-            StopWork(new(ev.TowerState, ev.RoomState) { Source = ev });
-            conv.TimesProducedToday++;
-            RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState) { Source = ev, Output = ev.Output });
-        }
+        if (ev.Output is null)
+            return;
+
+        if (ev.RoomState.Definition.ResourceConversion?.ToTowerWallet == true)
+            TowerActions.AddToWallet(new(ev.TowerState, ev.Output) { Source = ev });
+        else
+            ev.RoomState.StoredItems += ev.Output;
+        StopWork(new(ev.TowerState, ev.RoomState) { Source = ev });
+        conv.TimesProducedToday++;
+        RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState) { Source = ev, Output = ev.Output });
     }
 
     public static void ConsumeResources(RoomConsumingResourcesEvent ev)

@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://b7h7cui7s3kem" path="res://resource_types/RandomOutputDefinition.cs" id="6_kmba1"]
 [ext_resource type="Script" uid="uid://ysnph6jm54y6" path="res://resource_types/RecipeDefinition.cs" id="7_h84pp"]
 [ext_resource type="Script" uid="uid://bar6xqakjf637" path="res://resource_types/RecipeSetDefinition.cs" id="7_im3ec"]
+[ext_resource type="Resource" uid="uid://ctvjetk1f10nm" path="res://workers/worker1.tres" id="8_kmba1"]
 [ext_resource type="Script" uid="uid://b8rifg7cnaj7i" path="res://resource_types/room_functions/RoomConvertResourcesDefinition.cs" id="9_4mn3a"]
 [ext_resource type="PackedScene" uid="uid://ctpn4plbalp22" path="res://rooms/models/fire-pit.gltf" id="9_im3ec"]
 
@@ -47,6 +48,7 @@ Recipes = Array[ExtResource("7_h84pp")]([SubResource("Resource_4mn3a")])
 script = ExtResource("9_4mn3a")
 Recipes = SubResource("Resource_e2msf")
 MaxTimesPerDay = 1
+WorkerKind = ExtResource("8_kmba1")
 metadata/_custom_type_script = "uid://b8rifg7cnaj7i"
 
 [sub_resource type="Resource" id="Resource_ethje"]
