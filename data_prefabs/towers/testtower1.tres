@@ -20,6 +20,7 @@
 [ext_resource type="Resource" uid="uid://b8k44nh1gp7h5" path="res://floors/basement.tres" id="10_e38s3"]
 [ext_resource type="Resource" uid="uid://cjnjoy58cvfxw" path="res://rooms/room2.tres" id="12_y253d"]
 [ext_resource type="Resource" uid="uid://dqoy5ibncc0u6" path="res://rooms/laser.tres" id="17_wxpot"]
+[ext_resource type="Resource" uid="uid://cjgigbsgb6nsf" path="res://rooms/faceless-spawn.tres" id="18_6xmfl"]
 
 [sub_resource type="Resource" id="Resource_et7yl"]
 script = ExtResource("1_jji12")
@@ -165,7 +166,7 @@ Transports = Dictionary[int, ExtResource("3_8sv8r")]({
 DefaultAboveGroundFloorDefinition = ExtResource("2_8sv8r")
 DefaultBasementFloorDefinition = ExtResource("2_8sv8r")
 Wallet = SubResource("Resource_wxpot")
-UnlockedRooms = Array[ExtResource("6_5gs35")]([ExtResource("7_tq78q"), ExtResource("12_y253d"), ExtResource("17_wxpot")])
+UnlockedRooms = Array[ExtResource("6_5gs35")]([ExtResource("7_tq78q"), ExtResource("12_y253d"), ExtResource("17_wxpot"), ExtResource("18_6xmfl")])
 UnlockedFloors = Array[ExtResource("5_sstfk")]([ExtResource("2_8sv8r"), ExtResource("9_tq78q"), ExtResource("10_e38s3")])
 UnlockedTransports = Array[ExtResource("8_e38s3")]([ExtResource("7_5gs35")])
 RoomIdCounter = 3

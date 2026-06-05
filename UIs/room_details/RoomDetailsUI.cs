@@ -127,9 +127,9 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
         rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");
         if (!RoomState.HasSufficientMaterials())
-            rtl.AppendText("Awaiting Materials");
+            rtl.AppendText("Awaiting Materials\n");
         if (!RoomState.HasSufficientWorkers())
-            rtl.AppendText("Awaiting Workers");
+            rtl.AppendText("Awaiting Workers\n");
         if (RoomState.StoredItems.Count > 0)
         {
             rtl.AddText("Stored items:\n");

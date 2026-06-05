@@ -1,0 +1,43 @@
+[gd_resource type="Resource" script_class="RoomDefinition" format=3 uid="uid://cjgigbsgb6nsf"]
+
+[ext_resource type="Script" uid="uid://b4uhppuu6fh0c" path="res://resource_types/FloorDefinition.cs" id="1_rskte"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32].cs" id="2_igkl6"]
+[ext_resource type="Resource" uid="uid://3ugcey2cu281" path="res://floors/basicfloor.tres" id="2_rlina"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.RoomDefinition,wizardtower.NumericDict`2[wizardtower.resource_types.ItemDefinition,System.UInt32]].cs" id="3_10ei5"]
+[ext_resource type="Texture2D" uid="uid://djxgkamrnbelv" path="res://workers/images/faceless.png" id="3_igkl6"]
+[ext_resource type="PackedScene" uid="uid://bmedyqbd7lkme" path="res://rooms/models/faceless-spawn.gltf" id="4_10ei5"]
+[ext_resource type="Script" uid="uid://wmhswxpf1gb5" path="res://resource_types/RoomDefinition.cs" id="4_rlina"]
+[ext_resource type="Script" path="csharp://NumericDict.cs:wizardtower.NumericDict`2[wizardtower.resource_types.WorkerDefinition,System.UInt32].cs" id="5_psi8w"]
+[ext_resource type="Script" uid="uid://deuqkf6inlm5x" path="res://resource_types/room_functions/RoomProvideTowerWorkersDefinition.cs" id="6_br8fu"]
+
+[sub_resource type="Resource" id="Resource_ptwbj"]
+script = ExtResource("2_igkl6")
+Data = Dictionary[String, int]({
+"res://items/fire.tres": 1
+})
+
+[sub_resource type="Resource" id="Resource_t81ef"]
+script = ExtResource("5_psi8w")
+Data = Dictionary[String, int]({
+"res://workers/worker1.tres": 4
+})
+
+[sub_resource type="Resource" id="Resource_cthfg"]
+script = ExtResource("6_br8fu")
+WorkersToProduce = SubResource("Resource_t81ef")
+metadata/_custom_type_script = "uid://deuqkf6inlm5x"
+
+[sub_resource type="Resource" id="Resource_psi8w"]
+script = ExtResource("3_10ei5")
+Data = Dictionary[String, ExtResource("2_igkl6")]({})
+
+[resource]
+script = ExtResource("4_rlina")
+Name = "Faceless Spawn"
+Icon = ExtResource("3_igkl6")
+RoomScene = ExtResource("4_10ei5")
+CostToBuildPerUnit = SubResource("Resource_ptwbj")
+AllowedFloors = Array[ExtResource("1_rskte")]([ExtResource("2_rlina")])
+Upgrades = SubResource("Resource_psi8w")
+ProvideWorkers = SubResource("Resource_cthfg")
+metadata/_custom_type_script = "uid://wmhswxpf1gb5"
