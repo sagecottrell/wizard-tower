@@ -29,6 +29,9 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     public int FloorPosition { get; set; }
 
     [Export]
+    public ItemDefinition? Warehouse { get; set; }
+
+    [Export]
     public NumericDict<ItemDefinition, uint> StoredItems { get; set; } = [];
 
     [Export]
@@ -51,7 +54,12 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     /// useful for game logic as well as the UI to display status
     /// </summary>
     /// <returns></returns>
-    public bool HasSufficientMaterials() => ConvertResourcesState?.SelectedRecipe is null || StoredItems >= ConvertResourcesState.SelectedRecipe.Input;
+    public bool HasSufficientMaterials() => ConvertResourcesState?.SelectedRecipe?.Input is null || StoredItems >= ConvertResourcesState.SelectedRecipe.Input;
+
+    public NumericDict<ItemDefinition, float>? InputRate => ConvertResourcesState?.SelectedRecipe is { } r && r?.Input is { } i && Definition.ResourceConversion?.ProcessingTimeMultiplier is float m
+        ? i.Convert(x => x / m / r.ProcessingTimeSeconds) : null;
+    public NumericDict<ItemDefinition, float>? OutputRate => ConvertResourcesState?.SelectedRecipe is { } r && Definition.ResourceConversion?.ProcessingTimeMultiplier is float m
+        ? r.AverageItemOutputRate?.MultipliedByScalar(1 / m) : null;
 
     public bool Compare(RoomState? other)
     {

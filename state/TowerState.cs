@@ -203,6 +203,32 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
         }
     }
 
+    public IEnumerable<RoomState> IterRoomsFrom(int elevation)
+    {
+        foreach (var floor in IterFloorsFrom(elevation))
+            foreach (var room in RoomsOnFloor(floor.Elevation))
+                yield return room;
+    }
+
+    public NumericDict<ItemDefinition, float>? ScheduledInputRate(RoomState room)
+    {
+        if (room.ConvertResourcesState?.RoomsSupposedToSendResourcesHere is not { } s)
+            return null;
+        var inputRate = new NumericDict<ItemDefinition, float>();
+        foreach (var r in s)
+        {
+            var otherRoom = Rooms[r];
+            var output = otherRoom.OutputRate;
+            if (output is null)
+                continue;
+            foreach (var path in otherRoom.WorkerPaths.Where(path => path.TargetRoomId == room.Id))
+            {
+                inputRate[path.ItemDefinition] = output[path.ItemDefinition];
+            }
+        }
+        return inputRate;
+    }
+
     #endregion
 
     #region Vacancies
@@ -325,6 +351,16 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     public IReadOnlyList<RoomState> RoomsOnFloor(int elevation) => RoomsByFloor.TryGetValue(elevation, out var list) ? list : [];
     public IReadOnlyList<TransportState> TransportsOnFloor(int elevation) => TransportsByFloor.TryGetValue(elevation, out var list) ? list : [];
 
+    public IEnumerable<FloorState> IterFloorsFrom(int elevation)
+    {
+        var delta = Math.Max(Math.Abs(elevation - HighestFloor), Math.Abs(elevation - LowestFloor));
+        for (var i = 0; i < delta; i++)
+        {
+            if (elevation + i <= HighestFloor) yield return Floors[elevation + i];
+            if (i != 0 && elevation - i >= LowestFloor) yield return Floors[elevation - i];
+        }
+    }
+
     #endregion
 
     #region Transport functions
@@ -361,7 +397,6 @@ public partial class TowerState : Resource, ICopy<TowerState>, IDeSerialize<Towe
     }
 
     #endregion
-
 
     #region operators
 

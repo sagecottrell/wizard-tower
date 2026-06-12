@@ -1,3 +1,4 @@
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using wizardtower.state;
@@ -6,25 +7,25 @@ namespace wizardtower;
 
 public static class TowerPathfind
 {
-    public static PathfindNode? Pathfind(TowerState tower, RoomState from, RoomState to, uint limit)
+    public static Array<TransportToTake>? Pathfind(TowerState tower, RoomState from, RoomState to, uint limit)
     {
         // the priority is the distance from the start room. meaning we are implementing a breadth first search.
         PriorityQueue<PathfindNode, int> queue = new();
-        queue.Enqueue(new(from.Elevation, from.FloorPosition, 0), 0);
+        queue.Enqueue(new(from.Elevation, from.FloorPosition, null, 0), 0);
 
         while (queue.Count > 0)
         {
             if (!queue.TryDequeue(out var current, out var priority))
                 break;
-            var (elevation, position, count, _) = current;
+            var (elevation, position, count) = current;
             if (elevation == to.Elevation && position == to.FloorPosition)
-                return current;
+                return current.GetPath();
 
-            void tryEnqueue(int elevation, int position, int extraPriority)
+            void tryEnqueue(int elevation, int position, uint? transportId, int extraPriority)
             {
                 // we don't need to enqueue if it's past the limit, because we won't be able to reach the destination in time. this is a simple optimization to reduce the search space.
                 if (count < limit)
-                    queue.Enqueue(new(elevation, position, count + 1, current), priority + extraPriority);
+                    queue.Enqueue(new(elevation, position, transportId, count + 1, current), priority + extraPriority);
             }
 
             foreach (var transport in tower.TransportsOnFloor(elevation))
@@ -34,20 +35,20 @@ public static class TowerPathfind
                 for (var i = elevation; i >= transport.Elevation; i--)
                 {
                     if (transport.Definition.CanStopAtFloor.Contains(tower.Floors[i].Definition))
-                        tryEnqueue(i, transport.HorizontalPosition, stopsAlongTheWay + dh);
+                        tryEnqueue(i, transport.HorizontalPosition, transport.Id, stopsAlongTheWay + dh);
                 }
 
                 stopsAlongTheWay = 0;
                 for (var i = elevation; i <= transport.Elevation + transport.Height; i++)
                 {
                     if (transport.Definition.CanStopAtFloor.Contains(tower.Floors[i].Definition))
-                        tryEnqueue(i, transport.HorizontalPosition, stopsAlongTheWay + dh);
+                        tryEnqueue(i, transport.HorizontalPosition, transport.Id, stopsAlongTheWay + dh);
                 }
             }
             foreach (var room in tower.RoomsOnFloor(elevation))
             {
                 if (room == to)
-                    tryEnqueue(elevation, room.FloorPosition, Math.Abs(room.FloorPosition - position));
+                    tryEnqueue(elevation, room.FloorPosition, null, Math.Abs(room.FloorPosition - position));
                 // in the future, teleporting rooms might also go here
             }
         }
@@ -56,19 +57,26 @@ public static class TowerPathfind
 }
 
 
-public record class PathfindNode(int Elevation, int FloorPosition, int Count, PathfindNode? Previous = null)
+public record class PathfindNode(int Elevation, int Position, uint? TransportId, int Count, PathfindNode? Previous = null)
 {
-    public List<(int Elevation, int FloorPosition)> GetPath()
+    public Array<TransportToTake> GetPath()
     {
-        List<(int Elevation, int FloorPosition)> path = [];
+        List<TransportToTake> path = [];
         var current = this;
         while (current != null)
         {
-            path.Add((current.Elevation, current.FloorPosition));
+            if (current.TransportId is { } id)
+                path.Add(new TransportToTake() { TransportId = id, Elevation = Elevation });
             current = current.Previous;
         }
         path.Reverse();
-        return path;
+        return [..path];
+    }
+
+    public void Deconstruct(out int elevation, out int position, out int count)
+    {
+        elevation = Elevation;
+        position = Position;
+        count = Count;
     }
 }
-

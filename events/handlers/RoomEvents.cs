@@ -54,6 +54,9 @@ public static class RoomEvents
     public static Event<RoomProcessingIncreasingEvent> ProcessingIncreasing { get; set; } = new();
     public static Event<RoomProcessingIncreasedEvent> ProcessingIncreased { get; set; } = new();
 
+    public static Event<RoomAssigningOutputEvent> AssigningOutput { get; set; } = new();
+    public static Event<RoomAssignedOutputEvent> AssignedOutput { get; set; } = new();
+
     public static RoomConstructingEvent OnConstructing(RoomConstructingEvent e) => Constructing.InvokeSafely(e);
     public static RoomConstructedEvent OnConstructed(RoomConstructedEvent e) => Constructed.InvokeSafely(e);
 
@@ -77,4 +80,7 @@ public static class RoomEvents
 
     public static RoomProcessingIncreasingEvent OnProcessingIncreasing(RoomProcessingIncreasingEvent e) => ProcessingIncreasing.InvokeSafely(e);
     public static RoomProcessingIncreasedEvent OnProcessingIncreased(RoomProcessingIncreasedEvent e) => ProcessingIncreased.InvokeSafely(e);
+
+    public static RoomAssigningOutputEvent OnAssigningOutput(RoomAssigningOutputEvent e) => AssigningOutput.InvokeSafely(e);
+    public static RoomAssignedOutputEvent OnAssignedOutput(RoomAssignedOutputEvent e) => AssignedOutput.InvokeSafely(e);
 }

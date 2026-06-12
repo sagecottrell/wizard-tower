@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using wizardtower.resource_types;
 
 namespace wizardtower.state.room_functions;
@@ -18,6 +19,9 @@ public partial class RoomConvertResourcesState : Resource
 
     [Export]
     public uint WorkersPresent { get; set; }
+
+    [Export]
+    public Array<uint>? RoomsSupposedToSendResourcesHere { get; set; }
 
     [Export]
     public RecipeDefinition? SelectedRecipe { get; set; }

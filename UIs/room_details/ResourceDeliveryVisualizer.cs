@@ -158,7 +158,7 @@ public partial class ResourceDeliveryVisualizer : Path3D
 
     public void SetupPath()
     {
-        if (TowerState is null || WorkerPath is null || WorkerPath.TransportsToTake is null || WorkerPath.ToWhichFloors is null)
+        if (TowerState is null || WorkerPath is null || WorkerPath.TransportsToTake is null)
             return;
         if (!TowerState.Rooms.TryGetValue(FromRoomId, out var fromRoom) || !TowerState.Rooms.TryGetValue(WorkerPath.TargetRoomId, out var toRoom))
             return;
@@ -167,13 +167,13 @@ public partial class ResourceDeliveryVisualizer : Path3D
         Curve.ClearPoints();
         Curve.AddPoint(new());
         var currentFloor = fromRoom.Elevation;
-        foreach (var (tId, fId) in WorkerPath.TransportsToTake.Zip(WorkerPath.ToWhichFloors))
+        foreach (var tt in WorkerPath.TransportsToTake)
         {
-            if (!TowerState.Transports.TryGetValue(tId, out var transport))
+            if (!TowerState.Transports.TryGetValue(tt.TransportId, out var transport))
                 continue;
             Curve.AddPoint(new Vector3(transport.HorizontalPosition, currentFloor, 0) - fromPos);
-            Curve.AddPoint(new Vector3(transport.HorizontalPosition, fId, 0) - fromPos);
-            currentFloor = fId;
+            Curve.AddPoint(new Vector3(transport.HorizontalPosition, tt.Elevation, 0) - fromPos);
+            currentFloor = tt.Elevation;
         }
         Curve.AddPoint(toPos - fromPos);
     }

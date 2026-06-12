@@ -113,4 +113,146 @@ public static class RoomActions
         ev.RoomState.ConvertResourcesState.CurrentlyWorking = false;
         RoomEvents.OnStoppedWork(new(ev.TowerState, ev.RoomState) { Source = ev });
     }
+
+    /// <summary>
+    /// Find the nearest rooms that have unallocated supplies for this room
+    /// </summary>
+    public static void AutoAssignInputs(TowerState tower, RoomState room)
+    {
+        //if (room.InputRate is not { } inputRate || tower.ScheduledInputRate(room) is not { } onTheWay)
+        //    return;
+
+        //var unfulfilledInputs = inputRate - onTheWay;
+        //unfulfilledInputs.RemovedZeroes();
+        //if (unfulfilledInputs.Count == 0)
+        //    return;
+
+        //var possibleRooms = new List<RoomState>();
+        //foreach (var otherRoom in tower.IterRoomsFrom(room.Elevation))
+        //{
+        //    if (otherRoom == room)
+        //        continue;
+        //    // if this room does not have something we want, we can skip it.
+        //    // meaning: there are no possible outputs from the selected recipe, or it's not a warehouse
+        //    if (otherRoom.ConvertResourcesState?.SelectedRecipe?.PossibleOutputs.Any(unfulfilledInputs.ContainsKey) != true
+        //        && (otherRoom.Warehouse is null || !unfulfilledInputs.ContainsKey(otherRoom.Warehouse)))
+        //        continue;
+        //    possibleRooms.Add(otherRoom);
+        //}
+
+        //var orderedRooms = possibleRooms
+        //    .Select(r => new { room = r, dist = TowerPathfind.Pathfind(tower, room, r, 10) })
+        //    .Where(i => i.dist != null)
+        //    .OrderBy(r => r.room.Warehouse is null || !unfulfilledInputs.ContainsKey(r.room.Warehouse) ? r.dist!.Count : r.dist!.Count / 2);
+        //foreach (var otherRoom in orderedRooms)
+        //{
+        //    var outputRate = otherRoom.room.OutputRate;
+        //    if (otherRoom.room.ConvertResourcesState?.SelectedRecipe?.PossibleOutputs is { } outputs && outputRate is not null)
+        //    {
+        //        foreach (var o in outputs)
+        //        {
+        //            if (unfulfilledInputs.TryGetValue(o, out var amt) && amt > 0)
+        //            {
+        //                unfulfilledInputs[o] -= Math.Min(outputRate[o], amt);
+        //                var path = otherRoom.dist.GetPath();
+        //                otherRoom.room.WorkerPaths.Add(new() { ItemDefinition=o, TargetRoomId=room.Id, ToWhichFloors = [..path.Select(x => x.Elevation)] });
+        //            }
+        //        }
+        //    }
+        //}
+    }
+
+    /// <summary>
+    /// Find the nearest rooms that require all of this room's unallocated supplies
+    /// </summary>
+    public static void AutoAssignOutputs(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Find the nearest rooms that have unallocated workers that are required for this room
+    /// </summary>
+    /// <param name="room"></param>
+    public static void AutoAssignWorkersToSelf(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Find the nearest rooms that require the workers provided by this room
+    /// </summary>
+    /// <param name="room"></param>
+    public static void AutoAssignWorkersToOthers(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Remove all inputs from this room, effectively unallocating supplies in the supplier rooms
+    /// </summary>
+    public static void InvalidateInputs(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Remove all outgoing resource allocations from this room
+    /// </summary>
+    public static void InvalidateOutputs(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Unallocate workers assigned to other rooms
+    /// </summary>
+    /// <param name="room"></param>
+    public static void InvalidateRecallWorkers(RoomState room)
+    {
+
+    }
+
+    /// <summary>
+    /// Unallocate workers assigned to this room
+    /// </summary>
+    /// <param name="room"></param>
+    public static void InvalidateFireWorkers(RoomState room)
+    {
+
+    }
+
+    public static void AssignOutput(RoomAssigningOutputEvent ev)
+    {
+        if (!RoomEvents.OnAssigningOutput(ev).IsAllowed) return;
+
+        ev.RoomState.WorkerPaths.Add(ev.Path);
+        if (ev.Path.TransportsToTake is null)
+        {
+            ev.Path.TransportsToTake = TowerPathfind.Pathfind(ev.TowerState, ev.RoomState, ev.TargetRoom, 4);
+        }
+        RoomEvents.OnAssignedOutput(new(ev.TowerState, ev.RoomState, ev.TargetRoom, ev.Path) { Source = ev });
+    }
+
+    public static void RemoveOutput(RoomState room, RoomStateWorkerPath path)
+    {
+        if (!room.WorkerPaths.Remove(path))
+            return;
+    }
+
+    public static void AssignWorker(RoomState room, WorkerDefinition wdef, uint amount)
+    {
+        if (amount == 0)
+            return;
+        room.StoredWorkers[wdef] = room.StoredWorkers.GetOrDefault(wdef) + amount;
+    }
+
+    public static void UnassignWorker(RoomState room, WorkerDefinition wdef, uint amount)
+    {
+        if (amount == 0)
+            return;
+        if (room.StoredWorkers.GetOrDefault(wdef) < amount)
+            return;
+        room.StoredWorkers[wdef] -= amount;
+    }
 }

@@ -1,4 +1,5 @@
 using Godot;
+using Godot.NativeInterop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -252,6 +253,16 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         }
         return clone;
     }
+
+    public NumericDict<TKey, TValue2> Convert<[MustBeVariant] TValue2>(Func<TValue, TValue2> map)
+        where TValue2 : notnull,
+            IComparisonOperators<TValue2, TValue2, bool>,
+            IAdditionOperators<TValue2, TValue2, TValue2>,
+            ISubtractionOperators<TValue2, TValue2, TValue2>,
+            IMultiplyOperators<TValue2, TValue2, TValue2>,
+            IUnaryNegationOperators<TValue2, TValue2>,
+            IAdditiveIdentity<TValue2, TValue2>,
+            new() => [.. this.Select(pair => KeyValuePair.Create(pair.Key, map(pair.Value)))];
 
     public static NumericDict<TKey, TValue> operator +(NumericDict<TKey, TValue> a, NumericDict<TKey, TValue> b) => a.Clone().Added(b);
 

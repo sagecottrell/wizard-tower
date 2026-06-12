@@ -70,16 +70,14 @@ Data = Dictionary[String, int]({})
 script = ExtResource("6_831pd")
 TargetRoomId = 2
 ItemDefinition = ExtResource("6_32nna")
-TransportsToTake = [0]
-ToWhichFloors = [1]
+TransportsToTake = []
 metadata/_custom_type_script = "uid://ysu67f4yon"
 
 [sub_resource type="Resource" id="Resource_6xmfl"]
 script = ExtResource("6_831pd")
 TargetRoomId = 3
 ItemDefinition = ExtResource("8_7dg5d")
-TransportsToTake = Array[int]([0])
-ToWhichFloors = Array[int]([2])
+TransportsToTake = Array[int]([])
 metadata/_custom_type_script = "uid://ysu67f4yon"
 
 [sub_resource type="Resource" id="Resource_5gs35"]

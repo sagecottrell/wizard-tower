@@ -30,6 +30,12 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
     [Export]
     public uint Height { get; set; } = 1;
 
+    /// <summary>
+    /// can this room serve as a warehouse? the user configures an item to be stored here, and rooms will prioritize sending/pulling that item to/from here
+    /// </summary>
+    [Export]
+    public bool IsWarehouse { get; set; }
+
     [Export]
     public PackedScene? RoomScene { get; set; }
 

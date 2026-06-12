@@ -102,8 +102,16 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
         RoomState = @event.RoomState;
         Visible = true;
+        ui.Child<VBoxContainer>("buttons")?.QueueFree();
+        var buttons = ui.AddedChild(new VBoxContainer() { Name = "buttons" });
 
         _pushText();
+
+        if (RoomState.ConvertResourcesState?.SelectedRecipe is not null || RoomState.Warehouse is not null)
+            buttons.AddedChild(new Button() { Text = "Configure Deliveries" });
+
+        if (RoomState.Definition.ResourceConversion?.WorkerKind is not null || RoomState.Definition.ProvideWorkers is not null)
+            buttons.AddedChild(new Button() { Text = "Configure Assignments" });
 
         GeneralEvents.OnShowedUI(new(this));
     }
@@ -126,6 +134,8 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         rtl.AppendText($"Selected Room #{RoomState.Id}\n");
         rtl.AppendText($"{RoomState.Definition.Name} {rtl.LineHeightImage(RoomState.Definition.Icon)}\n");
         rtl.AppendText($"Floor {RoomState.Elevation}, Room {Mathf.Abs(RoomState.FloorPosition),3:D3}{(RoomState.FloorPosition < 0 ? "L" : "R")}\n");
+        if (RoomState.Warehouse is { } wh)
+            rtl.AppendText($"Warehouse {wh.Name} {rtl.LineHeightImage(wh.Icon)}");
         if (!RoomState.HasSufficientMaterials())
             rtl.AppendText("Awaiting Materials\n");
         if (!RoomState.HasSufficientWorkers())

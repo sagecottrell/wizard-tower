@@ -3,6 +3,7 @@ using MEC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using wizardtower.actions;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.Room;
@@ -65,9 +66,15 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
             Timing.ResumeCoroutines(processing);
     }
 
-    private void _onRoomConstructed(RoomConstructedEvent @event)
+    private void _onRoomConstructed(RoomConstructedEvent ev)
     {
-        SetupRoomDisplay(@event.Room);
+        SetupRoomDisplay(ev.Room);
+
+        RoomActions.AutoAssignInputs(Tower.State, ev.Room);
+        RoomActions.AutoAssignWorkersToOthers(ev.Room);
+        if (ev.Room.Definition.ResourceConversion?.ToTowerWallet == false)
+            RoomActions.AutoAssignOutputs(ev.Room);
+        RoomActions.AutoAssignWorkersToOthers(ev.Room);
     }
 
     public void SetupRoomDisplay(RoomState newRoom)
