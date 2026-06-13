@@ -8,7 +8,7 @@
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-      <None Include="**/*.md"/>
+      <None Include="**/*.md" />
 	  <AdditionalFiles Include="project.godot" />
   </ItemGroup>
 

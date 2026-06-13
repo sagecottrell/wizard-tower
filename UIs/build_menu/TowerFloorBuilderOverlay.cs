@@ -11,6 +11,7 @@ using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.room_details;
+using wizardtower.UIs.selector;
 using wizardtower.UIs.transport_details;
 
 namespace wizardtower.UIs.build_menu;
@@ -19,7 +20,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 {
     public TowerScript Tower { get; set; } = tower;
 
-    private readonly System.Collections.Generic.Dictionary<(int elevation, int position), FloorSelected> _selected = [];
+    private readonly System.Collections.Generic.Dictionary<(int elevation, int position), Selector> _selected = [];
 
     private FloorDefinition? _currentFloorDef;
 
@@ -196,19 +197,19 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     #endregion
 
-    private FloorSelected _createTile(int y, int x, Action<int, int> onAccept)
+    private Selector _createTile(int y, int x, Action<int, int> onAccept)
     {
         if (_selected.TryGetValue((y, x), out var existing))
             return existing;
-        if (!SceneLoader.TryLoadScene<FloorSelected>(out var tile))
+        if (!SceneLoader.TryLoadScene<Selector>(out var tile))
             throw new Exception("Failed to load FloorSelected scene");
 
         AddChild(tile);
         _selected[(y, x)] = tile;
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
-        tile.OnAccept += _ => onAccept(x, y);
-        tile.OnCancel += _ => _onCancel(x, y);
+        tile.OnAccept += () => onAccept(x, y);
+        tile.OnCancel += () => _onCancel(x, y);
         return tile;
     }
 

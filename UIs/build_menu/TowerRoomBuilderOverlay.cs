@@ -7,6 +7,7 @@ using wizardtower.events.interfaces;
 using wizardtower.events.Room.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
+using wizardtower.UIs.selector;
 
 namespace wizardtower.UIs.build_menu;
 
@@ -15,7 +16,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
     public TowerScript Tower { get; set; } = tower;
 
     public RoomScript? BuildingRoom { get; set; }
-    private readonly Dictionary<(int elevation, int position), RoomSelected> _selected = [];
+    private readonly Dictionary<(int elevation, int position), Selector> _selected = [];
 
     private RoomDefinition? _currentRoomDef;
 
@@ -57,7 +58,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
 
     private void _reset()
     {
-        this.FreeChildren<RoomSelected>();
+        this.FreeChildren<Selector>();
         _uiLabel.Visible = false;
         _selected.Clear();
         _revertFloorVis();
@@ -84,16 +85,16 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
             {
                 for (var i = floor.LeftBound; i <= floor.RightBound; i++)
                 {
-                    if (Tower.State.PositionVacant(h, i, _currentRoomDef.Width, _currentRoomDef.Height) && SceneLoader.TryLoadScene<RoomSelected>(out var s))
+                    if (Tower.State.PositionVacant(h, i, _currentRoomDef.Width, _currentRoomDef.Height) && SceneLoader.TryLoadScene<Selector>(out var s))
                     {
                         var x = i;
                         var y = h;
                         _selected[(x, y)] = s;
                         s.Position = s.TowerCoordToNodePosition(x, y);
                         AddChild(s);
-                        s.OnMouseEntered += _ => _onMouseEnter(x, y);
-                        s.OnAccept += _ => _onAccept(x, y);
-                        s.OnCancel += _ => _onCancel();
+                        s.OnMouseEntered += () => _onMouseEnter(x, y);
+                        s.OnAccept += () => _onAccept(x, y);
+                        s.OnCancel += _onCancel;
                     }
                 }
             }

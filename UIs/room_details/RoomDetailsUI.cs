@@ -111,7 +111,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             buttons.AddedChild(new Button() { Text = "Configure Deliveries" });
 
         if (RoomState.Definition.ResourceConversion?.WorkerKind is not null || RoomState.Definition.ProvideWorkers is not null)
-            buttons.AddedChild(new Button() { Text = "Configure Assignments" });
+            buttons.AddedChild(new Button() { Text = "Configure Workers" });
 
         GeneralEvents.OnShowedUI(new(this));
     }

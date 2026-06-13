@@ -9,6 +9,7 @@ using wizardtower.events.interfaces;
 using wizardtower.events.Transport.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
+using wizardtower.UIs.selector;
 
 namespace wizardtower.UIs.build_menu;
 
@@ -19,8 +20,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
     public delegate void OnTransportBuildEventHandler();
     public TowerScript Tower { get; set; } = tower;
     public TransportScript? BuildingTransport { get; set; }
-    private readonly Dictionary<(int elevation, int position), TransportSelected> _positionSelected = [];
-    private readonly Dictionary<(int elevation, int position), TransportSelected> _heightSelected = [];
+    private readonly Dictionary<(int elevation, int position), Selector> _positionSelected = [];
+    private readonly Dictionary<(int elevation, int position), Selector> _heightSelected = [];
 
     private TransportDefinition? _currentTransportDef;
 
@@ -69,8 +70,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
 
     private void _reset()
     {
-        _positionSelectors.FreeChildren<TransportSelected>();
-        _heightSelectors.FreeChildren<TransportSelected>();
+        _positionSelectors.FreeChildren<Selector>();
+        _heightSelectors.FreeChildren<Selector>();
         _uiLabel.Visible = false;
         _positionSelected.Clear();
         _heightSelected.Clear();
@@ -103,16 +104,16 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
 
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
             {
-                if (Tower.State.PositionVacant(floor.Elevation, i) && SceneLoader.TryLoadScene<TransportSelected>(out var s))
+                if (Tower.State.PositionVacant(floor.Elevation, i) && SceneLoader.TryLoadScene<Selector>(out var s))
                 {
                     var x = i;
                     var y = floor.Elevation;
                     _positionSelected[(x, y)] = s;
                     s.Position = s.TowerCoordToNodePosition(x, y);
                     _positionSelectors.AddChild(s);
-                    s.OnMouseEntered += _ => _onMouseEnterStart(x, y);
-                    s.OnAccept += _ => _onAcceptStart(x, y);
-                    s.OnCancel += _ => _onCancel();
+                    s.OnMouseEntered += () => _onMouseEnterStart(x, y);
+                    s.OnAccept += () => _onAcceptStart(x, y);
+                    s.OnCancel += _onCancel;
                 }
             }
         }
@@ -154,7 +155,7 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
             if (!_currentTransportDef.CanStopAtFloor.Contains(floor.Definition))
                 continue;
 
-            if (Tower.State.PositionVacant(e, floorPosition) && SceneLoader.TryLoadScene<TransportSelected>(out var s))
+            if (Tower.State.PositionVacant(e, floorPosition) && SceneLoader.TryLoadScene<Selector>(out var s))
             {
                 var x = floorPosition;
                 var y = Math.Max(e, elevation);
@@ -163,9 +164,9 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
                 _heightSelected[(x, e)] = s;
                 s.Position = s.TowerCoordToNodePosition(x, e);
                 _heightSelectors.AddChild(s);
-                s.OnMouseEntered += _ => _onMouseEnterFinal(x, y0, height);
-                s.OnAccept += _ => _onAcceptFinal(x, y0, height);
-                s.OnCancel += _ => _onCancel();
+                s.OnMouseEntered += () => _onMouseEnterFinal(x, y0, height);
+                s.OnAccept += () => _onAcceptFinal(x, y0, height);
+                s.OnCancel += _onCancel;
             }
         }
         _positionSelectors.Visible = false;

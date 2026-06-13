@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dtitpml18d534"]
+
+[ext_resource type="Script" uid="uid://qlliod54loue" path="res://UIs/selector/Selector.cs" id="1_djx0c"]
+[ext_resource type="Shape3D" uid="uid://cnci7gs5vw8ok" path="res://UIs/selector/new_box_shape_3d.tres" id="2_ovasl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ofba2"]
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.32156864)
+
+[sub_resource type="QuadMesh" id="QuadMesh_sexh6"]
+material = SubResource("StandardMaterial3D_ofba2")
+
+[node name="Selector" type="Node3D" unique_id=1933226709 node_paths=PackedStringArray("vis", "area3d")]
+script = ExtResource("1_djx0c")
+vis = NodePath("vis")
+area3d = NodePath("Area3D")
+box = ExtResource("2_ovasl")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1845002315]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1508121608]
+shape = ExtResource("2_ovasl")
+debug_color = Color(0.99999994, 0.010782275, 0.058036387, 0.41960785)
+
+[node name="vis" type="Node3D" parent="." unique_id=1425752736]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="Selected" type="MeshInstance3D" parent="vis" unique_id=946469614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("QuadMesh_sexh6")
+skeleton = NodePath("../..")
+
+[connection signal="input_event" from="Area3D" to="." method="InputEvent"]
+[connection signal="mouse_entered" from="Area3D" to="." method="MouseEntered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="MouseExited"]
