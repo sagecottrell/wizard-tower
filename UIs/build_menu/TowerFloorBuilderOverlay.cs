@@ -183,21 +183,19 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
     {
         if (Tower.State.IsHeightLimitReached || !_canBuildFloorAt(Tower.State.HighestFloor + 1))
             return;
-        for (int i = Tower.State.DefaultFloorLeftBound; i <= Tower.State.DefaultFloorRightBound; i++)
-            _createTile(Tower.State.HighestFloor + 1, i, _onAcceptNewTop);
+        _createTile(Tower.State.HighestFloor + 1, Tower.State.DefaultFloorLeftBound, _onAcceptNewTop, right: (uint)(Tower.State.DefaultFloorRightBound - Tower.State.DefaultFloorLeftBound) - 1);
     }
 
     private void _showNewBasementFloorButton()
     {
         if (Tower.State.IsDepthLimitReached || !_canBuildFloorAt(Tower.State.LowestFloor - 1))
             return;
-        for (int i = Tower.State.DefaultFloorLeftBound; i <= Tower.State.DefaultFloorRightBound; i++)
-            _createTile(Tower.State.LowestFloor - 1, i, _onAcceptNewBasement);
+        _createTile(Tower.State.LowestFloor - 1, Tower.State.DefaultFloorLeftBound, _onAcceptNewBasement, right: (uint)(Tower.State.DefaultFloorRightBound - Tower.State.DefaultFloorLeftBound) - 1);
     }
 
     #endregion
 
-    private Selector _createTile(int y, int x, Action<int, int> onAccept)
+    private Selector _createTile(int y, int x, Action<int, int> onAccept, uint? right = null)
     {
         if (_selected.TryGetValue((y, x), out var existing))
             return existing;
@@ -206,6 +204,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
         AddChild(tile);
         _selected[(y, x)] = tile;
+        if (right is { } r) tile.SetSize(right: r);
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
         tile.OnAccept += () => onAccept(x, y);

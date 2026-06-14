@@ -1,0 +1,7 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cedlx6565416f"]
+
+[ext_resource type="Shader" uid="uid://cdpo1wjj8btud" path="res://UIs/selector/selectorMaterialHover.gdshader" id="1_083w2"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_083w2")
