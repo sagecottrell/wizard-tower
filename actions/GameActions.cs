@@ -5,10 +5,10 @@ namespace wizardtower.actions;
 
 public static class GameActions
 {
-    public static void SetPause(TogglingPauseGameEvent ev)
-    {
-        if (!GameEvents.OnTogglingPause(ev).IsAllowed)
-            return;
-        GameEvents.OnToggledPause(new(ev.Paused) { Source = ev });
-    }
+	public static void SetPause(TogglingPauseGameEvent ev)
+	{
+		if (!GameEvents.OnTogglingPause(ev).IsAllowed)
+			return;
+		GameEvents.OnToggledPause(new(ev.Paused) { Source = ev });
+	}
 }

@@ -13,14 +13,14 @@ public partial class project_plugins : EditorPlugin
 	{
 		_numericDictInspector = new NumericDictInspector();
 		AddInspectorPlugin(_numericDictInspector);
-    }
+	}
 
 	public override void _ExitTree()
 	{
-        if (_numericDictInspector is not null)
-        {
+		if (_numericDictInspector is not null)
+		{
 			RemoveInspectorPlugin(_numericDictInspector);
-        }
-    }
+		}
+	}
 }
 #endif
