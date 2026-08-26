@@ -43,17 +43,17 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
 
     public override void _EnterTree()
     {
-        RoomEvents.UI.ConstructionSelected += _onRoomConstructionSelected;
-        RoomEvents.UI.ConstructionStopped += _event_reset;
-        FloorEvents.UI.ConstructionSelected += _event_reset;
-        TransportEvents.UI.ConstructionSelected += _event_reset;
+        RoomEvents.Ui.ConstructionSelected += _onRoomConstructionSelected;
+        RoomEvents.Ui.ConstructionStopped += _event_reset;
+        FloorEvents.Ui.ConstructionSelected += _event_reset;
+        TransportEvents.Ui.ConstructionSelected += _event_reset;
     }
     public override void _ExitTree()
     {
-        RoomEvents.UI.ConstructionSelected -= _onRoomConstructionSelected;
-        RoomEvents.UI.ConstructionStopped -= _event_reset;
-        FloorEvents.UI.ConstructionSelected -= _event_reset;
-        TransportEvents.UI.ConstructionSelected -= _event_reset;
+        RoomEvents.Ui.ConstructionSelected -= _onRoomConstructionSelected;
+        RoomEvents.Ui.ConstructionStopped -= _event_reset;
+        FloorEvents.Ui.ConstructionSelected -= _event_reset;
+        TransportEvents.Ui.ConstructionSelected -= _event_reset;
     }
 
     private void _reset()
@@ -104,7 +104,7 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
     private void _onCancel()
     {
         if (_currentRoomDef != null)
-            RoomEvents.UI.OnConstructionStopped(new(Tower.State, _currentRoomDef));
+            RoomEvents.Ui.OnConstructionStopped(new(Tower.State, _currentRoomDef));
     }
 
     private void _onAccept(int x, int y)
@@ -122,8 +122,8 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         };
         RoomActions.Construct(new(Tower.State, room));
 
-        if (RoomEvents.UI.OnConstructionStopping(new(Tower.State, _currentRoomDef)).IsAllowed)
-            RoomEvents.UI.OnConstructionStopped(new(Tower.State, _currentRoomDef));
+        if (RoomEvents.Ui.OnConstructionStopping(new(Tower.State, _currentRoomDef)).IsAllowed)
+            RoomEvents.Ui.OnConstructionStopped(new(Tower.State, _currentRoomDef));
         else
         {
             for (var i = 0; i < _currentRoomDef.Width; i++)
@@ -155,12 +155,12 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         });
         BuildingRoom.State.Elevation = y;
         BuildingRoom.State.FloorPosition = x;
-        RoomEvents.UI.OnConstructionPreview(new(Tower.State, BuildingRoom.State));
+        RoomEvents.Ui.OnConstructionPreviewStarted(new(Tower.State, BuildingRoom.State));
     }
 
     private void _revertFloorVis()
     {
-        RoomEvents.UI.OnConstructionPreviewStopped(new(Tower.State));
+        RoomEvents.Ui.OnConstructionPreviewStopped(new(Tower.State));
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)

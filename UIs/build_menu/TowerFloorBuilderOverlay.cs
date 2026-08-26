@@ -46,27 +46,27 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     public override void _EnterTree()
     {
-        FloorEvents.UI.ConstructionSelected += _onFloorConstructionSelected;
+        FloorEvents.Ui.ConstructionSelected += _onFloorConstructionSelected;
         FloorEvents.Extended += _onFloorExtended;
         FloorEvents.Replaced += _onFloorReplaced;
         FloorEvents.Constructed += _onFloorConstructed;
         GeneralEvents.ShowingUIEvent += _onShowingUI;
 
-        FloorEvents.UI.ConstructionStopped += _event_reset;
-        TransportEvents.UI.ConstructionSelected += _event_reset;
-        RoomEvents.UI.ConstructionSelected += _event_reset;
+        FloorEvents.Ui.ConstructionStopped += _event_reset;
+        TransportEvents.Ui.ConstructionSelected += _event_reset;
+        RoomEvents.Ui.ConstructionSelected += _event_reset;
     }
 
     public override void _ExitTree()
     {
-        FloorEvents.UI.ConstructionSelected -= _onFloorConstructionSelected;
+        FloorEvents.Ui.ConstructionSelected -= _onFloorConstructionSelected;
         FloorEvents.Extended -= _onFloorExtended;
         FloorEvents.Replaced -= _onFloorReplaced;
         FloorEvents.Constructed -= _onFloorConstructed;
         GeneralEvents.ShowingUIEvent -= _onShowingUI;
-        FloorEvents.UI.ConstructionStopped -= _event_reset;
-        TransportEvents.UI.ConstructionSelected -= _event_reset;
-        RoomEvents.UI.ConstructionSelected -= _event_reset;
+        FloorEvents.Ui.ConstructionStopped -= _event_reset;
+        TransportEvents.Ui.ConstructionSelected -= _event_reset;
+        RoomEvents.Ui.ConstructionSelected -= _event_reset;
     }
 
     private void _onFloorReplaced(FloorReplacedEvent @event) => _tryStopConstruction(@event.Floor);
@@ -85,8 +85,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     private void _tryStopConstruction(FloorState floor)
     {
-        if (FloorEvents.UI.OnConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
-            FloorEvents.UI.OnConstructionStopped(new(Tower.State, floor.Definition));
+        if (FloorEvents.Ui.OnConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
+            FloorEvents.Ui.OnConstructionStopped(new(Tower.State, floor.Definition));
         else
         {
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)

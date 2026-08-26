@@ -73,10 +73,10 @@ public static class RoomActions
 
     public static void ReceiveResources(RoomReceivingResourcesEvent ev)
     {
-        if (!RoomEvents.OnRoomReceivingResources(ev).IsAllowed)
+        if (!RoomEvents.OnReceivingResources(ev).IsAllowed)
             return;
         ev.RoomState.StoredItems.Added(ev.Resources);
-        RoomEvents.OnRoomReceivedResources(new(ev.TowerState, ev.RoomState, ev.Resources) { Source = ev });
+        RoomEvents.OnReceivedResources(new(ev.TowerState, ev.RoomState, ev.Resources) { Source = ev });
     }
 
     public static void SpawnWorkerWithPayload(TowerState towerState, RoomState roomState, RoomState targetRoom, ItemDefinition item, uint amount, WorkerDefinition def)

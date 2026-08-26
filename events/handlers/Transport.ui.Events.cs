@@ -1,0 +1,35 @@
+
+using wizardtower.events.features;
+using wizardtower.events.Transport;
+using wizardtower.events.Transport.ui;
+
+namespace wizardtower.events.handlers;
+    
+public static partial class TransportEvents {
+    public static partial class Ui {
+        public static Event<TransportConstructionPreviewStartedEvent> ConstructionPreviewStarted { get; set; } = new();
+        public static TransportConstructionPreviewStartedEvent OnConstructionPreviewStarted(TransportConstructionPreviewStartedEvent e) => ConstructionPreviewStarted.InvokeSafely(e);
+        public static Event<TransportConstructionPreviewStartingEvent> ConstructionPreviewStarting { get; set; } = new();
+        public static TransportConstructionPreviewStartingEvent OnConstructionPreviewStarting(TransportConstructionPreviewStartingEvent e) => ConstructionPreviewStarting.InvokeSafely(e);
+        public static Event<TransportConstructionPreviewStoppedEvent> ConstructionPreviewStopped { get; set; } = new();
+        public static TransportConstructionPreviewStoppedEvent OnConstructionPreviewStopped(TransportConstructionPreviewStoppedEvent e) => ConstructionPreviewStopped.InvokeSafely(e);
+        public static Event<TransportConstructionPreviewStoppingEvent> ConstructionPreviewStopping { get; set; } = new();
+        public static TransportConstructionPreviewStoppingEvent OnConstructionPreviewStopping(TransportConstructionPreviewStoppingEvent e) => ConstructionPreviewStopping.InvokeSafely(e);
+        public static Event<TransportConstructionStoppedEvent> ConstructionStopped { get; set; } = new();
+        public static TransportConstructionStoppedEvent OnConstructionStopped(TransportConstructionStoppedEvent e) => ConstructionStopped.InvokeSafely(e);
+        public static Event<TransportConstructionStoppingEvent> ConstructionStopping { get; set; } = new();
+        public static TransportConstructionStoppingEvent OnConstructionStopping(TransportConstructionStoppingEvent e) => ConstructionStopping.InvokeSafely(e);
+        public static Event<TransportConstructionSelectedEvent> ConstructionSelected { get; set; } = new();
+        public static TransportConstructionSelectedEvent OnConstructionSelected(TransportConstructionSelectedEvent e) => ConstructionSelected.InvokeSafely(e);
+        public static Event<TransportConstructionSelectingEvent> ConstructionSelecting { get; set; } = new();
+        public static TransportConstructionSelectingEvent OnConstructionSelecting(TransportConstructionSelectingEvent e) => ConstructionSelecting.InvokeSafely(e);
+        public static Event<TransportSelectedEvent> Selected { get; set; } = new();
+        public static TransportSelectedEvent OnSelected(TransportSelectedEvent e) => Selected.InvokeSafely(e);
+        public static Event<TransportSelectingEvent> Selecting { get; set; } = new();
+        public static TransportSelectingEvent OnSelecting(TransportSelectingEvent e) => Selecting.InvokeSafely(e);
+        public static Event<TransportDeselectedEvent> Deselected { get; set; } = new();
+        public static TransportDeselectedEvent OnDeselected(TransportDeselectedEvent e) => Deselected.InvokeSafely(e);
+        public static Event<TransportDeselectingEvent> Deselecting { get; set; } = new();
+        public static TransportDeselectingEvent OnDeselecting(TransportDeselectingEvent e) => Deselecting.InvokeSafely(e);
+    }
+}

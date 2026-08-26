@@ -30,24 +30,24 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
 
     public override void _EnterTree()
     {
-        RoomEvents.UI.ConstructionPreview += _g_OnRoomConstructionPreview;
+        RoomEvents.Ui.ConstructionPreviewStarted += _g_OnRoomConstructionPreview;
         RoomEvents.Constructed += _g_OnRoomConstructed;
         RoomEvents.Destroyed += _g_OnRoomDestroyed;
         FloorEvents.Extended += _g_OnFloorExtended;
         FloorEvents.Replaced += _g_OnFloorReplaced;
-        RoomEvents.UI.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
-        TransportEvents.UI.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        RoomEvents.Ui.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
+        TransportEvents.Ui.ConstructionPreviewStopped += _g_OnConstructionPreviewStopped;
     }
 
     public override void _ExitTree()
     {
-        RoomEvents.UI.ConstructionPreview -= _g_OnRoomConstructionPreview;
+        RoomEvents.Ui.ConstructionPreviewStarted -= _g_OnRoomConstructionPreview;
         RoomEvents.Constructed -= _g_OnRoomConstructed;
         RoomEvents.Destroyed -= _g_OnRoomDestroyed;
         FloorEvents.Extended -= _g_OnFloorExtended;
         FloorEvents.Replaced -= _g_OnFloorReplaced;
-        RoomEvents.UI.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
-        TransportEvents.UI.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        RoomEvents.Ui.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
+        TransportEvents.Ui.ConstructionPreviewStopped -= _g_OnConstructionPreviewStopped;
     }
 
 
@@ -90,7 +90,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
         SetPositionVisible(@event.Room, true);
     }
 
-    private void _g_OnRoomConstructionPreview(RoomConstructionPreviewEvent @event)
+    private void _g_OnRoomConstructionPreview(RoomConstructionPreviewStartedEvent @event)
     {
         MakeAllVisible();
         if (@event.RoomState.Elevation == FloorState.Elevation)

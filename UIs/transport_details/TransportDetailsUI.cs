@@ -27,21 +27,21 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
 
     public override void _EnterTree()
     {
-        TransportEvents.UI.Selected += _onTransportSelected;
-        TransportEvents.UI.Deselected += _onTransportDeselected;
-        FloorEvents.UI.ConstructionSelected += _event_hide;
-        RoomEvents.UI.ConstructionSelected += _event_hide;
-        TransportEvents.UI.ConstructionSelected += _event_hide;
+        TransportEvents.Ui.Selected += _onTransportSelected;
+        TransportEvents.Ui.Deselected += _onTransportDeselected;
+        FloorEvents.Ui.ConstructionSelected += _event_hide;
+        RoomEvents.Ui.ConstructionSelected += _event_hide;
+        TransportEvents.Ui.ConstructionSelected += _event_hide;
         GeneralEvents.ShowedUI += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        TransportEvents.UI.Selected -= _onTransportSelected;
-        TransportEvents.UI.Deselected -= _onTransportDeselected;
-        FloorEvents.UI.ConstructionSelected -= _event_hide;
-        RoomEvents.UI.ConstructionSelected -= _event_hide;
-        TransportEvents.UI.ConstructionSelected -= _event_hide;
+        TransportEvents.Ui.Selected -= _onTransportSelected;
+        TransportEvents.Ui.Deselected -= _onTransportDeselected;
+        FloorEvents.Ui.ConstructionSelected -= _event_hide;
+        RoomEvents.Ui.ConstructionSelected -= _event_hide;
+        TransportEvents.Ui.ConstructionSelected -= _event_hide;
         GeneralEvents.ShowedUI -= _onShowedUI;
     }
 

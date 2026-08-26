@@ -24,7 +24,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     public override void _EnterTree()
     {
         TransportEvents.Constructing += _onTransportConstructing;
-        TransportEvents.UI.ConstructionStopping += _onTransportConstructionStopping;
+        TransportEvents.Ui.ConstructionStopping += _onTransportConstructionStopping;
         TransportEvents.Constructed += _onTransportConstructed;
         TransportEvents.Destroyed += _onTransportDestroyed;
     }
@@ -32,7 +32,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
     public override void _ExitTree()
     {
         TransportEvents.Constructing -= _onTransportConstructing;
-        TransportEvents.UI.ConstructionStopping -= _onTransportConstructionStopping;
+        TransportEvents.Ui.ConstructionStopping -= _onTransportConstructionStopping;
         TransportEvents.Constructed -= _onTransportConstructed;
         TransportEvents.Destroyed -= _onTransportDestroyed;
     }

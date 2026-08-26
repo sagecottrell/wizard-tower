@@ -7,7 +7,7 @@ public static class WorkerActions
 {
     public static void Dispatch(WorkerDispatchingEvent @event)
     {
-        if (!WorkerEvents.OnrDispatching(@event).IsAllowed)
+        if (!WorkerEvents.OnDispatching(@event).IsAllowed)
             return;
         var worker = @event.WorkerState;
         if (@event.WorkerState.WalkingAbout)

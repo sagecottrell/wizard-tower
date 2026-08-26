@@ -24,7 +24,7 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
     {
         FloorEvents.Constructing += _g_OnFloorConstructing;
         FloorEvents.Extending += _g_OnFloorExtending;
-        FloorEvents.UI.ConstructionStopping += _g_OnFloorConstructionStopping;
+        FloorEvents.Ui.ConstructionStopping += _g_OnFloorConstructionStopping;
         FloorEvents.Constructed += _g_OnFloorConstructed;
     }
 
@@ -32,7 +32,7 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
     {
         FloorEvents.Constructing -= _g_OnFloorConstructing;
         FloorEvents.Extending -= _g_OnFloorExtending;
-        FloorEvents.UI.ConstructionStopping -= _g_OnFloorConstructionStopping;
+        FloorEvents.Ui.ConstructionStopping -= _g_OnFloorConstructionStopping;
         FloorEvents.Constructed -= _g_OnFloorConstructed;
     }
 

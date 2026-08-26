@@ -34,8 +34,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public override void _EnterTree()
     {
-        RoomEvents.UI.Selected += _onRoomSelected;
-        RoomEvents.UI.Deselected += _onRoomDeselected;
+        RoomEvents.Ui.Selected += _onRoomSelected;
+        RoomEvents.Ui.Deselected += _onRoomDeselected;
 
         RoomEvents.ProducedResources += _onProducedResources;
         RoomEvents.ConsumedResources += _onConsumedResources;
@@ -45,8 +45,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public override void _ExitTree()
     {
-        RoomEvents.UI.Selected -= _onRoomSelected;
-        RoomEvents.UI.Deselected -= _onRoomDeselected;
+        RoomEvents.Ui.Selected -= _onRoomSelected;
+        RoomEvents.Ui.Deselected -= _onRoomDeselected;
 
         RoomEvents.ProducedResources -= _onProducedResources;
         RoomEvents.ConsumedResources -= _onConsumedResources;

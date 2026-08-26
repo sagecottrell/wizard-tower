@@ -3,7 +3,7 @@ using wizardtower.state;
 
 namespace wizardtower.events.Transport.ui;
 
-public partial class TransportConstructionPreviewEvent(TowerState towerState, TransportState? previewState) : BaseEvent, IDebug, ITowerEvent
+public partial class TransportConstructionPreviewStartedEvent(TowerState towerState, TransportState? previewState) : BaseEvent, IDebug, ITowerEvent
 {
     public TowerState TowerState { get; } = towerState;
 

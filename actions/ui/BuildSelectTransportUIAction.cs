@@ -9,8 +9,8 @@ public static partial class UIActions
     {
         var state = @event.TowerState;
         var transportDef = @event.TransportDefinition;
-        var ev = TransportEvents.UI.OnConstructionSelecting(new(state, transportDef));
+        var ev = TransportEvents.Ui.OnConstructionSelecting(new(state, transportDef));
         if (state.Wallet >= transportDef.CostToBuild && ev.IsAllowed)
-            TransportEvents.UI.OnConstructionSelected(new(state, transportDef) { Source = @event.Source });
+            TransportEvents.Ui.OnConstructionSelected(new(state, transportDef) { Source = @event.Source });
     }
 }

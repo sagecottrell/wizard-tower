@@ -31,7 +31,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 	public override void _EnterTree()
 	{
 		RoomEvents.Constructing += _onRoomConstructing;
-		RoomEvents.UI.ConstructionStopping += _onRoomConstructionStopping;
+		RoomEvents.Ui.ConstructionStopping += _onRoomConstructionStopping;
 		RoomEvents.Constructed += _onRoomConstructed;
 		RoomEvents.Destroyed += _onRoomDestroyed;
 		GameEvents.ToggledPause += _onToggledPause;
@@ -42,7 +42,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 	public override void _ExitTree()
 	{
 		RoomEvents.Constructing -= _onRoomConstructing;
-		RoomEvents.UI.ConstructionStopping -= _onRoomConstructionStopping;
+		RoomEvents.Ui.ConstructionStopping -= _onRoomConstructionStopping;
 		RoomEvents.Constructed -= _onRoomConstructed;
 		RoomEvents.Destroyed -= _onRoomDestroyed;
 		GameEvents.ToggledPause -= _onToggledPause;

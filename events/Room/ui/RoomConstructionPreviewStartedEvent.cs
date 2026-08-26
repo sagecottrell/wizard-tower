@@ -3,7 +3,7 @@ using wizardtower.state;
 
 namespace wizardtower.events.Room.ui;
 
-public partial class RoomConstructionPreviewEvent(TowerState towerState, RoomState previewState) : BaseEvent, IDebug, ITowerEvent, IRoomEvent
+public partial class RoomConstructionPreviewStartedEvent(TowerState towerState, RoomState previewState) : BaseEvent, IDebug, ITowerEvent, IRoomEvent
 {
     public TowerState TowerState { get; } = towerState;
 

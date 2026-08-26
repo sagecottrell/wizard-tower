@@ -5,8 +5,6 @@ VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wizard-tower", "wizard-tower.csproj", "{A8F147A7-4A68-43B9-8926-572BF5822B26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotSourceGenerators", "..\GodotSourceGenerators\GodotSourceGenerators.csproj", "{F7CE8421-7CE6-488A-A741-B5AE4D2F9D40}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
