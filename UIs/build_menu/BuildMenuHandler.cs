@@ -2,7 +2,7 @@ using Godot;
 using System;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Interface;
 using wizardtower.state;
 
 namespace wizardtower.UIs.build_menu;
@@ -19,22 +19,22 @@ public partial class BuildMenuHandler(TowerState tower) : CanvasLayer, IUserInte
 
     public override void _EnterTree()
     {
-        GeneralEvents.HidingUI += _onHidingUI;
-        GeneralEvents.ShowedUI += _onShowedUI;
+        InterfaceEvents.Hiding += _onHidingUI;
+        InterfaceEvents.Showed += _onShowedUI;
     }
 
     public override void _ExitTree()
     {
-        GeneralEvents.HidingUI  -= _onHidingUI;
-        GeneralEvents.ShowedUI -= _onShowedUI;
+        InterfaceEvents.Hiding  -= _onHidingUI;
+        InterfaceEvents.Showed -= _onShowedUI;
     }
 
-    private void _onHidingUI(HidingUIEvent @event)
+    private void _onHidingUI(InterfaceHidingEvent @event)
     {
         buildMenu.Visible = false;
     }
 
-    private void _onShowedUI(ShowedUIEvent @event)
+    private void _onShowedUI(InterfaceShowedEvent @event)
     {
         if (@event.UserInterface != this)
             return;

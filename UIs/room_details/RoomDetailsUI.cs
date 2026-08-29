@@ -4,7 +4,7 @@ using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
-using wizardtower.events.ui;
+using wizardtower.events.Interface;
 using wizardtower.state;
 using wizardtower.UIs.transport_details;
 
@@ -34,7 +34,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         FloorEvents.Ui.ConstructionSelected += _event_hide;
         RoomEvents.Ui.ConstructionSelected += _event_hide;
         TransportEvents.Ui.ConstructionSelected += _event_hide;
-        GeneralEvents.ShowedUI += _onShowedUI;
+        InterfaceEvents.Showed += _onShowedUI;
     }
 
     public override void _ExitTree()
@@ -45,10 +45,10 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         FloorEvents.Ui.ConstructionSelected -= _event_hide;
         RoomEvents.Ui.ConstructionSelected -= _event_hide;
         TransportEvents.Ui.ConstructionSelected -= _event_hide;
-        GeneralEvents.ShowedUI -= _onShowedUI;
+        InterfaceEvents.Showed -= _onShowedUI;
     }
 
-    private void _onShowedUI(ShowedUIEvent @event)
+    private void _onShowedUI(InterfaceShowedEvent @event)
     {
         if (RoomState is null)
             return;
@@ -113,7 +113,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (RoomState.Definition.ResourceConversion?.WorkerKind is not null || RoomState.Definition.ProvideWorkers is not null)
             buttons.AddedChild(new Button() { Text = "Configure Workers" });
 
-        GeneralEvents.OnShowedUI(new(this));
+        InterfaceEvents.OnShowed(new(this));
     }
 
     private void _pushText()

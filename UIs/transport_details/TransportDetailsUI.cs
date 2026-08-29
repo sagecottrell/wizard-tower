@@ -3,7 +3,7 @@ using wizardtower.actions.ui;
 using wizardtower.events.handlers;
 using wizardtower.events.interfaces;
 using wizardtower.events.Transport.ui;
-using wizardtower.events.ui;
+using wizardtower.events.Interface;
 using wizardtower.state;
 using wizardtower.UIs.room_details;
 
@@ -32,7 +32,7 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
         FloorEvents.Ui.ConstructionSelected += _event_hide;
         RoomEvents.Ui.ConstructionSelected += _event_hide;
         TransportEvents.Ui.ConstructionSelected += _event_hide;
-        GeneralEvents.ShowedUI += _onShowedUI;
+        InterfaceEvents.Showed += _onShowedUI;
     }
 
     public override void _ExitTree()
@@ -42,7 +42,7 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
         FloorEvents.Ui.ConstructionSelected -= _event_hide;
         RoomEvents.Ui.ConstructionSelected -= _event_hide;
         TransportEvents.Ui.ConstructionSelected -= _event_hide;
-        GeneralEvents.ShowedUI -= _onShowedUI;
+        InterfaceEvents.Showed -= _onShowedUI;
     }
 
     private void _onTransportDeselected(TransportDeselectedEvent @event)
@@ -65,7 +65,7 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
         UIActions.DeselectTransport(new(tower, Transport));
     }
 
-    private void _onShowedUI(ShowedUIEvent @event)
+    private void _onShowedUI(InterfaceShowedEvent @event)
     {
         if (Transport is null)
             return;
@@ -100,6 +100,6 @@ public partial class TransportDetailsUI(TowerState tower) : CanvasLayer, IUserIn
                 BbcodeEnabled = true,
             });
         rtl.Text = text;
-        GeneralEvents.OnShowedUI(new(this));
+        InterfaceEvents.OnShowed(new(this));
     }
 }

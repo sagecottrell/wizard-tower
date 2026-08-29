@@ -34,7 +34,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 		RoomEvents.Ui.ConstructionStopping += _onRoomConstructionStopping;
 		RoomEvents.Constructed += _onRoomConstructed;
 		RoomEvents.Destroyed += _onRoomDestroyed;
-		GameEvents.ToggledPause += _onToggledPause;
+		GameEvents.PauseToggled += _onToggledPause;
 
 		processing = Timing.RunCoroutine(processRooms(4).CancelWith(this));
 	}
@@ -45,7 +45,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 		RoomEvents.Ui.ConstructionStopping -= _onRoomConstructionStopping;
 		RoomEvents.Constructed -= _onRoomConstructed;
 		RoomEvents.Destroyed -= _onRoomDestroyed;
-		GameEvents.ToggledPause -= _onToggledPause;
+		GameEvents.PauseToggled -= _onToggledPause;
 
 		Timing.KillCoroutines(processing);
 	}

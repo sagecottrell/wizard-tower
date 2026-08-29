@@ -6,8 +6,8 @@ using wizardtower.containers;
 using wizardtower.events.Floor;
 using wizardtower.events.Floor.ui;
 using wizardtower.events.handlers;
+using wizardtower.events.Interface;
 using wizardtower.events.interfaces;
-using wizardtower.events.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.room_details;
@@ -50,7 +50,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
         FloorEvents.Extended += _onFloorExtended;
         FloorEvents.Replaced += _onFloorReplaced;
         FloorEvents.Constructed += _onFloorConstructed;
-        GeneralEvents.ShowingUIEvent += _onShowingUI;
+        InterfaceEvents.Showing += _onShowingUI;
 
         FloorEvents.Ui.ConstructionStopped += _event_reset;
         TransportEvents.Ui.ConstructionSelected += _event_reset;
@@ -63,7 +63,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
         FloorEvents.Extended -= _onFloorExtended;
         FloorEvents.Replaced -= _onFloorReplaced;
         FloorEvents.Constructed -= _onFloorConstructed;
-        GeneralEvents.ShowingUIEvent -= _onShowingUI;
+        InterfaceEvents.Showing -= _onShowingUI;
         FloorEvents.Ui.ConstructionStopped -= _event_reset;
         TransportEvents.Ui.ConstructionSelected -= _event_reset;
         RoomEvents.Ui.ConstructionSelected -= _event_reset;
@@ -73,7 +73,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
     private void _onFloorExtended(FloorExtendedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _onFloorConstructed(FloorConstructedEvent @event) => _tryStopConstruction(@event.Floor);
     private void _event_reset(IEvent @event) => _reset();
-    private void _onShowingUI(ShowingUIEvent @event)
+    private void _onShowingUI(InterfaceShowingEvent @event)
     {
         if (_currentFloorDef is null)
             return;
