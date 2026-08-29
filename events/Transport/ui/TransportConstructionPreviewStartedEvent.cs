@@ -3,10 +3,10 @@ using wizardtower.state;
 
 namespace wizardtower.events.Transport.ui;
 
-public partial class TransportConstructionPreviewStartedEvent(TowerState towerState, TransportState? previewState) : BaseEvent, IDebug, ITowerEvent
+public partial class TransportConstructionPreviewStartedEvent(TowerState towerState, TransportState previewState) : BaseEvent, IDebug, ITowerEvent
 {
     public TowerState TowerState { get; } = towerState;
 
     // if null, then no preview is being shown
-    public TransportState? PreviewState { get; } = previewState;
+    public TransportState PreviewState { get; } = previewState;
 }

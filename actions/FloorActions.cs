@@ -13,8 +13,9 @@ public static class FloorActions
             return;
         TowerActions.RemoveFromWallet(new(tower, @event.Floor.Definition.CostToBuildPerUnit * @event.Floor.Width) { Source = @event });
         tower.OnAddFloor(@event.Floor);
-        FloorEvents.OnConstructed(new(tower, @event.Floor) { Source = @event.Source });
+        FloorEvents.OnConstructed(@event.Into());
     }
+    
     public static void Extend(FloorExtendingEvent @event)
     {
         var tower = @event.TowerState;
@@ -22,13 +23,13 @@ public static class FloorActions
             return;
         TowerActions.RemoveFromWallet(new(tower, @event.Floor.Definition.CostToBuildPerUnit * @event.ExtensionAmount) { Source = @event });
         tower.ExtendFloor(@event.Floor, @event.ExtendedLeft, @event.ExtendedRight);
-        FloorEvents.OnExtended(new(tower, @event.Floor, @event.ExtendedLeft, @event.ExtendedRight) { Source = @event.Source });
+        FloorEvents.OnExtended(@event.Into());
     }
 
     public static void Replace(FloorReplacingEvent @event)
     {
         var tower = @event.TowerState;
-        if (FloorEvents.OnReplacing(@event).IsAllowed)
+        if (!FloorEvents.OnReplacing(@event).IsAllowed)
             return;
         var floor = @event.Floor;
         TowerActions.RemoveFromWallet(new(tower, floor.Definition.CostToBuildPerUnit * floor.Width) { Source = @event });

@@ -1,3 +1,7 @@
+/**
+Generated from ./events/Room/ui/RoomConstructionPreviewStartedEvent.cs
+**/
+
 using wizardtower.events.interfaces;
 using wizardtower.state;
 
@@ -9,4 +13,11 @@ public partial class RoomConstructionPreviewStartingEvent(TowerState towerState,
     public TowerState TowerState { get; set; } = towerState;
 
     public RoomState RoomState { get; set; } = previewState;
+}
+
+
+public static class RoomConstructionPreviewStartedEventExtensions {
+    public static RoomConstructionPreviewStartedEvent Into(this RoomConstructionPreviewStartingEvent old) {
+        return new(towerState: old.TowerState, previewState: old.RoomState) { Source = old, Input = old.Input, };
+    }
 }

@@ -9,10 +9,9 @@ public static class WorkerActions
     {
         if (!WorkerEvents.OnDispatching(@event).IsAllowed)
             return;
-        var worker = @event.WorkerState;
         if (@event.WorkerState.WalkingAbout)
             return;
         @event.TowerState.SpawnWorker(@event.WorkerState);
-        WorkerEvents.OnDispatched(new(@event.TowerState, worker) { Source = @event });
+        WorkerEvents.OnDispatched(@event.Into());
     }
 }

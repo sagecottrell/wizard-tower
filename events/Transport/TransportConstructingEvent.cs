@@ -13,3 +13,10 @@ public partial class TransportConstructingEvent(TowerState tower, TransportState
     public TowerState TowerState { get; set; } = tower;
     public TransportState TransportState { get; set; } = transport;
 }
+
+
+public static class TransportConstructedEventExtensions {
+    public static TransportConstructedEvent Into(this TransportConstructingEvent old) {
+        return new(tower: old.TowerState, transport: old.TransportState) { Source = old, Input = old.Input, };
+    }
+}

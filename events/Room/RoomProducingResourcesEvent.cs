@@ -1,3 +1,7 @@
+/**
+Generated from ./events/Room/RoomProducedResourcesEvent.cs
+**/
+
 using wizardtower.events.interfaces;
 using wizardtower.resource_types;
 using wizardtower.state;
@@ -11,4 +15,11 @@ public class RoomProducingResourcesEvent(TowerState towerState, RoomState roomSt
     public RoomState RoomState { get; set; } = roomState;
     public NumericDict<ItemDefinition, uint>? Output { get; set; }
     public bool ResetProductionProgress { get; set; } = true;
+}
+
+
+public static class RoomProducedResourcesEventExtensions {
+    public static RoomProducedResourcesEvent Into(this RoomProducingResourcesEvent old) {
+        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, Input = old.Input, };
+    }
 }

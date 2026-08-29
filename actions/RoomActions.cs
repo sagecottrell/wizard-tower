@@ -20,7 +20,7 @@ public static class RoomActions
             if (ev.Room.ConvertResourcesState.SelectedRecipe is null && ev.Room.Definition.ResourceConversion.Recipes.Recipes.Count == 1)
                 ev.Room.ConvertResourcesState.SelectedRecipe = ev.Room.Definition.ResourceConversion.Recipes.Recipes[0];
         }
-        RoomEvents.OnConstructed(new(tower, ev.Room) { Source = ev.Source });
+        RoomEvents.OnConstructed(ev.Into());
     }
 
     public static void Destroy(RoomDestroyingEvent ev)
@@ -28,7 +28,7 @@ public static class RoomActions
         if (!RoomEvents.OnDestroying(ev).IsAllowed)
             return;
         ev.TowerState.RemoveRoom(ev.Room);
-        RoomEvents.OnDestroyed(new(ev.TowerState, ev.Room) { Source = ev.Source });
+        RoomEvents.OnDestroyed(ev.Into());
     }
 
     public static void ProductionProgress(RoomProcessingIncreasingEvent ev)
@@ -36,7 +36,7 @@ public static class RoomActions
         if (!RoomEvents.OnProcessingIncreasing(ev).IsAllowed)
             return;
         ev.State.ProductionProgress += ev.AmountIncreased;
-        RoomEvents.OnProcessingIncreased(new(ev.RoomState, ev.State) { Source = ev });
+        RoomEvents.OnProcessingIncreased(ev.Into());
     }
 
     public static void ProduceResources(RoomProducingResourcesEvent ev)
@@ -60,7 +60,9 @@ public static class RoomActions
             ev.RoomState.StoredItems += ev.Output;
         StopWork(new(ev.TowerState, ev.RoomState) { Source = ev });
         conv.TimesProducedToday++;
-        RoomEvents.OnProducedResources(new(ev.TowerState, ev.RoomState) { Source = ev, Output = ev.Output });
+        var output = ev.Into();
+        output.Output = ev.Output;
+        RoomEvents.OnProducedResources(output);
     }
 
     public static void ConsumeResources(RoomConsumingResourcesEvent ev)
@@ -68,7 +70,7 @@ public static class RoomActions
         if (!RoomEvents.OnConsumingResources(ev).IsAllowed)
             return;
         ev.RoomState.StoredItems.Subtracted(ev.Amount);
-        RoomEvents.OnConsumedResources(new(ev.TowerState, ev.RoomState, ev.Amount) { Source = ev });
+        RoomEvents.OnConsumedResources(ev.Into());
     }
 
     public static void ReceiveResources(RoomReceivingResourcesEvent ev)
@@ -76,7 +78,7 @@ public static class RoomActions
         if (!RoomEvents.OnReceivingResources(ev).IsAllowed)
             return;
         ev.RoomState.StoredItems.Added(ev.Resources);
-        RoomEvents.OnReceivedResources(new(ev.TowerState, ev.RoomState, ev.Resources) { Source = ev });
+        RoomEvents.OnReceivedResources(ev.Into());
     }
 
     public static void SpawnWorkerWithPayload(TowerState towerState, RoomState roomState, RoomState targetRoom, ItemDefinition item, uint amount, WorkerDefinition def)
@@ -101,7 +103,7 @@ public static class RoomActions
         if (ev.RoomState.ConvertResourcesState is null)
             return;
         ev.RoomState.ConvertResourcesState.CurrentlyWorking = true;
-        RoomEvents.OnStartedWork(new(ev.TowerState, ev.RoomState) { Source = ev });
+        RoomEvents.OnStartedWork(ev.Into());
     }
 
     public static void StopWork(RoomStoppingWorkEvent ev)
@@ -111,7 +113,7 @@ public static class RoomActions
         if (ev.RoomState.ConvertResourcesState is null)
             return;
         ev.RoomState.ConvertResourcesState.CurrentlyWorking = false;
-        RoomEvents.OnStoppedWork(new(ev.TowerState, ev.RoomState) { Source = ev });
+        RoomEvents.OnStoppedWork(ev.Into());
     }
 
     /// <summary>
@@ -231,7 +233,7 @@ public static class RoomActions
         {
             ev.Path.TransportsToTake = TowerPathfind.Pathfind(ev.TowerState, ev.RoomState, ev.TargetRoom, 4);
         }
-        RoomEvents.OnAssignedOutput(new(ev.TowerState, ev.RoomState, ev.TargetRoom, ev.Path) { Source = ev });
+        RoomEvents.OnAssignedOutput(ev.Into());
     }
 
     public static void RemoveOutput(RoomState room, RoomStateWorkerPath path)

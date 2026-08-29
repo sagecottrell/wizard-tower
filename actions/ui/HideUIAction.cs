@@ -1,16 +1,16 @@
 using wizardtower.events;
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Interface;
 
 namespace wizardtower.actions.ui;
 
 public static partial class UIActions
 {
-    public static void Hide(HidingUIEvent @event)
+    public static void Hide(InterfaceHidingEvent @event)
     {
-        if (!GeneralEvents.OnHidingUI(@event).IsAllowed)
+        if (!InterfaceEvents.OnHiding(@event).IsAllowed)
             return;
         @event.UserInterface.Hide();
-        GeneralEvents.OnHiddenUI(new HiddenUIEvent(@event.UserInterface).CopySourceInput(@event));
+        InterfaceEvents.OnHided(new InterfaceHidedEvent(@event.UserInterface).CopySourceInput(@event));
     }
 }

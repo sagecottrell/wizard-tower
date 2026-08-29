@@ -12,6 +12,6 @@ public static class TransportActions
             return;
         TowerActions.RemoveFromWallet(new(tower, @event.TransportState.Definition.CostToBuild) { Source = @event });
         tower.AddTransport(@event.TransportState);
-        TransportEvents.OnConstructed(new(tower, @event.TransportState) { Source = @event.Source });
+        TransportEvents.OnConstructed(@event.Into());
     }
 }

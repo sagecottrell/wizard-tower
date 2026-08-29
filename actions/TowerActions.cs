@@ -12,7 +12,7 @@ public static class TowerActions
         var state = @event.TowerState;
         var cost = @event.Amount;
         state.Wallet.Added(cost);
-        TowerEvents.OnResourceChanged(new(state, cost) { Source = @event });
+        TowerEvents.OnResourceChanged(@event.Into());
     }
 
     public static void RemoveFromWallet(TowerResourceChangingEvent @event)
@@ -22,6 +22,6 @@ public static class TowerActions
         var state = @event.TowerState;
         var cost = @event.Amount;
         state.Wallet.Subtracted(cost);
-        TowerEvents.OnResourceChanged(new(state, cost) { Source = @event });
+        TowerEvents.OnResourceChanged(@event.Into());
     }
 }

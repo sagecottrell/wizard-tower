@@ -1,15 +1,15 @@
 using wizardtower.events.handlers;
-using wizardtower.events.ui;
+using wizardtower.events.Interface;
 
 namespace wizardtower.actions.ui;
 
 public static partial class UIActions
 {
-    public static void ShowUI(ShowingUIEvent @event)
+    public static void ShowUI(InterfaceShowingEvent @event)
     {
-        if (!GeneralEvents.OnShowingUI(@event).IsAllowed)
+        if (!InterfaceEvents.OnShowing(@event).IsAllowed)
             return;
         @event.UserInterface.Show();
-        GeneralEvents.OnShowedUI(new(@event.UserInterface) { Source = @event.Source });
+        InterfaceEvents.OnShowed(new(@event.UserInterface) { Source = @event.Source });
     }
 }

@@ -56,7 +56,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 			node.QueueFree();
 	}
 
-	private void _onToggledPause(events.Game.ToggledPauseGameEvent ev)
+	private void _onToggledPause(events.Game.GamePauseToggledEvent ev)
 	{
 		if (!processing.IsValid)
 			return;

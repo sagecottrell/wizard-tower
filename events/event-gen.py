@@ -6,6 +6,8 @@ import re
 dir = pathlib.Path(__file__).parent
 
 filter_re = re.compile(r"^([A-Z][a-z]+)+([A-Z][a-z]+ed)([A-Z][a-z]+)*Event.cs$")
+param_map_re = re.compile(r"    public (?P<type>\w+(<(\w+,? ?)+>)?) (?P<prop>\w+) { get; set; } = (?P<param>\w+);")
+param_re = re.compile(r'(\(|, )\w+(<(\w+,? ?)+>)? (\w+)')
 
 events: dict[tuple[str, ...], list[str]] = defaultdict(list)
 
@@ -20,13 +22,34 @@ for event_file in dir.rglob("*Event.cs"):
     events[event_file.parent.relative_to(dir).parts].append(cls_name)
     events[event_file.parent.relative_to(dir).parts].append(new_name)
 
-    if new_file.exists():
+    if new_file.exists() and "Generated from ./events/" not in new_file.read_text()[:100]:
         continue
 
+    # print(f'updating {event_file}')
     text = text.replace(f'class {cls_name}', f'class {new_name}')
     text = text.replace(': BaseEvent, ', ': BaseEvent, IDeniableEvent, ')
     text = text.replace('{', '{\n    public bool IsAllowed { get; set; } = true;', count=1)
     text = text.replace("{ get; }", "{ get; set; }")
+
+    prop_map: dict[str, str] = {}
+    for match in param_re.findall(text[:text.index('BaseEvent')]):
+        prop_map[match[-1]] = ""
+    for prop in param_map_re.finditer(text):
+        d = prop.groupdict()
+        if d['param'] in prop_map:
+            prop_map[d['param']] = d['prop']
+
+    text += f"""
+
+public static class {cls_name}Extensions {{
+    public static {cls_name} Into(this {new_name} old) {{
+        return new({", ".join(
+f"{k}: old.{v}"
+for k, v in prop_map.items()
+        )}) {{ Source = old, Input = old.Input, }};
+    }}
+}}
+"""
     new_file.write_text(f"""
 /**
 Generated from ./events/{event_file.relative_to(dir)}
