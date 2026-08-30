@@ -39,6 +39,6 @@ public static class FloorActions
             if (!room.Definition.AllowedFloors.Contains(floor.Definition))
                 RoomActions.Destroy(new(tower, room) { Source = @event });
         }
-        FloorEvents.OnReplaced(new(tower, floor, @event.NewDefinition) { Source = @event.Source });
+        FloorEvents.OnReplaced(new(tower, floor, @event.NewDefinition), @event);
     }
 }

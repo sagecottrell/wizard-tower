@@ -13,13 +13,13 @@ public partial class Selector : Node3D
     private uint increaseDown;
 
     [Signal]
-    public delegate void OnAcceptEventHandler();
+    public delegate void OnAcceptEventHandler(UserEvent @event);
     [Signal]
-    public delegate void OnCancelEventHandler();
+    public delegate void OnCancelEventHandler(UserEvent @event);
     [Signal]
-    public delegate void OnMouseEnteredEventHandler();
+    public delegate void OnMouseEnteredEventHandler(UserEvent @event);
     [Signal]
-    public delegate void OnMouseExitedEventHandler();
+    public delegate void OnMouseExitedEventHandler(UserEvent @event);
 
     [Export] public uint IncreaseLeft { get => increaseLeft; set => SetSize(left: value); }
     [Export] public uint IncreaseRight { get => increaseRight; set => SetSize(right: value); }
@@ -57,20 +57,20 @@ public partial class Selector : Node3D
     public void InputEvent(Node _camera, InputEvent @event, Vector3 _position, Vector3 _normal, long _shapeIdx)
     {
         if (@event.IsActionReleased(InputMapConstants.RightClick))
-            EmitSignalOnCancel();
+            EmitSignalOnCancel(@event);
         if (@event.IsActionReleased(InputMapConstants.LeftClick))
-            EmitSignalOnAccept();
+            EmitSignalOnAccept(@event);
     }
 
     public void MouseEntered()
     {
-        EmitSignalOnMouseEntered();
+        EmitSignalOnMouseEntered(new());
         _hover();
     }
 
     public void MouseExited()
     {
-        EmitSignalOnMouseExited();
+        EmitSignalOnMouseExited(new());
         _unhover();
     }
 

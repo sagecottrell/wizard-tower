@@ -46,12 +46,12 @@ public partial class BuildMenuHandler(TowerState tower) : CanvasLayer, IUserInte
         if (@event.IsActionPressed(InputMapConstants.OpenBuildMenu))
         {
             if (buildMenu.Visible)
-                UIActions.Hide(new(this) { Input = @event });
+                UIActions.Hide(new(this) { Source = new UserEvent(@event) });
             else
-                UIActions.ShowUI(new(this) { Input = @event });
+                UIActions.ShowUI(new(this) { Source = new UserEvent(@event) });
         }
         else if (@event.IsActionPressed(InputMapConstants.Cancel))
-            UIActions.Hide(new(this) { Input = @event });
+            UIActions.Hide(new(this) { Source = new UserEvent(@event) });
     }
 
 }

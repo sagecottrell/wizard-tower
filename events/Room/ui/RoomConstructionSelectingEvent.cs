@@ -18,6 +18,6 @@ public partial class RoomConstructionSelectingEvent(TowerState tower, RoomDefini
 
 public static class RoomConstructionSelectedEventExtensions {
     public static RoomConstructionSelectedEvent Into(this RoomConstructionSelectingEvent old) {
-        return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, Input = old.Input, };
+        return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, };
     }
 }

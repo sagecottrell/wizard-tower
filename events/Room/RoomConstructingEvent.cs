@@ -17,6 +17,6 @@ public partial class RoomConstructingEvent(TowerState tower, RoomState room) : B
 
 public static class RoomConstructedEventExtensions {
     public static RoomConstructedEvent Into(this RoomConstructingEvent old) {
-        return new(tower: old.TowerState, room: old.Room) { Source = old, Input = old.Input, };
+        return new(tower: old.TowerState, room: old.Room) { Source = old, };
     }
 }

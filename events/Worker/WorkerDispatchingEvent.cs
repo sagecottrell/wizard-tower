@@ -17,6 +17,6 @@ public class WorkerDispatchingEvent(TowerState towerState, WorkerState workerSta
 
 public static class WorkerDispatchedEventExtensions {
     public static WorkerDispatchedEvent Into(this WorkerDispatchingEvent old) {
-        return new(towerState: old.TowerState, workerState: old.WorkerState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, workerState: old.WorkerState) { Source = old, };
     }
 }

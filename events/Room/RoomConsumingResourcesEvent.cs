@@ -19,6 +19,6 @@ public class RoomConsumingResourcesEvent(TowerState towerState, RoomState roomSt
 
 public static class RoomConsumedResourcesEventExtensions {
     public static RoomConsumedResourcesEvent Into(this RoomConsumingResourcesEvent old) {
-        return new(towerState: old.TowerState, roomState: old.RoomState, amount: old.Amount) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, roomState: old.RoomState, amount: old.Amount) { Source = old, };
     }
 }

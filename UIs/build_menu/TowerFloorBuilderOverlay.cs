@@ -195,7 +195,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     #endregion
 
-    private Selector _createTile(int y, int x, Action<int, int> onAccept, uint? right = null)
+    private Selector _createTile(int y, int x, Action<int, int, UserEvent> onAccept, uint? right = null)
     {
         if (_selected.TryGetValue((y, x), out var existing))
             return existing;
@@ -207,25 +207,25 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
         if (right is { } r) tile.SetSize(right: r);
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
-        tile.OnAccept += () => onAccept(x, y);
-        tile.OnCancel += () => _onCancel(x, y);
+        tile.OnAccept += (d) => onAccept(x, y, d);
+        tile.OnCancel += (d) => _onCancel(d);
         return tile;
     }
 
-    private void _onCancel(int x, int y)
+    private void _onCancel(UserEvent d)
     {
-        UIActions.Hide(new(this));
+        UIActions.Hide(new(this) { Source = d });
     }
 
-    private void _onAcceptReplace(int x, int y)
+    private void _onAcceptReplace(int x, int y, UserEvent d)
     {
         if (Tower.State.Floors.TryGetValue(y, out var floor) && _currentFloorDef != null)
         {
-            FloorActions.Replace(new(Tower.State, floor, _currentFloorDef));
+            FloorActions.Replace(new(Tower.State, floor, _currentFloorDef) { Source = d });
         }
     }
 
-    private void _onAcceptExtend(int x, int y)
+    private void _onAcceptExtend(int x, int y, UserEvent d)
     {
         if (Tower.State.Floors.TryGetValue(y, out var floor))
         {
@@ -245,18 +245,18 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
                 this.Error($"Clicked on an existing part of the floor at ({x}, {y}), this should not be possible");
                 return;
             }
-            FloorActions.Extend(new(Tower.State, floor, left, right));
+            FloorActions.Extend(new(Tower.State, floor, left, right) { Source = d });
         }
     }
 
-    private void _onAcceptNewBasement(int x, int y)
+    private void _onAcceptNewBasement(int x, int y, UserEvent d)
     {
-        FloorActions.Construct(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)));
+        FloorActions.Construct(new(Tower.State, Tower.State.NewBasementFloor(_currentFloorDef)) { Source = d });
     }
 
-    private void _onAcceptNewTop(int x, int y)
+    private void _onAcceptNewTop(int x, int y, UserEvent d)
     {
-        FloorActions.Construct(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)));
+        FloorActions.Construct(new(Tower.State, Tower.State.NewTopFloor(_currentFloorDef)) { Source = d });
     }
 
     private bool _canBuildFloorAt(int elevation) => _currentFloorDef?.CanBuildFloorAt(elevation) ?? false;

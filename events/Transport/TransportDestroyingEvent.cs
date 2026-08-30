@@ -17,6 +17,6 @@ public partial class TransportDestroyingEvent(TowerState towerState, TransportSt
 
 public static class TransportDestroyedEventExtensions {
     public static TransportDestroyedEvent Into(this TransportDestroyingEvent old) {
-        return new(towerState: old.TowerState, transportState: old.TransportState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, transportState: old.TransportState) { Source = old, };
     }
 }

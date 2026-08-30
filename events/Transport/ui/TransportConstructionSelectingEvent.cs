@@ -18,6 +18,6 @@ public partial class TransportConstructionSelectingEvent(TowerState towerState, 
 
 public static class TransportConstructionSelectedEventExtensions {
     public static TransportConstructionSelectedEvent Into(this TransportConstructionSelectingEvent old) {
-        return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, };
     }
 }

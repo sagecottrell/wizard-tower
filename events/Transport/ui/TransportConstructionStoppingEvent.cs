@@ -18,6 +18,6 @@ public partial class TransportConstructionStoppingEvent(TowerState towerState, T
 
 public static class TransportConstructionStoppedEventExtensions {
     public static TransportConstructionStoppedEvent Into(this TransportConstructionStoppingEvent old) {
-        return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, };
     }
 }

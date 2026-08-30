@@ -18,6 +18,6 @@ public partial class RoomConstructionStoppingEvent(TowerState tower, RoomDefinit
 
 public static class RoomConstructionStoppedEventExtensions {
     public static RoomConstructionStoppedEvent Into(this RoomConstructionStoppingEvent old) {
-        return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, Input = old.Input, };
+        return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, };
     }
 }

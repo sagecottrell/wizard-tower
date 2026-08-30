@@ -17,6 +17,6 @@ public class RoomStartingWorkEvent(TowerState towerState, RoomState roomState) :
 
 public static class RoomStartedWorkEventExtensions {
     public static RoomStartedWorkEvent Into(this RoomStartingWorkEvent old) {
-        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, };
     }
 }

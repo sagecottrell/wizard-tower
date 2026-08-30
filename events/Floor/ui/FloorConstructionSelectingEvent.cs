@@ -18,6 +18,6 @@ public partial class FloorConstructionSelectingEvent(TowerState towerState, Floo
 
 public static class FloorConstructionSelectedEventExtensions {
     public static FloorConstructionSelectedEvent Into(this FloorConstructionSelectingEvent old) {
-        return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, };
     }
 }

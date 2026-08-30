@@ -18,6 +18,6 @@ public partial class FloorConstructionStoppingEvent(TowerState towerState, Floor
 
 public static class FloorConstructionStoppedEventExtensions {
     public static FloorConstructionStoppedEvent Into(this FloorConstructionStoppingEvent old) {
-        return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, };
     }
 }

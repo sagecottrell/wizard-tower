@@ -11,6 +11,6 @@ public static partial class UIActions
         if (!InterfaceEvents.OnHiding(@event).IsAllowed)
             return;
         @event.UserInterface.Hide();
-        InterfaceEvents.OnHided(new InterfaceHidedEvent(@event.UserInterface).CopySourceInput(@event));
+        InterfaceEvents.OnHided(@event.Into());
     }
 }

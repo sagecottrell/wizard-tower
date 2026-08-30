@@ -1,24 +1,20 @@
-using Godot;
 using wizardtower.events.interfaces;
 
 namespace wizardtower.events;
 
 public abstract class BaseEvent : IEvent
 {
-    public IEvent? Source { get; set; }
+    private IEvent? _source;
+    public IEvent? Source { get => _source; set { 
+        _source = value; 
+        if (value is BaseEvent b && b.Input is {} i) 
+            Input = i; 
+        else if (value is UserEvent {} i2)
+            Input = i2;
+    } }
 
     /// <summary>
     /// the input event that triggered this chain of events
     /// </summary>
-    public InputEvent? Input { get; set; }
-}
-
-public static class BaseEventExtensions
-{
-    public static T CopySourceInput<T>(this T @event, IEvent source) where T : BaseEvent
-    {
-        @event.Source = source;
-        @event.Input = source.Input;
-        return @event;
-    }
+    public UserEvent? Input { get; private set; }
 }

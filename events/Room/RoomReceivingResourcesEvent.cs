@@ -19,6 +19,6 @@ public class RoomReceivingResourcesEvent(TowerState towerState, RoomState roomSt
 
 public static class RoomReceivedResourcesEventExtensions {
     public static RoomReceivedResourcesEvent Into(this RoomReceivingResourcesEvent old) {
-        return new(towerState: old.TowerState, roomState: old.RoomState, resources: old.Resources) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, roomState: old.RoomState, resources: old.Resources) { Source = old, };
     }
 }

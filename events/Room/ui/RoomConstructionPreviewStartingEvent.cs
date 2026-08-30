@@ -18,6 +18,6 @@ public partial class RoomConstructionPreviewStartingEvent(TowerState towerState,
 
 public static class RoomConstructionPreviewStartedEventExtensions {
     public static RoomConstructionPreviewStartedEvent Into(this RoomConstructionPreviewStartingEvent old) {
-        return new(towerState: old.TowerState, previewState: old.RoomState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, previewState: old.RoomState) { Source = old, };
     }
 }

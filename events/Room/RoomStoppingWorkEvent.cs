@@ -17,6 +17,6 @@ public class RoomStoppingWorkEvent(TowerState towerState, RoomState roomState) :
 
 public static class RoomStoppedWorkEventExtensions {
     public static RoomStoppedWorkEvent Into(this RoomStoppingWorkEvent old) {
-        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, };
     }
 }

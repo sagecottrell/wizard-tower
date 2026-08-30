@@ -18,6 +18,6 @@ public partial class TowerResourceChangingEvent(TowerState tower, NumericDict<It
 
 public static class TowerResourceChangedEventExtensions {
     public static TowerResourceChangedEvent Into(this TowerResourceChangingEvent old) {
-        return new(tower: old.TowerState, amount: old.Amount) { Source = old, Input = old.Input, };
+        return new(tower: old.TowerState, amount: old.Amount) { Source = old, };
     }
 }

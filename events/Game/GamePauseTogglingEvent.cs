@@ -13,6 +13,6 @@ public class GamePauseTogglingEvent(bool paused) : BaseEvent
 
 public static class GamePauseToggledEventExtensions {
     public static GamePauseToggledEvent Into(this GamePauseTogglingEvent old) {
-        return new(paused: old.Paused) { Source = old, Input = old.Input, };
+        return new(paused: old.Paused) { Source = old, };
     }
 }

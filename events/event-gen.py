@@ -46,7 +46,7 @@ public static class {cls_name}Extensions {{
         return new({", ".join(
 f"{k}: old.{v}"
 for k, v in prop_map.items()
-        )}) {{ Source = old, Input = old.Input, }};
+        )}) {{ Source = old, }};
     }}
 }}
 """
@@ -89,9 +89,15 @@ namespace wizardtower.events.handlers;
         for part in reversed(parts):
             stripped = stripped.removeprefix(part)
         event_prop = f"public static Event<{event}> {stripped} {{ get; set; }} = new();"
-        method = f"public static {event} On{stripped}({event} e) => {stripped}.InvokeSafely(e);"
 
-        template += f"\n{indent}{event_prop}\n{indent}{method}"
+        template += f"""
+{indent}{event_prop}
+{indent}public static {event} On{stripped}({event} e) => {stripped}.InvokeSafely(e);
+{indent}public static {event} On{stripped}({event} e, BaseEvent source) {{ 
+{indent}    e.Source = source; 
+{indent}    return {stripped}.InvokeSafely(e); 
+{indent}}}
+"""
 
     template += "".join('\n' + ("    " * i) + '}' for i in reversed(range(len(parts))))
     file.write_text(template)

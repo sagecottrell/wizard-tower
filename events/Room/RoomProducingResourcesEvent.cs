@@ -20,6 +20,6 @@ public class RoomProducingResourcesEvent(TowerState towerState, RoomState roomSt
 
 public static class RoomProducedResourcesEventExtensions {
     public static RoomProducedResourcesEvent Into(this RoomProducingResourcesEvent old) {
-        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, };
     }
 }

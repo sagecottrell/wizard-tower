@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://dtitpml18d534"]
 
 [ext_resource type="Script" uid="uid://qlliod54loue" path="res://UIs/selector/Selector.cs" id="1_djx0c"]
-[ext_resource type="Shape3D" uid="uid://cnci7gs5vw8ok" path="res://UIs/selector/selectorBox.tres" id="2_ovasl"]
 [ext_resource type="Material" uid="uid://dr7qt0nbawbsl" path="res://UIs/selector/selectorMaterialEnabled.tres" id="3_bl845"]
 [ext_resource type="Material" uid="uid://cedlx6565416f" path="res://UIs/selector/selectorMaterialHover.tres" id="4_71pkh"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_71pkh"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_bl845"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_71pkh"]
 next_pass = ExtResource("4_71pkh")
@@ -22,6 +21,11 @@ next_pass = SubResource("StandardMaterial3D_bw2ir")
 transparency = 1
 albedo_color = Color(0, 1, 0, 0.44705883)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vlx3k"]
+next_pass = SubResource("StandardMaterial3D_x2b8x")
+transparency = 1
+albedo_color = Color(0, 1, 0, 0.44705883)
+
 [sub_resource type="QuadMesh" id="QuadMesh_sexh6"]
 material = ExtResource("3_bl845")
 
@@ -29,9 +33,9 @@ material = ExtResource("3_bl845")
 script = ExtResource("1_djx0c")
 vis = NodePath("vis")
 area3d = NodePath("Area3D")
-box = SubResource("BoxShape3D_71pkh")
+box = SubResource("BoxShape3D_bl845")
 selectorMaterial = ExtResource("3_bl845")
-hoverMaterial = SubResource("StandardMaterial3D_x2b8x")
+hoverMaterial = SubResource("StandardMaterial3D_vlx3k")
 shape = NodePath("Area3D/CollisionShape3D")
 mesh = NodePath("vis/Selected")
 
@@ -39,7 +43,7 @@ mesh = NodePath("vis/Selected")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1508121608]
-shape = ExtResource("2_ovasl")
+shape = SubResource("BoxShape3D_bl845")
 debug_color = Color(1, 0.011764706, 0.05882353, 1)
 
 [node name="vis" type="Node3D" parent="." unique_id=1425752736]

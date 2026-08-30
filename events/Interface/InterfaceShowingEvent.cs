@@ -15,6 +15,6 @@ public partial class InterfaceShowingEvent(IUserInterface ui) : BaseEvent, IDeni
 
 public static class InterfaceShowedEventExtensions {
     public static InterfaceShowedEvent Into(this InterfaceShowingEvent old) {
-        return new(ui: old.UserInterface) { Source = old, Input = old.Input, };
+        return new(ui: old.UserInterface) { Source = old, };
     }
 }

@@ -19,6 +19,6 @@ public partial class TransportConstructionPreviewStartingEvent(TowerState towerS
 
 public static class TransportConstructionPreviewStartedEventExtensions {
     public static TransportConstructionPreviewStartedEvent Into(this TransportConstructionPreviewStartingEvent old) {
-        return new(towerState: old.TowerState, previewState: old.PreviewState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, previewState: old.PreviewState) { Source = old, };
     }
 }

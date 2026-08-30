@@ -66,30 +66,30 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         RoomEvents.Ui.ConstructionSelected -= _event_reset;
     }
 
-    private void _event_reset(IEvent @event) => _reset();
+    private void _event_reset(IEvent @event) => _reset(@event);
 
-    private void _reset()
+    private void _reset(IEvent d)
     {
         _positionSelectors.FreeChildren<Selector>();
         _heightSelectors.FreeChildren<Selector>();
         _uiLabel.Visible = false;
         _positionSelected.Clear();
         _heightSelected.Clear();
-        _revertFloorVis();
+        _revertFloorVis(d);
         _currentTransportDef = null;
         BuildingTransport?.QueueFree();
     }
 
-    private void _revertFloorVis()
+    private void _revertFloorVis(IEvent d)
     {
-        TransportEvents.Ui.OnConstructionPreviewStopped(new(Tower.State));
+        TransportEvents.Ui.OnConstructionPreviewStopped(new(Tower.State) { Source = d });
     }
 
     private void _onTransportConstructionSelected(TransportConstructionSelectedEvent @event)
     {
         if (_currentTransportDef == @event.TransportDefinition)
             return;
-        _reset();
+        _reset(@event);
 
         _currentTransportDef = @event.TransportDefinition;
         _uiLabel.Visible = true;
@@ -111,18 +111,17 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
                     _positionSelected[(x, y)] = s;
                     s.Position = s.TowerCoordToNodePosition(x, y);
                     _positionSelectors.AddChild(s);
-                    s.OnMouseEntered += () => _onMouseEnterStart(x, y);
-                    s.OnAccept += () => _onAcceptStart(x, y);
+                    s.OnMouseEntered += (d) => _onMouseEnterStart(x, y, d);
+                    s.OnAccept += (d) => _onAcceptStart(x, y);
                     s.OnCancel += _onCancel;
                 }
             }
         }
-
     }
 
-    private void _onMouseEnterStart(int x, int y)
+    private void _onMouseEnterStart(int x, int y, UserEvent d)
     {
-        _revertFloorVis();
+        _revertFloorVis(d);
         if (_currentTransportDef is null)
             return;
         BuildingTransport ??= this.AddedChild(new TransportScript()
@@ -136,12 +135,12 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         });
         BuildingTransport.State.Elevation = y;
         BuildingTransport.State.HorizontalPosition = x;
-        TransportEvents.Ui.OnConstructionPreviewStarted(new(Tower.State, BuildingTransport.State));
+        TransportEvents.Ui.OnConstructionPreviewStarted(new(Tower.State, BuildingTransport.State) { Source = d });
     }
 
-    private void _onCancel()
+    private void _onCancel(UserEvent d)
     {
-        UIActions.Hide(new(this));
+        UIActions.Hide(new(this) { Source = d });
     }
 
     private void _onAcceptStart(int floorPosition, int elevation)
@@ -164,8 +163,8 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
                 _heightSelected[(x, e)] = s;
                 s.Position = s.TowerCoordToNodePosition(x, e);
                 _heightSelectors.AddChild(s);
-                s.OnMouseEntered += () => _onMouseEnterFinal(x, y0, height);
-                s.OnAccept += () => _onAcceptFinal(x, y0, height);
+                s.OnMouseEntered += (d) => _onMouseEnterFinal(x, y0, height, d);
+                s.OnAccept += (d) => _onAcceptFinal(x, y0, height, d);
                 s.OnCancel += _onCancel;
             }
         }
@@ -173,9 +172,9 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         _heightSelectors.Visible = true;
     }
 
-    private void _onMouseEnterFinal(int x, int y, uint height)
+    private void _onMouseEnterFinal(int x, int y, uint height, UserEvent d)
     {
-        _revertFloorVis();
+        _revertFloorVis(d);
         if (_currentTransportDef is null)
             return;
         BuildingTransport ??= this.AddedChild(new TransportScript()
@@ -189,10 +188,10 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         BuildingTransport.State.Height = height;
         BuildingTransport.State.Elevation = y;
         BuildingTransport.State.HorizontalPosition = x;
-        TransportEvents.Ui.OnConstructionPreviewStarted(new(Tower.State, BuildingTransport.State));
+        TransportEvents.Ui.OnConstructionPreviewStarted(new(Tower.State, BuildingTransport.State) { Source = d });
     }
 
-    private void _onAcceptFinal(int x, int y, uint height)
+    private void _onAcceptFinal(int x, int y, uint height, UserEvent d)
     {
         BuildingTransport?.QueueFree();
         BuildingTransport = null;
@@ -205,10 +204,10 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
             Elevation = y,
             HorizontalPosition = x,
         };
-        TransportActions.Construct(new(Tower.State, room));
+        TransportActions.Construct(new(Tower.State, room) { Source = d });
 
-        if (TransportEvents.Ui.OnConstructionStopping(new(Tower.State, _currentTransportDef)).IsAllowed)
-            TransportEvents.Ui.OnConstructionStopped(new(Tower.State, _currentTransportDef));
+        if (TransportEvents.Ui.OnConstructionStopping(new(Tower.State, _currentTransportDef) { Source = d }).IsAllowed)
+            TransportEvents.Ui.OnConstructionStopped(new(Tower.State, _currentTransportDef) { Source = d });
         else
         {
             for (var i = 0; i < _currentTransportDef.Width; i++)

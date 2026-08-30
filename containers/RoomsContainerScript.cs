@@ -112,7 +112,7 @@ public partial class RoomsContainerScript(TowerScript tower) : Node3D()
 			var y = Mathf.FloorToInt(dir.Y);
 			if (Tower.State.RoomsOnFloor(y).FirstOrDefault(r => x >= r.FloorPosition && x < r.FloorPosition + r.Definition.Width) is RoomState room)
 			{
-				UIActions.SelectRoom(new(Tower.State, room) { Input = @event });
+				UIActions.SelectRoom(new(Tower.State, room) { Source = new UserEvent(@event) });
 			}
 		}
 	}

@@ -84,7 +84,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
             var y = Mathf.FloorToInt(dir.Y);
             if (Tower.State.TransportsOnFloor(y).FirstOrDefault(r => x >= r.HorizontalPosition && x < r.HorizontalPosition + r.Definition.Width) is TransportState transport)
             {
-                UIActions.SelectTransport(new(Tower.State, transport) { Input = @event });
+                UIActions.SelectTransport(new(Tower.State, transport) { Source = new UserEvent(@event) });
             }
         }
     }

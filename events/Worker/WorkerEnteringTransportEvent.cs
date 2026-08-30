@@ -18,6 +18,6 @@ public class WorkerEnteringTransportEvent(TowerState towerState, WorkerState wor
 
 public static class WorkerEnteredTransportEventExtensions {
     public static WorkerEnteredTransportEvent Into(this WorkerEnteringTransportEvent old) {
-        return new(towerState: old.TowerState, workerState: old.WorkerState, transportState: old.TransportState) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, workerState: old.WorkerState, transportState: old.TransportState) { Source = old, };
     }
 }

@@ -15,6 +15,6 @@ public partial class InterfaceHidingEvent(IUserInterface ui) : BaseEvent, IDenia
 
 public static class InterfaceHidedEventExtensions {
     public static InterfaceHidedEvent Into(this InterfaceHidingEvent old) {
-        return new(ui: old.UserInterface) { Source = old, Input = old.Input, };
+        return new(ui: old.UserInterface) { Source = old, };
     }
 }

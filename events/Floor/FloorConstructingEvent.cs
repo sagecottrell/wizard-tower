@@ -17,6 +17,6 @@ public partial class FloorConstructingEvent(TowerState tower, FloorState floor) 
 
 public static class FloorConstructedEventExtensions {
     public static FloorConstructedEvent Into(this FloorConstructingEvent old) {
-        return new(tower: old.TowerState, floor: old.Floor) { Source = old, Input = old.Input, };
+        return new(tower: old.TowerState, floor: old.Floor) { Source = old, };
     }
 }

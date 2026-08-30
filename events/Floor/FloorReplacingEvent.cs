@@ -19,6 +19,6 @@ public partial class FloorReplacingEvent(TowerState towerState, FloorState floor
 
 public static class FloorReplacedEventExtensions {
     public static FloorReplacedEvent Into(this FloorReplacingEvent old) {
-        return new(towerState: old.TowerState, floor: old.Floor, newDefinition: old.NewDefinition) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, floor: old.Floor, newDefinition: old.NewDefinition) { Source = old, };
     }
 }

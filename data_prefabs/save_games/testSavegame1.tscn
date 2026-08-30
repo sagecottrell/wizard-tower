@@ -5,13 +5,14 @@
 [ext_resource type="Resource" uid="uid://dgyunb4jt28yg" path="res://data_prefabs/towers/testtower1.tres" id="3_nwfsl"]
 [ext_resource type="Script" uid="uid://bd046eokvcnu2" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="4_481j5"]
 [ext_resource type="Material" uid="uid://7yvdrrr7ro2h" path="res://rooms/scenes/hologram-material.tres" id="4_wqpcj"]
+[ext_resource type="Script" uid="uid://cc0w3claqqaay" path="res://UIs/resource_popup/ResourcePopupContainer.cs" id="6_25i7j"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_wqpcj"]
 
 [sub_resource type="Sky" id="Sky_28aoi"]
 sky_material = SubResource("ProceduralSkyMaterial_wqpcj")
 
-[sub_resource type="Environment" id="Environment_wqpcj"]
+[sub_resource type="Environment" id="Environment_25i7j"]
 background_mode = 2
 sky = SubResource("Sky_28aoi")
 
@@ -26,7 +27,7 @@ HologramMaterial = ExtResource("4_wqpcj")
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1123721676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
 top_level = true
-environment = SubResource("Environment_wqpcj")
+environment = SubResource("Environment_25i7j")
 projection = 1
 current = true
 size = 20.0
@@ -37,5 +38,17 @@ process_priority = 300
 process_physics_priority = 300
 script = ExtResource("4_481j5")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1260661750]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=964443372]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1200.0
+offset_bottom = 800.0
+mouse_filter = 2
+script = ExtResource("6_25i7j")
+Easing = 0.17677654
+MaxTime = 1.0
 
 [editable path="SaveFile"]

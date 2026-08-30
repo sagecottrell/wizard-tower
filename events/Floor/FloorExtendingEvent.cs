@@ -20,6 +20,6 @@ public partial class FloorExtendingEvent(TowerState towerState, FloorState floor
 
 public static class FloorExtendedEventExtensions {
     public static FloorExtendedEvent Into(this FloorExtendingEvent old) {
-        return new(towerState: old.TowerState, floor: old.Floor, extendedLeft: old.ExtendedLeft, extendedRight: old.ExtendedRight) { Source = old, Input = old.Input, };
+        return new(towerState: old.TowerState, floor: old.Floor, extendedLeft: old.ExtendedLeft, extendedRight: old.ExtendedRight) { Source = old, };
     }
 }
