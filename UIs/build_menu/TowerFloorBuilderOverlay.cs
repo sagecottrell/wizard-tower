@@ -85,8 +85,8 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     private void _tryStopConstruction(FloorState floor)
     {
-        if (FloorEvents.Ui.OnConstructionStopping(new(Tower.State, floor.Definition)).IsAllowed)
-            FloorEvents.Ui.OnConstructionStopped(new(Tower.State, floor.Definition));
+        if (FloorEvents.Ui.TryConstructionStopping(new(Tower.State, floor.Definition), out var e))
+            FloorEvents.Ui.OnConstructionStopped(e);
         else
         {
             for (var i = floor.LeftBound; i <= floor.RightBound; i++)
@@ -169,10 +169,14 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
 
     private void _matchWidth(FloorState floor, int left, int right)
     {
-        for (int i = left; i < floor.LeftBound; i++)
-            _createTile(floor.Elevation, i, _onAcceptExtend);
-        for (int i = floor.RightBound + 1; i <= right; i++)
-            _createTile(floor.Elevation, i, _onAcceptExtend);
+        if (FloorEvents.Ui.TryExtensionShowing(new(Tower.State, floor.Definition, floor.Elevation, left, right), out var e))
+        {
+            for (int i = e.Left; i < floor.LeftBound; i++)
+                _createTile(e.Elevation, i, _onAcceptExtend);
+            for (int i = floor.RightBound + 1; i <= e.Right; i++)
+                _createTile(e.Elevation, i, _onAcceptExtend);
+            FloorEvents.Ui.OnExtensionShowed(e);
+        }
     }
 
     #endregion
@@ -208,7 +212,7 @@ public partial class TowerFloorBuilderOverlay(TowerScript tower) : Node3D(), IUs
         tile.Position = tile.TowerCoordToNodePosition(x, y);
         //tile.OnMouseEntered += _ => _onMouseEnter(x, y);
         tile.OnAccept += (d) => onAccept(x, y, d);
-        tile.OnCancel += (d) => _onCancel(d);
+        tile.OnCancel += _onCancel;
         return tile;
     }
 

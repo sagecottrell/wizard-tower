@@ -3,6 +3,10 @@ import pathlib
 import re
 
 
+def _indent(i: int, string: str, spacer = "    ") -> str:
+    indent = spacer * i
+    return "\n".join(indent + p for p in string.splitlines())
+
 dir = pathlib.Path(__file__).parent
 
 filter_re = re.compile(r"^([A-Z][a-z]+)+([A-Z][a-z]+ed)([A-Z][a-z]+)*Event.cs$")
@@ -10,6 +14,8 @@ param_map_re = re.compile(r"    public (?P<type>\w+(<(\w+,? ?)+>)?) (?P<prop>\w+
 param_re = re.compile(r'(\(|, )\w+(<(\w+,? ?)+>)? (\w+)')
 
 events: dict[tuple[str, ...], list[str]] = defaultdict(list)
+
+pairs: dict[tuple[str, ...], dict[str, str]] = defaultdict(dict) # pre-event to post-event
 
 for event_file in dir.rglob("*Event.cs"):
     if not filter_re.match(event_file.name):
@@ -19,8 +25,11 @@ for event_file in dir.rglob("*Event.cs"):
     cls_name = event_file.name.removesuffix('.cs')
     new_name = cls_name.replace("ed", "ing", count=1)
     new_file = event_file.with_name(new_name + '.cs')
-    events[event_file.parent.relative_to(dir).parts].append(cls_name)
-    events[event_file.parent.relative_to(dir).parts].append(new_name)
+    path_parts = event_file.parent.relative_to(dir).parts
+    events[path_parts].append(cls_name)
+    events[path_parts].append(new_name)
+
+    pairs[path_parts][new_name] = cls_name
 
     if new_file.exists() and "Generated from ./events/" not in new_file.read_text()[:100]:
         continue
@@ -73,6 +82,7 @@ for parts, handlers in events.items():
     ]
 
     template = f"""
+using System.Diagnostics.CodeAnalysis;
 using wizardtower.events.features;
 {"\n".join(namespaces)}
 
@@ -90,14 +100,30 @@ namespace wizardtower.events.handlers;
             stripped = stripped.removeprefix(part)
         event_prop = f"public static Event<{event}> {stripped} {{ get; set; }} = new();"
 
-        template += f"""
-{indent}{event_prop}
-{indent}public static {event} On{stripped}({event} e) => {stripped}.InvokeSafely(e);
-{indent}public static {event} On{stripped}({event} e, BaseEvent source) {{ 
-{indent}    e.Source = source; 
-{indent}    return {stripped}.InvokeSafely(e); 
-{indent}}}
-"""
+        template += _indent(i=1, spacer=indent, string=f"""
+{event_prop}
+public static {event} On{stripped}({event} e) => {stripped}.InvokeSafely(e);
+public static {event} On{stripped}({event} e, BaseEvent source) {{ 
+    e.Source = source; 
+    return {stripped}.InvokeSafely(e); 
+}}
+""")
+
+    for pre, post in pairs[parts].items():
+        stripped = pre.removesuffix('Event')
+        for part in reversed(parts):
+            stripped = stripped.removeprefix(part)
+
+        template += _indent(i=1, spacer=indent, string=f"""
+public static bool Try{stripped}({pre} pre, [NotNullWhen(true)] out {post}? e) {{
+    e = null;
+    if (On{stripped}(pre).IsAllowed) {{
+        e = pre.Into();
+        return true;
+    }}
+    return false;
+}}
+""")
 
     template += "".join('\n' + ("    " * i) + '}' for i in reversed(range(len(parts))))
     file.write_text(template)
