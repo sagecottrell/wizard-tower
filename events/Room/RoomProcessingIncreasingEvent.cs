@@ -21,4 +21,9 @@ public static class RoomProcessingIncreasedEventExtensions {
     public static RoomProcessingIncreasedEvent Into(this RoomProcessingIncreasingEvent old) {
         return new(roomState: old.RoomState, state: old.State) { Source = old, };
     }
+
+    public static RoomProcessingIncreasingEvent RoomProcessingIncreasingEvent(this IEvent ev, RoomState roomState, RoomConvertResourcesState state)
+    {
+        return new(roomState, state) { Source = ev };
+    }
 }

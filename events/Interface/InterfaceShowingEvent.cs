@@ -17,4 +17,9 @@ public static class InterfaceShowedEventExtensions {
     public static InterfaceShowedEvent Into(this InterfaceShowingEvent old) {
         return new(ui: old.UserInterface) { Source = old, };
     }
+
+    public static InterfaceShowingEvent InterfaceShowingEvent(this IEvent ev, IUserInterface ui)
+    {
+        return new(ui) { Source = ev };
+    }
 }

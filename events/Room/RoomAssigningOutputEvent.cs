@@ -21,4 +21,9 @@ public static class RoomAssignedOutputEventExtensions {
     public static RoomAssignedOutputEvent Into(this RoomAssigningOutputEvent old) {
         return new(tower: old.TowerState, room: old.RoomState, targetRoom: old.TargetRoom, path: old.Path) { Source = old, };
     }
+
+    public static RoomAssigningOutputEvent RoomAssigningOutputEvent(this IEvent ev, TowerState tower, RoomState room, RoomState targetRoom, RoomStateWorkerPath path)
+    {
+        return new(tower, room, targetRoom, path) { Source = ev };
+    }
 }

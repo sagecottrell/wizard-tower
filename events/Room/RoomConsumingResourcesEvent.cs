@@ -21,4 +21,9 @@ public static class RoomConsumedResourcesEventExtensions {
     public static RoomConsumedResourcesEvent Into(this RoomConsumingResourcesEvent old) {
         return new(towerState: old.TowerState, roomState: old.RoomState, amount: old.Amount) { Source = old, };
     }
+
+    public static RoomConsumingResourcesEvent RoomConsumingResourcesEvent(this IEvent ev, TowerState towerState, RoomState roomState, NumericDict<ItemDefinition, uint> amount)
+    {
+        return new(towerState, roomState, amount) { Source = ev };
+    }
 }

@@ -55,7 +55,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         switch (@event.UserInterface)
         {
             case TransportDetailsUI:
-                UIActions.DeselectRoom(new(tower, RoomState));
+                UIActions.DeselectRoom(new(tower, RoomState) { Source = @event });
                 break;
         }
     }
@@ -64,6 +64,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         RoomState = null;
         Visible = false;
+        ui.FreeChildren();
     }
 
     private void _onRoomDeselected(RoomDeselectedEvent @event)
@@ -77,7 +78,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         if (RoomState is null)
             return;
-        UIActions.DeselectRoom(new(tower, RoomState));
+        UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
     }
 
     private void _onProducedResources(RoomProducedResourcesEvent ev)
@@ -94,24 +95,24 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
         if (@event.RoomState == RoomState)
         {
-            UIActions.DeselectRoom(new(tower, RoomState));
+            UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
             return;
         }
         if (RoomState is not null)
-            UIActions.DeselectRoom(new(tower, RoomState));
+            UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
 
         RoomState = @event.RoomState;
         Visible = true;
-        ui.Child<VBoxContainer>("buttons")?.QueueFree();
-        var buttons = ui.AddedChild(new VBoxContainer() { Name = "buttons" });
 
         _pushText();
 
+        var buttons = ui.EnsureChild("buttons", () => new VBoxContainer() { Name = "buttons" });
+
         if (RoomState.ConvertResourcesState?.SelectedRecipe is not null || RoomState.Warehouse is not null)
-            buttons.AddedChild(new Button() { Text = "Configure Deliveries" });
+            buttons.EnsureChild("configure-deliveries", () => new Button() { Text = "Configure Deliveries" });
 
         if (RoomState.Definition.ResourceConversion?.WorkerKind is not null || RoomState.Definition.ProvideWorkers is not null)
-            buttons.AddedChild(new Button() { Text = "Configure Workers" });
+            buttons.EnsureChild("configure-workers", () => new Button() { Text = "Configure Workers" });
 
         InterfaceEvents.OnShowed(new(this));
     }

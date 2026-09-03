@@ -18,4 +18,9 @@ public static class TransportConstructionPreviewStoppedEventExtensions {
     public static TransportConstructionPreviewStoppedEvent Into(this TransportConstructionPreviewStoppingEvent old) {
         return new(towerState: old.TowerState) { Source = old, };
     }
+
+    public static TransportConstructionPreviewStoppingEvent TransportConstructionPreviewStoppingEvent(this IEvent ev, TowerState towerState)
+    {
+        return new(towerState) { Source = ev };
+    }
 }

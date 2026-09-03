@@ -19,4 +19,9 @@ public static class WorkerDispatchedEventExtensions {
     public static WorkerDispatchedEvent Into(this WorkerDispatchingEvent old) {
         return new(towerState: old.TowerState, workerState: old.WorkerState) { Source = old, };
     }
+
+    public static WorkerDispatchingEvent WorkerDispatchingEvent(this IEvent ev, TowerState towerState, WorkerState workerState)
+    {
+        return new(towerState, workerState) { Source = ev };
+    }
 }

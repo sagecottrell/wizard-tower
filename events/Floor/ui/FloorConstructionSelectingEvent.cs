@@ -20,4 +20,9 @@ public static class FloorConstructionSelectedEventExtensions {
     public static FloorConstructionSelectedEvent Into(this FloorConstructionSelectingEvent old) {
         return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, };
     }
+
+    public static FloorConstructionSelectingEvent FloorConstructionSelectingEvent(this IEvent ev, TowerState towerState, FloorDefinition floorDefinition)
+    {
+        return new(towerState, floorDefinition) { Source = ev };
+    }
 }

@@ -19,4 +19,9 @@ public static class RoomSelectedEventExtensions {
     public static RoomSelectedEvent Into(this RoomSelectingEvent old) {
         return new(tower: old.TowerState, room: old.RoomState) { Source = old, };
     }
+
+    public static RoomSelectingEvent RoomSelectingEvent(this IEvent ev, TowerState tower, RoomState room)
+    {
+        return new(tower, room) { Source = ev };
+    }
 }

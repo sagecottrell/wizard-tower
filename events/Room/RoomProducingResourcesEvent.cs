@@ -22,4 +22,9 @@ public static class RoomProducedResourcesEventExtensions {
     public static RoomProducedResourcesEvent Into(this RoomProducingResourcesEvent old) {
         return new(towerState: old.TowerState, roomState: old.RoomState) { Source = old, };
     }
+
+    public static RoomProducingResourcesEvent RoomProducingResourcesEvent(this IEvent ev, TowerState towerState, RoomState roomState)
+    {
+        return new(towerState, roomState) { Source = ev };
+    }
 }

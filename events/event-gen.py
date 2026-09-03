@@ -11,7 +11,7 @@ dir = pathlib.Path(__file__).parent
 
 filter_re = re.compile(r"^([A-Z][a-z]+)+([A-Z][a-z]+ed)([A-Z][a-z]+)*Event.cs$")
 param_map_re = re.compile(r"    public (?P<type>\w+(<(\w+,? ?)+>)?) (?P<prop>\w+) { get; set; } = (?P<param>\w+);")
-param_re = re.compile(r'(\(|, )\w+(<(\w+,? ?)+>)? (\w+)')
+param_re = re.compile(r'((\(|, )(?P<type>\w+(<(\w+,? ?)+>)?) (?P<name>\w+))')
 
 events: dict[tuple[str, ...], list[str]] = defaultdict(list)
 
@@ -41,8 +41,11 @@ for event_file in dir.rglob("*Event.cs"):
     text = text.replace("{ get; }", "{ get; set; }")
 
     prop_map: dict[str, str] = {}
-    for match in param_re.findall(text[:text.index('BaseEvent')]):
+    param_types: list[dict[str, str]] = []
+    for match in param_re.findall(text[text.index("class"):text.index(':')]):
         prop_map[match[-1]] = ""
+        param_types.append(param_re.match(match[0]).groupdict())
+
     for prop in param_map_re.finditer(text):
         d = prop.groupdict()
         if d['param'] in prop_map:
@@ -57,8 +60,24 @@ f"{k}: old.{v}"
 for k, v in prop_map.items()
         )}) {{ Source = old, }};
     }}
+
+    public static {new_name} {new_name}(this IEvent ev, {", ".join(
+        f"{groupdict['type']} {groupdict['name']}"
+        for groupdict in param_types
+    )})
+    {{
+        return new({", ".join(k['name'] for k in param_types)}) {{ Source = ev }};
+    }}
 }}
 """
+
+    if "wizardtower.events.interfaces" not in text:
+        text = f"""
+using wizardtower.events.interfaces;
+
+{text}
+"""
+
     new_file.write_text(f"""
 /**
 Generated from ./events/{event_file.relative_to(dir)}

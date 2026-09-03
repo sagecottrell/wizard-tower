@@ -20,4 +20,9 @@ public static class RoomConstructionPreviewStartedEventExtensions {
     public static RoomConstructionPreviewStartedEvent Into(this RoomConstructionPreviewStartingEvent old) {
         return new(towerState: old.TowerState, previewState: old.RoomState) { Source = old, };
     }
+
+    public static RoomConstructionPreviewStartingEvent RoomConstructionPreviewStartingEvent(this IEvent ev, TowerState towerState, RoomState previewState)
+    {
+        return new(towerState, previewState) { Source = ev };
+    }
 }

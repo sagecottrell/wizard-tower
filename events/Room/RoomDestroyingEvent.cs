@@ -19,4 +19,9 @@ public static class RoomDestroyedEventExtensions {
     public static RoomDestroyedEvent Into(this RoomDestroyingEvent old) {
         return new(towerState: old.TowerState, room: old.Room) { Source = old, };
     }
+
+    public static RoomDestroyingEvent RoomDestroyingEvent(this IEvent ev, TowerState towerState, RoomState room)
+    {
+        return new(towerState, room) { Source = ev };
+    }
 }

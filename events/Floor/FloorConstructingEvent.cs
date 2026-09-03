@@ -19,4 +19,9 @@ public static class FloorConstructedEventExtensions {
     public static FloorConstructedEvent Into(this FloorConstructingEvent old) {
         return new(tower: old.TowerState, floor: old.Floor) { Source = old, };
     }
+
+    public static FloorConstructingEvent FloorConstructingEvent(this IEvent ev, TowerState tower, FloorState floor)
+    {
+        return new(tower, floor) { Source = ev };
+    }
 }

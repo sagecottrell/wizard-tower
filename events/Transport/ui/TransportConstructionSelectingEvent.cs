@@ -20,4 +20,9 @@ public static class TransportConstructionSelectedEventExtensions {
     public static TransportConstructionSelectedEvent Into(this TransportConstructionSelectingEvent old) {
         return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, };
     }
+
+    public static TransportConstructionSelectingEvent TransportConstructionSelectingEvent(this IEvent ev, TowerState towerState, TransportDefinition transportDefinition)
+    {
+        return new(towerState, transportDefinition) { Source = ev };
+    }
 }

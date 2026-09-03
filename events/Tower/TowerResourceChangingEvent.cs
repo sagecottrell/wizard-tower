@@ -20,4 +20,9 @@ public static class TowerResourceChangedEventExtensions {
     public static TowerResourceChangedEvent Into(this TowerResourceChangingEvent old) {
         return new(tower: old.TowerState, amount: old.Amount) { Source = old, };
     }
+
+    public static TowerResourceChangingEvent TowerResourceChangingEvent(this IEvent ev, TowerState tower, NumericDict<ItemDefinition, uint> amount)
+    {
+        return new(tower, amount) { Source = ev };
+    }
 }

@@ -20,6 +20,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
 
     public RoomState PreviousState { get; set; } = new();
 
+    private Rect2I _collision = new();
+
     private Node? RoomScene { get; set; }
     private GLTFImport? GLTFRoomScene => RoomScene as GLTFImport;
 
@@ -36,6 +38,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
     {
         RoomEvents.Ui.Selected += _onRoomSelected;
         RoomEvents.Ui.Deselected += _onRoomDeselected;
+        RoomEvents.Ui.ConstructionSelectorShowing += _onConstructionShowing;
 
         RoomEvents.ProducedResources += _onProducedResources;
         RoomEvents.ConsumedResources += _onConsumedResources;
@@ -47,6 +50,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
     {
         RoomEvents.Ui.Selected -= _onRoomSelected;
         RoomEvents.Ui.Deselected -= _onRoomDeselected;
+        RoomEvents.Ui.ConstructionSelectorShowing -= _onConstructionShowing;
 
         RoomEvents.ProducedResources -= _onProducedResources;
         RoomEvents.ConsumedResources -= _onConsumedResources;
@@ -77,6 +81,12 @@ public partial class RoomScript(TowerScript tower) : Node3D
             vis.SetupPath();
             vis.Position = new(0, 0.5f, 2);
             AddChild(vis);
+        }
+    }
+
+    private void _onConstructionShowing(RoomConstructionSelectorShowingEvent @event) {
+        if (@event.IsAllowed && @event.Collision.Intersects(_collision)) {
+            @event.IsAllowed = false;
         }
     }
 
@@ -113,6 +123,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
             AsBackground();
 
         Position = this.TowerCoordToNodePosition(x: State.FloorPosition, y: State.Elevation);
+        _collision = new(State.FloorPosition, State.Elevation, (int)State.Definition.Width, (int)State.Definition.Height);
     }
 
     public RoomScript AsHologram()

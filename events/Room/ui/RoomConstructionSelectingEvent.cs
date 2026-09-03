@@ -20,4 +20,9 @@ public static class RoomConstructionSelectedEventExtensions {
     public static RoomConstructionSelectedEvent Into(this RoomConstructionSelectingEvent old) {
         return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, };
     }
+
+    public static RoomConstructionSelectingEvent RoomConstructionSelectingEvent(this IEvent ev, TowerState tower, RoomDefinition roomDefinition)
+    {
+        return new(tower, roomDefinition) { Source = ev };
+    }
 }

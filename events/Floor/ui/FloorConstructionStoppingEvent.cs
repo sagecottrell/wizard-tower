@@ -20,4 +20,9 @@ public static class FloorConstructionStoppedEventExtensions {
     public static FloorConstructionStoppedEvent Into(this FloorConstructionStoppingEvent old) {
         return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition) { Source = old, };
     }
+
+    public static FloorConstructionStoppingEvent FloorConstructionStoppingEvent(this IEvent ev, TowerState towerState, FloorDefinition floorDefinition)
+    {
+        return new(towerState, floorDefinition) { Source = ev };
+    }
 }

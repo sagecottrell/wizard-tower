@@ -20,4 +20,9 @@ public static class RoomConstructionStoppedEventExtensions {
     public static RoomConstructionStoppedEvent Into(this RoomConstructionStoppingEvent old) {
         return new(tower: old.TowerState, roomDefinition: old.RoomDefinition) { Source = old, };
     }
+
+    public static RoomConstructionStoppingEvent RoomConstructionStoppingEvent(this IEvent ev, TowerState tower, RoomDefinition roomDefinition)
+    {
+        return new(tower, roomDefinition) { Source = ev };
+    }
 }

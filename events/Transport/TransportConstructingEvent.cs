@@ -19,4 +19,9 @@ public static class TransportConstructedEventExtensions {
     public static TransportConstructedEvent Into(this TransportConstructingEvent old) {
         return new(tower: old.TowerState, transport: old.TransportState) { Source = old, };
     }
+
+    public static TransportConstructingEvent TransportConstructingEvent(this IEvent ev, TowerState tower, TransportState transport)
+    {
+        return new(tower, transport) { Source = ev };
+    }
 }

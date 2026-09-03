@@ -19,4 +19,9 @@ public static class TransportDeselectedEventExtensions {
     public static TransportDeselectedEvent Into(this TransportDeselectingEvent old) {
         return new(tower: old.TowerState, transport: old.TransportState) { Source = old, };
     }
+
+    public static TransportDeselectingEvent TransportDeselectingEvent(this IEvent ev, TowerState tower, TransportState transport)
+    {
+        return new(tower, transport) { Source = ev };
+    }
 }

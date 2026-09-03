@@ -20,4 +20,9 @@ public static class TransportConstructionStoppedEventExtensions {
     public static TransportConstructionStoppedEvent Into(this TransportConstructionStoppingEvent old) {
         return new(towerState: old.TowerState, transportDefinition: old.TransportDefinition) { Source = old, };
     }
+
+    public static TransportConstructionStoppingEvent TransportConstructionStoppingEvent(this IEvent ev, TowerState towerState, TransportDefinition transportDefinition)
+    {
+        return new(towerState, transportDefinition) { Source = ev };
+    }
 }

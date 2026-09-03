@@ -22,4 +22,9 @@ public static class FloorExtendedEventExtensions {
     public static FloorExtendedEvent Into(this FloorExtendingEvent old) {
         return new(towerState: old.TowerState, floor: old.Floor, extendedLeft: old.ExtendedLeft, extendedRight: old.ExtendedRight) { Source = old, };
     }
+
+    public static FloorExtendingEvent FloorExtendingEvent(this IEvent ev, TowerState towerState, FloorState floor, uint extendedLeft, uint extendedRight)
+    {
+        return new(towerState, floor, extendedLeft, extendedRight) { Source = ev };
+    }
 }

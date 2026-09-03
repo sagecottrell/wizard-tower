@@ -21,4 +21,9 @@ public static class FloorReplacedEventExtensions {
     public static FloorReplacedEvent Into(this FloorReplacingEvent old) {
         return new(towerState: old.TowerState, floor: old.Floor, newDefinition: old.NewDefinition) { Source = old, };
     }
+
+    public static FloorReplacingEvent FloorReplacingEvent(this IEvent ev, TowerState towerState, FloorState floor, FloorDefinition newDefinition)
+    {
+        return new(towerState, floor, newDefinition) { Source = ev };
+    }
 }

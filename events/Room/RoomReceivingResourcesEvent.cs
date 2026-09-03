@@ -21,4 +21,9 @@ public static class RoomReceivedResourcesEventExtensions {
     public static RoomReceivedResourcesEvent Into(this RoomReceivingResourcesEvent old) {
         return new(towerState: old.TowerState, roomState: old.RoomState, resources: old.Resources) { Source = old, };
     }
+
+    public static RoomReceivingResourcesEvent RoomReceivingResourcesEvent(this IEvent ev, TowerState towerState, RoomState roomState, NumericDict<ItemDefinition, uint> resources)
+    {
+        return new(towerState, roomState, resources) { Source = ev };
+    }
 }

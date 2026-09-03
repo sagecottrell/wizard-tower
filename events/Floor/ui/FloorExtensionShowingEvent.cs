@@ -23,4 +23,9 @@ public static class FloorExtensionShowedEventExtensions {
     public static FloorExtensionShowedEvent Into(this FloorExtensionShowingEvent old) {
         return new(towerState: old.TowerState, floorDefinition: old.FloorDefinition, elevation: old.Elevation, left: old.Left, right: old.Right) { Source = old, };
     }
+
+    public static FloorExtensionShowingEvent FloorExtensionShowingEvent(this IEvent ev, TowerState towerState, FloorDefinition floorDefinition, int elevation, int left, int right)
+    {
+        return new(towerState, floorDefinition, elevation, left, right) { Source = ev };
+    }
 }

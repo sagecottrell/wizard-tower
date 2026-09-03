@@ -18,4 +18,9 @@ public static class RoomConstructionPreviewStoppedEventExtensions {
     public static RoomConstructionPreviewStoppedEvent Into(this RoomConstructionPreviewStoppingEvent old) {
         return new(towerState: old.TowerState) { Source = old, };
     }
+
+    public static RoomConstructionPreviewStoppingEvent RoomConstructionPreviewStoppingEvent(this IEvent ev, TowerState towerState)
+    {
+        return new(towerState) { Source = ev };
+    }
 }

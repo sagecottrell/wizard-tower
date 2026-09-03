@@ -8,6 +8,18 @@ namespace wizardtower.events.handlers;
     
 public static partial class RoomEvents {
     public static partial class Ui {        
+        public static Event<RoomConstructionSelectorShowedEvent> ConstructionSelectorShowed { get; set; } = new();
+        public static RoomConstructionSelectorShowedEvent OnConstructionSelectorShowed(RoomConstructionSelectorShowedEvent e) => ConstructionSelectorShowed.InvokeSafely(e);
+        public static RoomConstructionSelectorShowedEvent OnConstructionSelectorShowed(RoomConstructionSelectorShowedEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return ConstructionSelectorShowed.InvokeSafely(e); 
+        }        
+        public static Event<RoomConstructionSelectorShowingEvent> ConstructionSelectorShowing { get; set; } = new();
+        public static RoomConstructionSelectorShowingEvent OnConstructionSelectorShowing(RoomConstructionSelectorShowingEvent e) => ConstructionSelectorShowing.InvokeSafely(e);
+        public static RoomConstructionSelectorShowingEvent OnConstructionSelectorShowing(RoomConstructionSelectorShowingEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return ConstructionSelectorShowing.InvokeSafely(e); 
+        }        
         public static Event<RoomConstructionSelectedEvent> ConstructionSelected { get; set; } = new();
         public static RoomConstructionSelectedEvent OnConstructionSelected(RoomConstructionSelectedEvent e) => ConstructionSelected.InvokeSafely(e);
         public static RoomConstructionSelectedEvent OnConstructionSelected(RoomConstructionSelectedEvent e, BaseEvent source) { 
@@ -79,6 +91,14 @@ public static partial class RoomEvents {
         public static RoomDeselectingEvent OnDeselecting(RoomDeselectingEvent e, BaseEvent source) { 
             e.Source = source; 
             return Deselecting.InvokeSafely(e); 
+        }        
+        public static bool TryConstructionSelectorShowing(RoomConstructionSelectorShowingEvent pre, [NotNullWhen(true)] out RoomConstructionSelectorShowedEvent? e) {
+            e = null;
+            if (OnConstructionSelectorShowing(pre).IsAllowed) {
+                e = pre.Into();
+                return true;
+            }
+            return false;
         }        
         public static bool TryConstructionSelecting(RoomConstructionSelectingEvent pre, [NotNullWhen(true)] out RoomConstructionSelectedEvent? e) {
             e = null;

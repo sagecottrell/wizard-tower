@@ -19,4 +19,9 @@ public static class RoomConstructedEventExtensions {
     public static RoomConstructedEvent Into(this RoomConstructingEvent old) {
         return new(tower: old.TowerState, room: old.Room) { Source = old, };
     }
+
+    public static RoomConstructingEvent RoomConstructingEvent(this IEvent ev, TowerState tower, RoomState room)
+    {
+        return new(tower, room) { Source = ev };
+    }
 }

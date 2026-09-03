@@ -56,7 +56,7 @@ public static class NodeExtensions
         return bounds;
     }
 
-    public static TNode? Child<TNode>(this Node node, string name = "", bool owned = false) 
+    public static TNode? Child<TNode>(this Node node, string name = "", bool owned = false)
         where TNode : Node
         => node.GetChildren(!owned).FirstOrDefault(x => x.Name.ToString().Contains(name) && x is TNode) as TNode;
     public static Node3D? Child3D(this Node node, string name = "", bool owned = false) => node.Child<Node3D>(name, owned);
@@ -64,14 +64,14 @@ public static class NodeExtensions
     public static Control? ChildControl(this Node node, string name = "", bool owned = false) => node.Child<Control>(name, owned);
     public static Node? Child(this Node node, string name = "", bool owned = false) => node.Child<Node>(name, owned);
 
-    public static void FreeChildren(this Node node, bool owned = false) 
+    public static void FreeChildren(this Node node, bool owned = false)
         => FreeChildren(node, node.GetChildren(!owned), owned);
-    public static void FreeChildren(this Node node, Func<Node, bool> predicate, bool owned = false) 
+    public static void FreeChildren(this Node node, Func<Node, bool> predicate, bool owned = false)
         => FreeChildren(node, node.GetChildren(!owned).Where(predicate), owned);
-    public static void FreeChildren<TNode>(this Node node, Func<TNode, bool> predicate, bool owned = false) 
+    public static void FreeChildren<TNode>(this Node node, Func<TNode, bool> predicate, bool owned = false)
         => FreeChildren(node, node.GetChildren(!owned).Where(x => x is TNode n && predicate(n)), owned);
-    public static void FreeChildren<TNode>(this Node node, bool owned = false) 
-        where TNode : Node 
+    public static void FreeChildren<TNode>(this Node node, bool owned = false)
+        where TNode : Node
         => FreeChildren(node, node.GetChildren(!owned).Where(x => x is TNode), owned);
 
     /// <summary>
@@ -88,9 +88,24 @@ public static class NodeExtensions
     public static void FreeChildren(this Node node, IEnumerable<Node> children, bool owned = false)
     {
         foreach (var child in children)
-            if (child.GetParent() == node)
+            if ((child.Owner != null || !owned) && child.GetParent() == node)
                 child.QueueFree();
     }
+
+    public static TNode EnsureChild<TNode>(this Node node, string name, Func<TNode> construct, bool owned = false)
+        where TNode : Node
+    {
+        if (node.FindChild(name, owned: owned) is TNode child)
+            return child;
+        return node.AddedChild(construct().Configured(c =>
+        {
+            c.Name = name;
+        }));
+    }
+
+    public static TNode EnsureChild<TNode>(this Node node, string name, bool owned = false)
+        where TNode : Node, new()
+        => node.EnsureChild(name, () => new TNode(), owned);
 
     public static SignalAwaiter GodotSleep(this Node node, float seconds) => node.ToSignal(node.GetTree().CreateTimer(seconds), SceneTreeTimer.SignalName.Timeout);
 

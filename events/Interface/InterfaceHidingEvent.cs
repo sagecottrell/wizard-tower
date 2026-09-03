@@ -17,4 +17,9 @@ public static class InterfaceHidedEventExtensions {
     public static InterfaceHidedEvent Into(this InterfaceHidingEvent old) {
         return new(ui: old.UserInterface) { Source = old, };
     }
+
+    public static InterfaceHidingEvent InterfaceHidingEvent(this IEvent ev, IUserInterface ui)
+    {
+        return new(ui) { Source = ev };
+    }
 }

@@ -19,4 +19,9 @@ public static class TransportDestroyedEventExtensions {
     public static TransportDestroyedEvent Into(this TransportDestroyingEvent old) {
         return new(towerState: old.TowerState, transportState: old.TransportState) { Source = old, };
     }
+
+    public static TransportDestroyingEvent TransportDestroyingEvent(this IEvent ev, TowerState towerState, TransportState transportState)
+    {
+        return new(towerState, transportState) { Source = ev };
+    }
 }
