@@ -95,7 +95,7 @@ public static class NodeExtensions
     public static TNode EnsureChild<TNode>(this Node node, string name, Func<TNode> construct, bool owned = false)
         where TNode : Node
     {
-        if (node.FindChild(name, owned: owned) is TNode child)
+        if (node.FindChild(name, owned: owned) is TNode child && !child.IsQueuedForDeletion())
             return child;
         return node.AddedChild(construct().Configured(c =>
         {

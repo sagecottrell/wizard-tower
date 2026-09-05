@@ -27,6 +27,7 @@ public partial class BuildMenu : VBoxContainer
 
     public override void _EnterTree()
     {
+        Name = nameof(BuildMenu);
         TowerEvents.ResourceChanged += _g_OnTowerResourceChanged;
     }
 

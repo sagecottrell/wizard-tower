@@ -17,6 +17,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     public override void _Ready()
     {
+        Name = nameof(RoomDetailsUI);
         AddChild(new PanelContainer()
         {
             AnchorRight = 1,
@@ -71,6 +72,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         if (@event.RoomState != RoomState)
             return;
+        this.Log($"deselected {@event.RoomState.Id}");
         _reset();
     }
 
@@ -90,23 +92,26 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     private void _onRoomSelected(RoomSelectedEvent @event)
     {
+        this.Log($"_onRoomSelected {@event.RoomState.Id}");
         if (@event.TowerState != tower)
             return;
 
-        if (@event.RoomState == RoomState)
+        if (@event.RoomState.Id == RoomState?.Id)
         {
             UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
             return;
         }
+
         if (RoomState is not null)
             UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
 
+        this.Log($"SELECTED {@event.RoomState.Id}");
         RoomState = @event.RoomState;
         Visible = true;
 
         _pushText();
 
-        var buttons = ui.EnsureChild("buttons", () => new VBoxContainer() { Name = "buttons" });
+        var buttons = ui.EnsureChild<VBoxContainer>("buttons");
 
         if (RoomState.ConvertResourcesState?.SelectedRecipe is not null || RoomState.Warehouse is not null)
             buttons.EnsureChild("configure-deliveries", () => new Button() { Text = "Configure Deliveries" });
@@ -122,14 +127,13 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (RoomState is null)
             return;
 
-        if (ui.Child<RichTextLabel>() is not { } rtl)
-            rtl = ui.AddedChild(new RichTextLabel
-            {
-                FitContent = true,
-                CustomMinimumSize = new Vector2(200, 0),
-                AutowrapMode = TextServer.AutowrapMode.Off,
-                BbcodeEnabled = true,
-            });
+        var rtl = ui.EnsureChild("rtl", () => new RichTextLabel
+        {
+            FitContent = true,
+            CustomMinimumSize = new Vector2(200, 0),
+            AutowrapMode = TextServer.AutowrapMode.Off,
+            BbcodeEnabled = true,
+        });
         rtl.Text = "";
 
         rtl.AppendText($"Selected Room #{RoomState.Id}\n");
