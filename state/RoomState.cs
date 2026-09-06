@@ -1,16 +1,12 @@
 using Godot;
 using Godot.Collections;
-using System;
-using System.Diagnostics;
 using wizardtower.resource_types;
 using wizardtower.state.room_functions;
-using static Godot.WebSocketPeer;
 
 namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-[DebuggerDisplay("Room{Id}[e{Elevation}p{FloorPosition}n{Definition.Name}]")]
 public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomState>
 {
     [Export]

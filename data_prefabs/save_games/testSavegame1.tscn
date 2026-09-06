@@ -39,9 +39,9 @@ process_physics_priority = 300
 script = ExtResource("4_481j5")
 metadata/_custom_type_script = "uid://bd046eokvcnu2"
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1260661750]
+[node name="resourcepopup" type="CanvasLayer" parent="." unique_id=1260661750]
 
-[node name="Control" type="Control" parent="CanvasLayer" unique_id=964443372]
+[node name="Control" type="Control" parent="resourcepopup" unique_id=964443372]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1200.0
@@ -50,5 +50,6 @@ mouse_filter = 2
 script = ExtResource("6_25i7j")
 Easing = 0.17677654
 MaxTime = 1.0
+metadata/_edit_lock_ = true
 
 [editable path="SaveFile"]

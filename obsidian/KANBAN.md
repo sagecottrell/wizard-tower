@@ -11,6 +11,7 @@ kanban-plugin: board
 
 ## in progress
 
+- [ ] configure workers ui
 
 
 ## done
