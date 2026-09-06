@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using wizardtower.events.Floor;
 using wizardtower.events.handlers;
@@ -31,6 +32,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     public override void _EnterTree()
     {
         RoomEvents.Ui.ConstructionPreviewStarted += _g_OnRoomConstructionPreview;
+        RoomEvents.Ui.ConstructionSelectorShowing += _onRoomConstructionSelectorShowing;
         RoomEvents.Constructed += _g_OnRoomConstructed;
         RoomEvents.Destroyed += _g_OnRoomDestroyed;
         FloorEvents.Extended += _g_OnFloorExtended;
@@ -42,6 +44,7 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     public override void _ExitTree()
     {
         RoomEvents.Ui.ConstructionPreviewStarted -= _g_OnRoomConstructionPreview;
+        RoomEvents.Ui.ConstructionSelectorShowing -= _onRoomConstructionSelectorShowing;
         RoomEvents.Constructed -= _g_OnRoomConstructed;
         RoomEvents.Destroyed -= _g_OnRoomDestroyed;
         FloorEvents.Extended -= _g_OnFloorExtended;
@@ -54,6 +57,12 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     private void _g_OnConstructionPreviewStopped(IEvent @event)
     {
         MakeAllVisible();
+    }
+
+    private void _onRoomConstructionSelectorShowing(RoomConstructionSelectorShowingEvent @event)
+    {
+        if (@event.Elevation == FloorState.Elevation && @event.IsAllowed && @event.Position + @event.RoomDefinition.Width - 1 > FloorState.RightBound)
+            @event.IsAllowed = false;
     }
 
     private void _g_OnFloorReplaced(FloorReplacedEvent @event)
@@ -93,10 +102,6 @@ public partial class FloorScript(TowerState towerState, FloorState floorState) :
     private void _g_OnRoomConstructionPreview(RoomConstructionPreviewStartedEvent @event)
     {
         MakeAllVisible();
-        if (@event.RoomState.Elevation == FloorState.Elevation)
-        {
-            SetPositionVisible(@event.RoomState.FloorPosition, @event.RoomState.Definition.Width, false);
-        }
     }
 
     public void SetupTiles()

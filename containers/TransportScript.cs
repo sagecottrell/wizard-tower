@@ -1,6 +1,8 @@
 using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using wizardtower.events.handlers;
+using wizardtower.events.Room.ui;
 using wizardtower.state;
 
 namespace wizardtower.containers;
@@ -13,6 +15,8 @@ public partial class TransportScript : Node3D
 
     private List<TransportBackgroundScript> TransportVisualNodes { get; set; } = [];
 
+    private Rect2I _collision = new();
+
     public bool HologramMode { get; set; } = false;
 
     public override void _Ready()
@@ -21,6 +25,20 @@ public partial class TransportScript : Node3D
             AsHologram();
         else
             AsBackground();
+    }
+
+    public override void _EnterTree() {
+        RoomEvents.Ui.ConstructionSelectorShowing += _onRoomConstructionSelectorShowing;
+    }
+
+    public override void _ExitTree() {
+        RoomEvents.Ui.ConstructionSelectorShowing -= _onRoomConstructionSelectorShowing;
+    }
+
+    void _onRoomConstructionSelectorShowing(RoomConstructionSelectorShowingEvent @event) {
+        if (@event.IsAllowed && @event.Collision.Intersects(_collision)) {
+            @event.IsAllowed = false;
+        }
     }
 
     public override void _Process(double delta)
@@ -67,7 +85,7 @@ public partial class TransportScript : Node3D
             AsBackground();
 
         Position = this.TowerCoordToNodePosition(x: State.HorizontalPosition, y: State.Elevation);
-
+        _collision = new(State.HorizontalPosition, State.Elevation, (int)State.Definition.Width, (int)State.Height);
         PreviousState = State.Copy();
     }
 

@@ -16,6 +16,7 @@ public partial class FloorsContainerScript(TowerScript tower) : Node3D()
 
     public override void _Ready()
     {
+        Name = nameof(FloorsContainerScript);
         foreach (var floor in State.Floors.Values)
             SetupFloorDisplay(floor);
     }
