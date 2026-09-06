@@ -19,7 +19,6 @@ public partial class ResourcePopup : RichTextLabel
 	public override void _Ready()
 	{
 		startPos = Position;
-		this.Log(Text);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

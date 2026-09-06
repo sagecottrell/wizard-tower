@@ -71,8 +71,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     private void _onRoomDeselected(RoomDeselectedEvent @event)
     {
         if (@event.RoomState != RoomState)
-            return;
-        this.Log($"deselected {@event.RoomState.Id}");
         _reset();
     }
 
@@ -92,7 +90,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     private void _onRoomSelected(RoomSelectedEvent @event)
     {
-        this.Log($"_onRoomSelected {@event.RoomState.Id}");
         if (@event.TowerState != tower)
             return;
 
