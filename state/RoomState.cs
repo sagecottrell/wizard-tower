@@ -40,10 +40,17 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
     public RoomConvertResourcesState? ConvertResourcesState { get; set; }
 
     /// <summary>
+    /// rooms whos configurations are linked.
+    /// if one is changed, the user should be prompted with confirmation to automatically update the others
+    /// </summary>
+    [Export]
+    public Array<uint> LinkedRooms { get; set; } = [];
+
+    /// <summary>
     /// useful for game logic as well as the UI to display status
     /// </summary>
     /// <returns></returns>
-    public bool HasSufficientWorkers() => Definition.ResourceConversion?.WorkerKind is null 
+    public bool HasSufficientWorkers() => Definition.ResourceConversion?.WorkerKind is null
         || (StoredWorkers.TryGetValue(Definition.ResourceConversion.WorkerKind, out var workersPresent) && workersPresent >= Definition.ResourceConversion.WorkersCount);
 
     /// <summary>

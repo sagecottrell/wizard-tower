@@ -1,14 +1,12 @@
 using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
+using wizardtower.events.Interface;
 using wizardtower.events.interfaces;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
-using wizardtower.events.Interface;
 using wizardtower.state;
 using wizardtower.UIs.transport_details;
-using wizardtower.UIs.configure_workers;
-using wizardtower.UIs.build_menu;
 
 namespace wizardtower.UIs.room_details;
 
@@ -110,17 +108,6 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
         _pushText();
 
-        var buttons = ui.EnsureChild<VBoxContainer>("buttons");
-
-        if (RoomState.ConvertResourcesState?.SelectedRecipe is not null || RoomState.Warehouse is not null)
-            buttons.EnsureChild("configure-deliveries", () => new Button() { Text = "Configure Deliveries" });
-
-        if (RoomState.Definition.ResourceConversion?.WorkerKind is not null || RoomState.Definition.ProvideWorkers is not null)
-            buttons.EnsureChild("configure-workers", () => new Button() { Text = "Configure Workers" }.Configured(b =>
-            {
-                b.Pressed += _configureWorkers;
-            }));
-
         InterfaceEvents.OnShowed(new(this));
     }
 
@@ -152,20 +139,8 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             rtl.AddText("Stored items:\n");
             rtl.PushList(0, RichTextLabel.ListType.Dots, false);
             foreach (var (def, amount) in RoomState.StoredItems)
-            {
                 rtl.AppendText($"{amount} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
-            }
             rtl.Pop();
         }
-    }
-
-    void _configureWorkers()
-    {
-        if (RoomState is not null)
-            if (new ConfigureWorkersUI(tower, RoomState) is { } iface && InterfaceEvents.TryShowing(new(iface), out var e))
-            {
-                GetParent().AddChild(iface);
-                InterfaceEvents.OnShowed(e);
-            }
     }
 }

@@ -15,7 +15,7 @@ public interface IReadonlyNumericDict : IToBBCode
     Type KeyType { get; }
     Type ValueType { get; }
 
-    bool TryGetValueUntyped<[MustBeVariant] TKey, [MustBeVariant] TValue>(TKey key, out TValue value);
+    bool TryGetValueUntyped<[MustBeVariant] TKey, [MustBeVariant] TValue>(TKey key, [NotNullWhen(true)]out TValue? value);
 }
 
 public interface INumericDict : IReadonlyNumericDict { }
@@ -382,7 +382,7 @@ public sealed partial class NumericDict<[MustBeVariant] TKey, [MustBeVariant] TV
         return Data.TryGetValue(key.ResourcePath, out value);
     }
 
-    public bool TryGetValueUntyped<[MustBeVariant] TKey2, [MustBeVariant] TValue2>(TKey2 key, out TValue2 value)
+    public bool TryGetValueUntyped<[MustBeVariant] TKey2, [MustBeVariant] TValue2>(TKey2 key, [NotNullWhen(true)] out TValue2? value)
     {
         value = default;
         if (key is not TKey tkey)

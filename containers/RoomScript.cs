@@ -1,7 +1,7 @@
-using Godot;
-using MEC;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
+using MEC;
 using wizardtower.actions;
 using wizardtower.events.handlers;
 using wizardtower.events.Room;
@@ -84,8 +84,10 @@ public partial class RoomScript(TowerScript tower) : Node3D
         }
     }
 
-    private void _onConstructionShowing(RoomConstructionSelectorShowingEvent @event) {
-        if (@event.IsAllowed && @event.Collision.Intersects(_collision)) {
+    private void _onConstructionShowing(RoomConstructionSelectorShowingEvent @event)
+    {
+        if (@event.IsAllowed && @event.Collision.Intersects(_collision))
+        {
             @event.IsAllowed = false;
         }
     }
@@ -188,7 +190,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
             return;
         var convertDef = State.Definition.ResourceConversion;
         var convertState = State.ConvertResourcesState;
-        if (convertState is not null && convertDef is not null && convertState.SelectedRecipe is not null)
+        if (convertState?.SelectedRecipe?.Input is not null && convertDef is not null)
         {
             if (convertDef.MaxTimesPerDay > 0 && convertState.TimesProducedToday >= convertDef.MaxTimesPerDay)
                 return;
@@ -203,7 +205,9 @@ public partial class RoomScript(TowerScript tower) : Node3D
                         RoomActions.ProduceResources(new(Tower.State, State));
                 }
                 else
+                {
                     RoomActions.ProduceResources(new(Tower.State, State));
+                }
             }
             else
             {
@@ -222,7 +226,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         var avgTime = wp.TimeTakenRecords.Average();
         var convertDef = State.Definition.ResourceConversion;
         var convertState = State.ConvertResourcesState;
-        if (convertDef is null || convertState?.SelectedRecipe is null)
+        if (convertDef?.WorkerKind is null || convertState?.SelectedRecipe?.Input is null)
             return;
         var time = (uint)(convertState.SelectedRecipe.ProcessingTimeSeconds * convertDef.ProcessingTimeMultiplier);
         var avgReq = (uint)avgTime / time * convertState.SelectedRecipe.Input;
