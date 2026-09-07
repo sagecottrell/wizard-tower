@@ -68,6 +68,12 @@ public static partial class RoomEvents {
             e.Source = source; 
             return ConstructionPreviewStopping.InvokeSafely(e); 
         }        
+        public static Event<RoomDeliveryPlanningQueryEvent> DeliveryPlanningQuery { get; set; } = new();
+        public static RoomDeliveryPlanningQueryEvent OnDeliveryPlanningQuery(RoomDeliveryPlanningQueryEvent e) => DeliveryPlanningQuery.InvokeSafely(e);
+        public static RoomDeliveryPlanningQueryEvent OnDeliveryPlanningQuery(RoomDeliveryPlanningQueryEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return DeliveryPlanningQuery.InvokeSafely(e); 
+        }        
         public static Event<RoomConstructionStoppedEvent> ConstructionStopped { get; set; } = new();
         public static RoomConstructionStoppedEvent OnConstructionStopped(RoomConstructionStoppedEvent e) => ConstructionStopped.InvokeSafely(e);
         public static RoomConstructionStoppedEvent OnConstructionStopped(RoomConstructionStoppedEvent e, BaseEvent source) { 

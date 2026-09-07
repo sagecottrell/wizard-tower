@@ -13,7 +13,7 @@ public partial class WalletUI(TowerState towerState) : Node, IUserInterface
 
     public override void _Ready()
     {
-        AddChild(new PanelContainer().WithChild(ui));
+        AddChild(new PanelContainer().WithChild(new MarginContainer().WithChild(ui)));
 
         foreach (var (key, value) in towerState.Wallet)
             _addItemLabelToWallet(key, value);

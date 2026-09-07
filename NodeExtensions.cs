@@ -1,7 +1,7 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 namespace wizardtower;
 
@@ -122,4 +122,11 @@ public static class NodeExtensions
     }
 
 
+    public static RichTextLabel RTLWithGoodDefaultSettings(this Node node) => new()
+    {
+        BbcodeEnabled = true,
+        FitContent = true,
+        ClipContents = false,
+        AutowrapMode = TextServer.AutowrapMode.Off,
+    };
 }

@@ -1,5 +1,5 @@
-using Godot;
 using System.Collections.Generic;
+using Godot;
 using wizardtower.actions;
 using wizardtower.containers;
 using wizardtower.events.handlers;
@@ -125,7 +125,9 @@ public partial class TowerRoomBuilderOverlay(TowerScript tower) : Node3D(), IUse
         RoomActions.Construct(new(Tower.State, room) { Source = d });
 
         if (RoomEvents.Ui.OnConstructionStopping(new(Tower.State, _currentRoomDef) { Source = d }).IsAllowed)
+        {
             RoomEvents.Ui.OnConstructionStopped(new(Tower.State, _currentRoomDef) { Source = d });
+        }
         else
         {
             for (var i = 0; i < _currentRoomDef.Width; i++)

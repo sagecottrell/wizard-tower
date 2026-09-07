@@ -18,15 +18,20 @@ events: dict[tuple[str, ...], list[str]] = defaultdict(list)
 pairs: dict[tuple[str, ...], dict[str, str]] = defaultdict(dict) # pre-event to post-event
 
 for event_file in dir.rglob("*Event.cs"):
-    if not filter_re.match(event_file.name):
-        continue
     text = event_file.read_text()
 
+    if "Generated from ./events/" in text[:100] or ': BaseEvent' not in text:
+        continue
+
     cls_name = event_file.name.removesuffix('.cs')
-    new_name = cls_name.replace("ed", "ing", count=1)
-    new_file = event_file.with_name(new_name + '.cs')
     path_parts = event_file.parent.relative_to(dir).parts
     events[path_parts].append(cls_name)
+
+    if not filter_re.match(event_file.name):
+        continue
+
+    new_name = cls_name.replace("ed", "ing", count=1)
+    new_file = event_file.with_name(new_name + '.cs')
     events[path_parts].append(new_name)
 
     pairs[path_parts][new_name] = cls_name

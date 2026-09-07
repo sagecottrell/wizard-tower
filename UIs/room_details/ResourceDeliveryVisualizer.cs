@@ -1,5 +1,4 @@
 using Godot;
-using System.Linq;
 using wizardtower.state;
 
 namespace wizardtower.UIs.room_details;
@@ -138,7 +137,7 @@ public partial class ResourceDeliveryVisualizer : Path3D
 
         for (int i = 0; i < count; i++)
         {
-            var dist = timeElapsed * Speed + ItemDistance * i;
+            var dist = (timeElapsed * Speed) + (ItemDistance * i);
             if (dist > pathLength)
             {
                 mm.SetInstanceTransform(i, new Transform3D().ScaledLocal(Vector3.Zero));

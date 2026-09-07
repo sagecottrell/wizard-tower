@@ -42,6 +42,7 @@ csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 csharp_space_around_binary_operators = before_and_after
+dotnet_diagnostic.RCS1021.severity = silent
 
 [*.{cs,vb}]
 #### Naming styles ####

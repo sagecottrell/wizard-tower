@@ -4,16 +4,19 @@ namespace wizardtower;
 
 public static class ControlExtensions
 {
-    public static string LineHeightImage(this Control label, Texture2D? texture, int fontSize = 16, string fontName = "default", bool fullHeight = true)
+    public static string LineHeightImage(this Control _label, Texture2D? texture, string? url = null)
     {
+        var text = "";
         if (string.IsNullOrWhiteSpace(texture?.ResourcePath))
-            return "[i]image not found[/i]";
-        var font = label.GetThemeFont(fontName);
-        var height = font.GetHeight(fontSize);
-        if (!fullHeight)
+            text = "[i]image not found[/i]";
+        else
+            text = $"[img height=1em]{texture?.ResourcePath}[/img]";
+        if (url != null)
         {
-            height -= font.GetAscent() + font.GetDescent();
+            if (string.IsNullOrWhiteSpace(url))
+                url = texture?.ResourcePath;
+            text = $"[url={url}]{text}[/url]";
         }
-        return $"[img height={height}]{texture?.ResourcePath}[/img]";
+        return text;
     }
 }

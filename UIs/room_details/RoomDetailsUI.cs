@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Xml;
@@ -27,7 +28,11 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             AnchorLeft = 1,
             PivotOffsetRatio = new Vector2(1, 0),
             GrowHorizontal = Control.GrowDirection.Begin,
-        }.WithChild(ui));
+        }.WithChild(new MarginContainer()
+        {
+            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+        }.WithChild(ui)));
     }
 
     public override void _EnterTree()
@@ -73,8 +78,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
     private void _onRoomDeselected(RoomDeselectedEvent @event)
     {
-        if (@event.RoomState != RoomState)
-            _reset();
+        _reset();
     }
 
     private void _event_hide(IEvent @event)
@@ -105,11 +109,57 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (RoomState is not null)
             UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
 
-        this.Log($"SELECTED {@event.RoomState.Id}");
         RoomState = @event.RoomState;
         Visible = true;
 
+        List<CheckBox> checkboxes = [];
+        List<RichTextLabel> rtls = [];
+
         _pushText();
+
+        ui.AddChild(new Label() { Text = "Stored Items:" });
+
+        if (RoomState.Definition.RelatedItems is { } outputs)
+        {
+            foreach (var def in outputs)
+            {
+
+                ui.AddedChild(new CheckBox()
+                {
+                    Visible = false,
+                    Icon = def.Icon,
+                    Text = $"{RoomState.StoredItems.GetOrDefault(def)} {def.Name}"
+                }.Configured(b =>
+                {
+                    b.Pressed += () => { };
+                    checkboxes.Add(b);
+                }));
+                ui.AddedChild(this.RTLWithGoodDefaultSettings().Configured(rtl =>
+                {
+                    rtl.Text = $"{RoomState.StoredItems.GetOrDefault(def)} {def.Name} {rtl.LineHeightImage(def.Icon)}";
+                    rtls.Add(rtl);
+                }));
+            }
+        }
+
+        ui.AddChild(new HSeparator());
+
+        ui.AddChild(new GridContainer()
+        {
+            Columns = 2,
+            SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
+            SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+        }.Configured(grid =>
+        {
+            grid.AddChild(new Button()
+            {
+                TooltipText = "Add worker path",
+                Icon = ResourceLoader.Load<Texture2D>("uid://bmjgmx6fxuqgx"),
+            }.Configured(b =>
+            {
+                b.Pressed += () => UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
+            }));
+        }));
 
         InterfaceEvents.OnShowed(new(this));
     }
@@ -137,13 +187,5 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             rtl.AppendText("Awaiting Materials\n");
         if (!RoomState.HasSufficientWorkers())
             rtl.AppendText("Awaiting Workers\n");
-        if (RoomState.Definition.RelatedItems is {} outputs)
-        {
-            rtl.AddText("Stored items:\n");
-            rtl.PushList(0, RichTextLabel.ListType.Dots, false);
-            foreach (var def in outputs)
-                rtl.AppendText($"{RoomState.StoredItems.GetOrDefault(def)} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
-            rtl.Pop();
-        }
     }
 }
