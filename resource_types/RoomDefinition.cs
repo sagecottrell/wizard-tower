@@ -1,6 +1,7 @@
+using System.Diagnostics;
+using System.Linq;
 using Godot;
 using Godot.Collections;
-using System.Diagnostics;
 using wizardtower.resource_types.room_functions;
 
 namespace wizardtower.resource_types;
@@ -50,6 +51,9 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
 
     [Export]
     public RoomConvertResourcesDefinition? ResourceConversion { get; set; }
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? RelatedItems =>
+        ResourceConversion?.Recipes.Recipes.SelectMany(x => x.PossibleOutputs.Concat(x.Input?.Keys ?? [])).ToHashSet();
 
     [Export]
     public RoomProvideTowerWorkersDefinition? ProvideWorkers { get; set; }

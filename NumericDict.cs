@@ -1,11 +1,10 @@
-using Godot;
-using Godot.NativeInterop;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Godot;
 using wizardtower.resource_types;
 
 namespace wizardtower;
@@ -18,7 +17,7 @@ public interface IReadonlyNumericDict : IToBBCode
     bool TryGetValueUntyped<[MustBeVariant] TKey, [MustBeVariant] TValue>(TKey key, [NotNullWhen(true)]out TValue? value);
 }
 
-public interface INumericDict : IReadonlyNumericDict { }
+public interface INumericDict : IReadonlyNumericDict;
 
 public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
         IComparisonOperators<TSelf, TSelf, bool>,
@@ -28,20 +27,26 @@ public interface IReadonlyNumericDict<TSelf, TKey, TValue> :
         IUnaryNegationOperators<TSelf, TSelf>,
         IAdditiveIdentity<TSelf, TSelf>,
         IReadonlyNumericDict
-    where TSelf : IReadonlyNumericDict<TSelf, TKey, TValue>
-{ }
+    where TSelf : IReadonlyNumericDict<TSelf, TKey, TValue>;
 
 public interface INumericDict<TSelf, TKey, TValue> :
         IReadonlyNumericDict<TSelf, TKey, TValue>,
         ICopy<TSelf>,
         INumericDict
     where TSelf : INumericDict<TSelf, TKey, TValue>
-{ }
+{
+    TValue GetOrDefault(TKey key, TValue defaultValue = default!);
+}
 
 /// <summary>
-/// IMPORTANT: Make sure you supply a default value for the Data property, otherwise the editor will not be able to create a value. The default value will not be used at runtime, so it can be an empty dictionary or contain dummy data.
-/// 
-/// When using this as an [Export]ed property, the keys will be stored as strings in the exported data, and converted to TKey at runtime using the LoadKey method. This allows for using Resource types as keys, which can't be directly exported as dictionary keys in Godot.
+/// <para>
+/// IMPORTANT: Make sure you supply a default value for the Data property, otherwise the editor will not be able to create a value.
+/// The default value will not be used at runtime, so it can be an empty dictionary or contain dummy data.
+/// </para>
+/// <para>
+/// When using this as an [Export]ed property, the keys will be stored as strings in the exported data, and converted to TKey at runtime using the LoadKey method.
+/// This allows for using Resource types as keys, which can't be directly exported as dictionary keys in Godot.
+/// </para>
 /// </summary>
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TValue"></typeparam>

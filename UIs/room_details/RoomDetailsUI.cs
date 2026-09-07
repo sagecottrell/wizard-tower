@@ -1,3 +1,6 @@
+using System.Data;
+using System.Linq;
+using System.Xml;
 using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
@@ -134,12 +137,12 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
             rtl.AppendText("Awaiting Materials\n");
         if (!RoomState.HasSufficientWorkers())
             rtl.AppendText("Awaiting Workers\n");
-        if (RoomState.StoredItems.Count > 0)
+        if (RoomState.Definition.RelatedItems is {} outputs)
         {
             rtl.AddText("Stored items:\n");
             rtl.PushList(0, RichTextLabel.ListType.Dots, false);
-            foreach (var (def, amount) in RoomState.StoredItems)
-                rtl.AppendText($"{amount} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
+            foreach (var def in outputs)
+                rtl.AppendText($"{RoomState.StoredItems.GetOrDefault(def)} {def.Name} {rtl.LineHeightImage(def.Icon)}\n");
             rtl.Pop();
         }
     }
