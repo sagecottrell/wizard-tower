@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Xml;
 using Godot;
 using wizardtower.actions.ui;
 using wizardtower.events.handlers;
@@ -9,6 +7,7 @@ using wizardtower.events.Interface;
 using wizardtower.events.interfaces;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
+using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.transport_details;
 
@@ -18,6 +17,9 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 {
     private RoomState? RoomState { get; set; }
     private Control ui = new VBoxContainer();
+
+    private readonly List<CustomCheckBox> checkboxes = [];
+    private readonly List<RichTextLabel> rtls = [];
 
     public override void _Ready()
     {
@@ -39,6 +41,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
     {
         RoomEvents.Ui.Selected += _onRoomSelected;
         RoomEvents.Ui.Deselected += _onRoomDeselected;
+        RoomEvents.Ui.DeliveryPlanningCompleted += _onDeliveryCompleted;
         RoomEvents.ProducedResources += _onProducedResources;
         FloorEvents.Ui.ConstructionSelected += _event_hide;
         RoomEvents.Ui.ConstructionSelected += _event_hide;
@@ -51,6 +54,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         RoomEvents.Ui.Selected -= _onRoomSelected;
         RoomEvents.Ui.Deselected -= _onRoomDeselected;
         RoomEvents.ProducedResources -= _onProducedResources;
+        RoomEvents.Ui.DeliveryPlanningCompleted -= _onDeliveryCompleted;
         FloorEvents.Ui.ConstructionSelected -= _event_hide;
         RoomEvents.Ui.ConstructionSelected -= _event_hide;
         TransportEvents.Ui.ConstructionSelected -= _event_hide;
@@ -95,6 +99,13 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         _pushText();
     }
 
+    private void _onDeliveryCompleted(RoomDeliveryPlanningCompletedEvent ev)
+    {
+        _endAddWorkerPath();
+    }
+
+    #region Room Selected
+
     private void _onRoomSelected(RoomSelectedEvent @event)
     {
         if (@event.TowerState != tower)
@@ -111,28 +122,27 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
 
         RoomState = @event.RoomState;
         Visible = true;
-
-        List<CheckBox> checkboxes = [];
-        List<RichTextLabel> rtls = [];
+        checkboxes.Clear();
+        rtls.Clear();
 
         _pushText();
 
         ui.AddChild(new Label() { Text = "Stored Items:" });
 
-        if (RoomState.Definition.RelatedItems is { } outputs)
+        if (RoomState.PossibleOutputs is { } outputs)
         {
+            // outputs have checkboxes that are hidden by default, and can be toggled to show by clicking the "Add worker path" button
             foreach (var def in outputs)
             {
-
-                ui.AddedChild(new CheckBox()
+                ui.AddedChild(new CustomCheckBox(def)
                 {
                     Visible = false,
                     Icon = def.Icon,
-                    Text = $"{RoomState.StoredItems.GetOrDefault(def)} {def.Name}"
+                    Text = $"{RoomState.StoredItems.GetOrDefault(def)} {def.Name}",
                 }.Configured(b =>
                 {
-                    b.Pressed += () => { };
                     checkboxes.Add(b);
+                    b.Toggled += (_) => _checkboxToggled();
                 }));
                 ui.AddedChild(this.RTLWithGoodDefaultSettings().Configured(rtl =>
                 {
@@ -141,14 +151,25 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
                 }));
             }
         }
+        if (RoomState.Inputs is { } inputs)
+        {
+            // inputs are just text, no checkboxes
+            foreach (var def in inputs)
+            {
+                ui.AddedChild(this.RTLWithGoodDefaultSettings().Configured(rtl =>
+                {
+                    rtl.Text = $"{RoomState.StoredItems.GetOrDefault(def)} {def.Name} {rtl.LineHeightImage(def.Icon)}";
+                }));
+            }
+        }
 
         ui.AddChild(new HSeparator());
 
-        ui.AddChild(new GridContainer()
+        ui.AddChild(new HFlowContainer()
         {
-            Columns = 2,
             SizeFlagsHorizontal = Control.SizeFlags.ExpandFill,
             SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+            LastWrapAlignment = FlowContainer.LastWrapAlignmentMode.Center,
         }.Configured(grid =>
         {
             grid.AddChild(new Button()
@@ -157,7 +178,7 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
                 Icon = ResourceLoader.Load<Texture2D>("uid://bmjgmx6fxuqgx"),
             }.Configured(b =>
             {
-                b.Pressed += () => UIActions.DeselectRoom(@event.RoomDeselectingEvent(tower, RoomState));
+                b.Pressed += _startAddWorkerPath;
             }));
         }));
 
@@ -188,4 +209,70 @@ public partial class RoomDetailsUI(TowerState tower) : CanvasLayer, IUserInterfa
         if (!RoomState.HasSufficientWorkers())
             rtl.AppendText("Awaiting Workers\n");
     }
+
+    #endregion
+
+
+    #region UI Callbacks
+
+    void _startAddWorkerPath()
+    {
+        foreach (var cb in checkboxes)
+        {
+            cb.Visible = true;
+            if (checkboxes.Count == 1)
+            {
+                cb.SetPressedNoSignal(true);
+                _checkboxToggled();
+            }
+            else
+            {
+                cb.SetPressedNoSignal(false);
+            }
+        }
+        foreach (var rtl in rtls)
+            rtl.Visible = false;
+    }
+
+    void _endAddWorkerPath()
+    {
+        foreach (var cb in checkboxes)
+        {
+            cb.Visible = false;
+        }
+        foreach (var rtl in rtls)
+            rtl.Visible = true;
+    }
+
+    /// <summary>
+    /// when an item checkbox is toggled, collect all the checked boxes from the button group and emit a TryDeliveryPlanning event
+    /// </summary>
+    void _checkboxToggled()
+    {
+        if (RoomState is null)
+            return;
+        var selectedItems = checkboxes
+            .Where(c => c.ButtonPressed)
+            .Select(c => c.ItemDefinition);
+        if (RoomEvents.Ui.TryDeliveryPlanningStarting(new(tower, RoomState, [.. selectedItems]), out var ev))
+            RoomEvents.Ui.OnDeliveryPlanningStarted(ev);
+    }
+
+    #endregion
+
+
+    #region CheckBox custom subclass
+
+    private partial class CustomCheckBox : CheckBox
+    {
+        public CustomCheckBox(ItemDefinition itemDefinition)
+        {
+            ItemDefinition = itemDefinition;
+            ExpandIcon = true;
+        }
+
+        public ItemDefinition ItemDefinition { get; }
+    }
+
+    #endregion
 }

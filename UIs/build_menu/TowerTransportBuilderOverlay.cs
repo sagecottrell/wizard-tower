@@ -124,7 +124,7 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         _revertFloorVis(d);
         if (_currentTransportDef is null)
             return;
-        BuildingTransport ??= this.AddedChild(new TransportScript()
+        BuildingTransport ??= this.AddedChild(new TransportScript(Tower)
         {
             HologramMode = true,
             State = new TransportState()
@@ -177,7 +177,7 @@ public partial class TowerTransportBuilderOverlay(TowerScript tower) : Node3D(),
         _revertFloorVis(d);
         if (_currentTransportDef is null)
             return;
-        BuildingTransport ??= this.AddedChild(new TransportScript()
+        BuildingTransport ??= this.AddedChild(new TransportScript(Tower)
         {
             HologramMode = true,
             State = new TransportState()

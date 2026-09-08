@@ -61,7 +61,7 @@ public partial class TransportsContainerScript(TowerScript tower) : Node3D()
 
     public void SetupTransportationDisplay(TransportState newTransport)
     {
-        var transport = new TransportScript()
+        var transport = new TransportScript(Tower)
         {
             State = newTransport,
         };

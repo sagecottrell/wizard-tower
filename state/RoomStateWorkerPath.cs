@@ -15,10 +15,21 @@ public partial class RoomStateWorkerPath : Resource
     public ItemDefinition ItemDefinition { get; set; } = new();
 
     [Export]
-    public Array<TransportToTake>? TransportsToTake { get; set; }
+    public Array<TransportToTake> TransportsToTake { get; set; } = [];
 
     [Export]
     public Array<float> TimeTakenRecords { get; set; } = [];
+
+    public virtual bool TryGetFinalPosition(TowerState tower, out Vector3 position)
+    {
+        if (tower.Rooms.TryGetValue(TargetRoomId, out var toRoom))
+        {
+            position = new(toRoom.FloorPosition, toRoom.Elevation, 0);
+            return true;
+        }
+        position = Vector3.Zero;
+        return false;
+    }
 }
 
 public partial class TransportToTake : Resource
@@ -34,4 +45,16 @@ public partial class TransportToTake : Resource
     /// </summary>
     [Export]
     public bool ElevationRequired { get; set; }
+}
+
+public partial class PartialRoomStateWorkerPath : RoomStateWorkerPath
+{
+    public Vector3 FinalPosition { get; set; }
+
+
+    public override bool TryGetFinalPosition(TowerState tower, out Vector3 position)
+    {
+        position = FinalPosition;
+        return true;
+    }
 }

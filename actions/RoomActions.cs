@@ -1,5 +1,7 @@
+using System.Linq;
 using wizardtower.events.handlers;
 using wizardtower.events.Room;
+using wizardtower.events.Room.ui;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -114,6 +116,15 @@ public static class RoomActions
             return;
         ev.RoomState.ConvertResourcesState.CurrentlyWorking = false;
         RoomEvents.OnStoppedWork(ev.Into());
+    }
+
+    public static void AddDeliveryPlanningComplete(RoomDeliveryPlanningCompletingEvent ev)
+    {
+        if (RoomEvents.Ui.TryDeliveryPlanningCompleting(ev, out var e))
+        {
+            ev.RoomState.WorkerPaths.AddRange(ev.Paths);
+            RoomEvents.Ui.OnDeliveryPlanningCompleted(e);
+        }
     }
 
     /// <summary>
@@ -231,7 +242,7 @@ public static class RoomActions
         ev.RoomState.WorkerPaths.Add(ev.Path);
         if (ev.Path.TransportsToTake is null)
         {
-            ev.Path.TransportsToTake = TowerPathfind.Pathfind(ev.TowerState, ev.RoomState, ev.TargetRoom, 4);
+            // ev.Path.TransportsToTake = TowerPathfind.Pathfind(ev.TowerState, ev.RoomState, ev.TargetRoom, 4);
         }
         RoomEvents.OnAssignedOutput(ev.Into());
     }

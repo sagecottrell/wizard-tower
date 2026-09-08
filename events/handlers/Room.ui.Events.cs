@@ -20,6 +20,18 @@ public static partial class RoomEvents {
             e.Source = source; 
             return ConstructionSelectorShowing.InvokeSafely(e); 
         }        
+        public static Event<RoomDeliveryPlanningStartedEvent> DeliveryPlanningStarted { get; set; } = new();
+        public static RoomDeliveryPlanningStartedEvent OnDeliveryPlanningStarted(RoomDeliveryPlanningStartedEvent e) => DeliveryPlanningStarted.InvokeSafely(e);
+        public static RoomDeliveryPlanningStartedEvent OnDeliveryPlanningStarted(RoomDeliveryPlanningStartedEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return DeliveryPlanningStarted.InvokeSafely(e); 
+        }        
+        public static Event<RoomDeliveryPlanningStartingEvent> DeliveryPlanningStarting { get; set; } = new();
+        public static RoomDeliveryPlanningStartingEvent OnDeliveryPlanningStarting(RoomDeliveryPlanningStartingEvent e) => DeliveryPlanningStarting.InvokeSafely(e);
+        public static RoomDeliveryPlanningStartingEvent OnDeliveryPlanningStarting(RoomDeliveryPlanningStartingEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return DeliveryPlanningStarting.InvokeSafely(e); 
+        }        
         public static Event<RoomConstructionSelectedEvent> ConstructionSelected { get; set; } = new();
         public static RoomConstructionSelectedEvent OnConstructionSelected(RoomConstructionSelectedEvent e) => ConstructionSelected.InvokeSafely(e);
         public static RoomConstructionSelectedEvent OnConstructionSelected(RoomConstructionSelectedEvent e, BaseEvent source) { 
@@ -68,6 +80,18 @@ public static partial class RoomEvents {
             e.Source = source; 
             return ConstructionPreviewStopping.InvokeSafely(e); 
         }        
+        public static Event<RoomDeliveryPlanningCompletedEvent> DeliveryPlanningCompleted { get; set; } = new();
+        public static RoomDeliveryPlanningCompletedEvent OnDeliveryPlanningCompleted(RoomDeliveryPlanningCompletedEvent e) => DeliveryPlanningCompleted.InvokeSafely(e);
+        public static RoomDeliveryPlanningCompletedEvent OnDeliveryPlanningCompleted(RoomDeliveryPlanningCompletedEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return DeliveryPlanningCompleted.InvokeSafely(e); 
+        }        
+        public static Event<RoomDeliveryPlanningCompletingEvent> DeliveryPlanningCompleting { get; set; } = new();
+        public static RoomDeliveryPlanningCompletingEvent OnDeliveryPlanningCompleting(RoomDeliveryPlanningCompletingEvent e) => DeliveryPlanningCompleting.InvokeSafely(e);
+        public static RoomDeliveryPlanningCompletingEvent OnDeliveryPlanningCompleting(RoomDeliveryPlanningCompletingEvent e, BaseEvent source) { 
+            e.Source = source; 
+            return DeliveryPlanningCompleting.InvokeSafely(e); 
+        }        
         public static Event<RoomDeliveryPlanningQueryEvent> DeliveryPlanningQuery { get; set; } = new();
         public static RoomDeliveryPlanningQueryEvent OnDeliveryPlanningQuery(RoomDeliveryPlanningQueryEvent e) => DeliveryPlanningQuery.InvokeSafely(e);
         public static RoomDeliveryPlanningQueryEvent OnDeliveryPlanningQuery(RoomDeliveryPlanningQueryEvent e, BaseEvent source) { 
@@ -106,6 +130,14 @@ public static partial class RoomEvents {
             }
             return false;
         }        
+        public static bool TryDeliveryPlanningStarting(RoomDeliveryPlanningStartingEvent pre, [NotNullWhen(true)] out RoomDeliveryPlanningStartedEvent? e) {
+            e = null;
+            if (OnDeliveryPlanningStarting(pre).IsAllowed) {
+                e = pre.Into();
+                return true;
+            }
+            return false;
+        }        
         public static bool TryConstructionSelecting(RoomConstructionSelectingEvent pre, [NotNullWhen(true)] out RoomConstructionSelectedEvent? e) {
             e = null;
             if (OnConstructionSelecting(pre).IsAllowed) {
@@ -133,6 +165,14 @@ public static partial class RoomEvents {
         public static bool TryConstructionPreviewStopping(RoomConstructionPreviewStoppingEvent pre, [NotNullWhen(true)] out RoomConstructionPreviewStoppedEvent? e) {
             e = null;
             if (OnConstructionPreviewStopping(pre).IsAllowed) {
+                e = pre.Into();
+                return true;
+            }
+            return false;
+        }        
+        public static bool TryDeliveryPlanningCompleting(RoomDeliveryPlanningCompletingEvent pre, [NotNullWhen(true)] out RoomDeliveryPlanningCompletedEvent? e) {
+            e = null;
+            if (OnDeliveryPlanningCompleting(pre).IsAllowed) {
                 e = pre.Into();
                 return true;
             }

@@ -33,6 +33,8 @@ public partial class TransportState : Resource, ICopy<TransportState>, IDeSerial
         return Elevation == other.Elevation && HorizontalPosition == other.HorizontalPosition && Height == other.Height && Definition == other.Definition;
     }
 
+    public bool IntersectsElevation(int elevation) => elevation >= Elevation && elevation < Elevation + Height;
+
     public TransportState Copy() => new()
     {
         Definition = Definition,

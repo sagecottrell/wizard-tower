@@ -107,8 +107,8 @@ public partial class ResourceDeliveryVisualizer : Path3D
         AddChild(new CsgPolygon3D()
         {
             Polygon = [
-                new(.01f, -.1f), new(.01f, -.05f),
-                new(.1f, -0.05f), new(.1f, -.1f),
+                new(.05f, .05f), new(.05f, -.05f),
+                new(-.05f, -0.05f), new(-.05f, .05f),
                 ],
             Mode = CsgPolygon3D.ModeEnum.Path,
             PathInterval = 0.01f,
@@ -151,6 +151,7 @@ public partial class ResourceDeliveryVisualizer : Path3D
                 factor = dist / Speed;
             if (factor != 1)
                 pos = pos.ScaledLocal(Vector3.One * Mathf.Ease(factor, Easing));
+            pos = pos.Translated(new Vector3(0, 0, .5f));
             mm.SetInstanceTransform(i, pos);
         }
     }
@@ -159,10 +160,9 @@ public partial class ResourceDeliveryVisualizer : Path3D
     {
         if (TowerState is null || WorkerPath is null || WorkerPath.TransportsToTake is null)
             return;
-        if (!TowerState.Rooms.TryGetValue(FromRoomId, out var fromRoom) || !TowerState.Rooms.TryGetValue(WorkerPath.TargetRoomId, out var toRoom))
+        if (!TowerState.Rooms.TryGetValue(FromRoomId, out var fromRoom) || !WorkerPath.TryGetFinalPosition(TowerState, out var toPos))
             return;
         var fromPos = new Vector3(fromRoom.FloorPosition, fromRoom.Elevation, 0);
-        var toPos = new Vector3(toRoom.FloorPosition, toRoom.Elevation, 0);
         Curve.ClearPoints();
         Curve.AddPoint(new());
         var currentFloor = fromRoom.Elevation;

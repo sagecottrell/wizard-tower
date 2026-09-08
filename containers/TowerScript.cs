@@ -1,8 +1,9 @@
-using Godot;
 using System;
+using Godot;
 using wizardtower.state;
 using wizardtower.UIs;
 using wizardtower.UIs.build_menu;
+using wizardtower.UIs.configure_worker_paths;
 using wizardtower.UIs.room_details;
 using wizardtower.UIs.tower;
 using wizardtower.UIs.transport_details;
@@ -33,6 +34,7 @@ public partial class TowerScript : Node3D
         AddChild(new TowerRoomBuilderOverlay(this));
         AddChild(new TowerFloorBuilderOverlay(this));
         AddChild(new TowerTransportBuilderOverlay(this));
+        AddChild(new AddWorkerPathOverlay(this));
         if (Camera != null)
             AddChild(new TowerCameraDragScript(Camera, State));
         AddChild(new RoomDetailsUI(State));

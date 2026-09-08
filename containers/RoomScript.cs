@@ -39,6 +39,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         RoomEvents.Ui.Selected += _onRoomSelected;
         RoomEvents.Ui.Deselected += _onRoomDeselected;
         RoomEvents.Ui.ConstructionSelectorShowing += _onConstructionShowing;
+        RoomEvents.Ui.DeliveryPlanningQuery += _onDeliveryQuery;
 
         RoomEvents.ProducedResources += _onProducedResources;
         RoomEvents.ConsumedResources += _onConsumedResources;
@@ -51,6 +52,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         RoomEvents.Ui.Selected -= _onRoomSelected;
         RoomEvents.Ui.Deselected -= _onRoomDeselected;
         RoomEvents.Ui.ConstructionSelectorShowing -= _onConstructionShowing;
+        RoomEvents.Ui.DeliveryPlanningQuery -= _onDeliveryQuery;
 
         RoomEvents.ProducedResources -= _onProducedResources;
         RoomEvents.ConsumedResources -= _onConsumedResources;
@@ -77,7 +79,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
                 Easing = 0.147f,
                 TimeOffset = offset,
             };
-            offset += 1f;
+            offset++;
             vis.SetupPath();
             vis.Position = new(0, 0.5f, 2);
             AddChild(vis);
@@ -96,6 +98,25 @@ public partial class RoomScript(TowerScript tower) : Node3D
     {
         if (@event.RoomState.Id != State.Id) return;
         this.FreeChildren<ResourceDeliveryVisualizer>();
+    }
+
+    private void _onDeliveryQuery(RoomDeliveryPlanningQueryEvent @event)
+    {
+        if (@event.TowerState != Tower.State)
+            return;
+        if (@event.Path.TransportsToTake.LastOrDefault() is not { } last)
+            return;
+        if (last.Elevation == State.Elevation && @event.ItemDefinitions.All(x => State.Inputs?.Contains(x) is true))
+        {
+            @event.NextValidPositions.Add(new()
+            {
+                Elevation = State.Elevation,
+                Position = State.FloorPosition,
+                Kind = new RoomDeliveryPlanningQueryEvent.ValidPosition.RoomKind(State),
+                Width = State.Definition.Width,
+                Height = State.Definition.Height,
+            });
+        }
     }
 
     public override void _Process(double delta)

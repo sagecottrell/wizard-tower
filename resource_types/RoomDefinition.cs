@@ -52,8 +52,15 @@ public partial class RoomDefinition : Resource, INamedResource<RoomDefinition>, 
     [Export]
     public RoomConvertResourcesDefinition? ResourceConversion { get; set; }
 
-    public System.Collections.Generic.HashSet<ItemDefinition>? RelatedItems =>
-        ResourceConversion?.Recipes.Recipes.SelectMany(x => x.PossibleOutputs.Concat(x.Input?.Keys ?? [])).ToHashSet();
+    public System.Collections.Generic.HashSet<ItemDefinition>? RelatedItems => PossibleInputs != null && PossibleOutputs != null
+        ? [..PossibleInputs.Union(PossibleOutputs)]
+        : PossibleInputs ?? PossibleOutputs;
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? PossibleOutputs =>
+        ResourceConversion?.Recipes.Recipes.SelectMany(x => x.PossibleOutputs).ToHashSet();
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? PossibleInputs =>
+        ResourceConversion?.Recipes.Recipes.SelectMany(x => x.Input?.Keys ?? []).ToHashSet();
 
     [Export]
     public RoomProvideTowerWorkersDefinition? ProvideWorkers { get; set; }

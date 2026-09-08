@@ -8,18 +8,34 @@ namespace wizardtower.events.Room.ui;
 
 /// <summary>
 /// <para>Used to get a list of next possible destinations for the delivery path.</para>
-/// <para>the intention is that rooms and transports will listen for this event, look at <see cref="Path"/>
-/// and add items to <see cref="NextValidPositions"/>.</para>
+/// <para>The intention is that rooms and transports will listen for this event, look at <see cref="Path"/> and <see cref="ItemDefinitions"/>
+/// and potentially add items to <see cref="NextValidPositions"/>.</para>
 /// </summary>
-public class RoomDeliveryPlanningQueryEvent(TowerState towerState, RoomState startingRoom, ItemDefinition itemDefinition, List<RoomStateWorkerPath> path) : BaseEvent, ITowerEvent
+public class RoomDeliveryPlanningQueryEvent(TowerState towerState, RoomState startingRoom, List<ItemDefinition> itemDefinitions, RoomStateWorkerPath path) : BaseEvent, ITowerEvent
 {
     public TowerState TowerState { get; } = towerState;
 
     public RoomState StartingRoom { get; } = startingRoom;
 
-    public ItemDefinition ItemDefinition { get; } = itemDefinition;
+    public List<ItemDefinition> ItemDefinitions { get; } = itemDefinitions;
 
-    public List<RoomStateWorkerPath> Path { get; } = path;
+    public RoomStateWorkerPath Path { get; } = path;
 
-    public HashSet<(int elevation, int position)> NextValidPositions { get; } = [];
+    public HashSet<ValidPosition> NextValidPositions { get; } = [];
+
+    public class ValidPosition
+    {
+        public int Elevation { get; set; }
+        public int Position { get; set; }
+        public PosKind? Kind { get; set; }
+        public uint Width { get; set; } = 1;
+        public uint Height { get; set; } = 1;
+
+        public Godot.Vector3 ToVector3() => new(Position, Elevation, 0);
+
+        public abstract record class PosKind;
+
+        public record class TransportKind(TransportState State) : PosKind;
+        public record class RoomKind(RoomState State) : PosKind;
+    }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 using Godot.Collections;
 using wizardtower.resource_types;
@@ -63,6 +64,17 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
         ? i.Convert(x => x / m / r.ProcessingTimeSeconds) : null;
     public NumericDict<ItemDefinition, float>? OutputRate => ConvertResourcesState?.SelectedRecipe is { } r && Definition.ResourceConversion?.ProcessingTimeMultiplier is float m
         ? r.AverageItemOutputRate?.MultipliedByScalar(1 / m) : null;
+
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? RelatedItems => PossibleOutputs != null && Inputs != null
+        ? [..Inputs.Union(PossibleOutputs)]
+        : Inputs ?? PossibleOutputs;
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? PossibleOutputs => [..ConvertResourcesState?.SelectedRecipe?.PossibleOutputs ?? []];
+
+    public System.Collections.Generic.HashSet<ItemDefinition>? Inputs => [.. ConvertResourcesState?.SelectedRecipe?.Input?.Keys ?? []];
+
+    public Vector3 Vec3Position(float z = 0, Vector3 offset = default) => new Vector3(FloorPosition, Elevation, z) + offset;
 
     public bool Compare(RoomState? other)
     {

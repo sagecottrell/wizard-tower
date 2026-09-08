@@ -1,6 +1,6 @@
-using Godot;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using wizardtower.events.handlers;
 using wizardtower.events.Room.ui;
 using wizardtower.state;
@@ -8,7 +8,7 @@ using wizardtower.state;
 namespace wizardtower.containers;
 
 [GlobalClass]
-public partial class TransportScript : Node3D
+public partial class TransportScript(TowerScript tower) : Node3D
 {
     public TransportState State { get; set; } = new();
     public TransportState PreviousState { get; set; } = new();
@@ -27,17 +27,43 @@ public partial class TransportScript : Node3D
             AsBackground();
     }
 
-    public override void _EnterTree() {
+    public override void _EnterTree()
+    {
         RoomEvents.Ui.ConstructionSelectorShowing += _onRoomConstructionSelectorShowing;
+        RoomEvents.Ui.DeliveryPlanningQuery += _onDeliveryQuery;
     }
 
-    public override void _ExitTree() {
+    public override void _ExitTree()
+    {
         RoomEvents.Ui.ConstructionSelectorShowing -= _onRoomConstructionSelectorShowing;
+        RoomEvents.Ui.DeliveryPlanningQuery -= _onDeliveryQuery;
     }
 
-    void _onRoomConstructionSelectorShowing(RoomConstructionSelectorShowingEvent @event) {
-        if (@event.IsAllowed && @event.Collision.Intersects(_collision)) {
+    void _onRoomConstructionSelectorShowing(RoomConstructionSelectorShowingEvent @event)
+    {
+        if (@event.IsAllowed && @event.Collision.Intersects(_collision))
+        {
             @event.IsAllowed = false;
+        }
+    }
+
+    private void _onDeliveryQuery(RoomDeliveryPlanningQueryEvent @event)
+    {
+        if (@event.TowerState != tower.State)
+            return;
+        var islast = @event.Path.TransportsToTake.LastOrDefault() is { } last && State.IntersectsElevation(last.Elevation);
+        if (State.IntersectsElevation(@event.StartingRoom.Elevation) || islast)
+        {
+            for (var i = 0; i < State.Height; i++)
+            {
+                @event.NextValidPositions.Add(new()
+                {
+                    Elevation = State.Elevation + i,
+                    Position = State.HorizontalPosition,
+                    Kind = new RoomDeliveryPlanningQueryEvent.ValidPosition.TransportKind(State),
+                    Width = State.Definition.Width,
+                });
+            }
         }
     }
 
