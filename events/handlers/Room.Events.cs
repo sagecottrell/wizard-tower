@@ -78,6 +78,18 @@ public static partial class RoomEvents {
         e.Source = source; 
         return ProcessingIncreasing.InvokeSafely(e); 
     }    
+    public static Event<RoomResourcesDiminishedEvent> ResourcesDiminished { get; set; } = new();
+    public static RoomResourcesDiminishedEvent OnResourcesDiminished(RoomResourcesDiminishedEvent e) => ResourcesDiminished.InvokeSafely(e);
+    public static RoomResourcesDiminishedEvent OnResourcesDiminished(RoomResourcesDiminishedEvent e, BaseEvent source) { 
+        e.Source = source; 
+        return ResourcesDiminished.InvokeSafely(e); 
+    }    
+    public static Event<RoomResourcesDiminishingEvent> ResourcesDiminishing { get; set; } = new();
+    public static RoomResourcesDiminishingEvent OnResourcesDiminishing(RoomResourcesDiminishingEvent e) => ResourcesDiminishing.InvokeSafely(e);
+    public static RoomResourcesDiminishingEvent OnResourcesDiminishing(RoomResourcesDiminishingEvent e, BaseEvent source) { 
+        e.Source = source; 
+        return ResourcesDiminishing.InvokeSafely(e); 
+    }    
     public static Event<RoomConsumedResourcesEvent> ConsumedResources { get; set; } = new();
     public static RoomConsumedResourcesEvent OnConsumedResources(RoomConsumedResourcesEvent e) => ConsumedResources.InvokeSafely(e);
     public static RoomConsumedResourcesEvent OnConsumedResources(RoomConsumedResourcesEvent e, BaseEvent source) { 
@@ -157,6 +169,14 @@ public static partial class RoomEvents {
     public static bool TryProcessingIncreasing(RoomProcessingIncreasingEvent pre, [NotNullWhen(true)] out RoomProcessingIncreasedEvent? e) {
         e = null;
         if (OnProcessingIncreasing(pre).IsAllowed) {
+            e = pre.Into();
+            return true;
+        }
+        return false;
+    }    
+    public static bool TryResourcesDiminishing(RoomResourcesDiminishingEvent pre, [NotNullWhen(true)] out RoomResourcesDiminishedEvent? e) {
+        e = null;
+        if (OnResourcesDiminishing(pre).IsAllowed) {
             e = pre.Into();
             return true;
         }

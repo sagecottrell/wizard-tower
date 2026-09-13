@@ -5,9 +5,9 @@ using wizardtower.state;
 namespace wizardtower.events.Room;
 
 /// <summary>
-/// When a room consumes resources to convert into something else
+/// When a room loses resources for any reason. inspect the source event for more information
 /// </summary>
-public class RoomConsumedResourcesEvent(TowerState towerState, RoomState roomState, NumericDict<ItemDefinition, uint> amount) : BaseEvent, ITowerEvent, IRoomEvent
+public class RoomResourcesDiminishedEvent(TowerState towerState, RoomState roomState, NumericDict<ItemDefinition, uint> amount) : BaseEvent, ITowerEvent, IRoomEvent
 {
     public TowerState TowerState { get; } = towerState;
     public RoomState RoomState { get; set; } = roomState;

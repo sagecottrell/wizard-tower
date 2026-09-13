@@ -2,6 +2,7 @@ using System.Linq;
 using wizardtower.events.handlers;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
+using wizardtower.events.Worker;
 using wizardtower.resource_types;
 using wizardtower.state;
 
@@ -83,19 +84,12 @@ public static class RoomActions
         RoomEvents.OnReceivedResources(ev.Into());
     }
 
-    public static void SpawnWorkerWithPayload(TowerState towerState, RoomState roomState, RoomState targetRoom, ItemDefinition item, uint amount, WorkerDefinition def)
+    public static void ResourcesDiminish(RoomResourcesDiminishingEvent ev)
     {
-        var worker = new WorkerState()
-        {
-            DestinationRoomId = targetRoom.Id,
-            FloorPosition = roomState.FloorPosition,
-            Elevation = roomState.Elevation,
-            PayloadAmount = amount,
-            PayloadKind = item,
-            SourceRoomId = roomState.Id,
-            WorkerDefinition = def,
-        };
-        WorkerActions.Dispatch(new(towerState, worker));
+        if (!RoomEvents.OnResourcesDiminishing(ev).IsAllowed)
+            return;
+        ev.RoomState.StoredItems.Subtracted(ev.Amount);
+        RoomEvents.OnResourcesDiminished(ev.Into());
     }
 
     public static void StartWork(RoomStartingWorkEvent ev)

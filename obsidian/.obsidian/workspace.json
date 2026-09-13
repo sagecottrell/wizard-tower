@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "map/Rooms.md",
+                "file": "2026-09-12.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Rooms"
+              "title": "2026-09-12"
             }
           },
           {
@@ -218,11 +218,11 @@
   "active": "a892559bf2cf1751",
   "lastOpenFiles": [
     "KANBAN.md",
+    "map/Rooms.md",
     "map/Floors.md",
     "main idea.md",
-    "map/Rooms.md",
     "map",
-    "2026-08-30.md",
+    "2026-09-12.md",
     "create a link.md",
     "Welcome.md",
     "Untitled.base"

@@ -7,11 +7,14 @@ kanban-plugin: board
 ## planned
 
 - [ ] build transports
+- [ ] transport take worker
+- [ ] room take worker
+- [ ] add "original" to pre-events
 
 
 ## in progress
 
-- [ ] configure workers ui
+- [ ] spawn worker and move to next step
 
 
 ## done
@@ -19,6 +22,7 @@ kanban-plugin: board
 - [ ] click on room for details and controls
 - [ ] refactor build menu
 - [ ] escape to stop building
+- [ ] configure workers ui
 
 
 

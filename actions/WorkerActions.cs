@@ -7,11 +7,9 @@ public static class WorkerActions
 {
     public static void Dispatch(WorkerDispatchingEvent @event)
     {
-        if (!WorkerEvents.OnDispatching(@event).IsAllowed)
+        if (!WorkerEvents.TryDispatching(@event, out var e))
             return;
-        if (@event.WorkerState.WalkingAbout)
-            return;
-        @event.TowerState.SpawnWorker(@event.WorkerState);
-        WorkerEvents.OnDispatched(@event.Into());
+        @event.TowerState.SpawnWorker(e.WorkerState);
+        WorkerEvents.OnDispatched(e);
     }
 }

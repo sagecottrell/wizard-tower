@@ -6,10 +6,10 @@ namespace wizardtower.state;
 
 [Tool]
 [GlobalClass]
-public partial class WorkerState : Resource, ICopy<WorkerState>, IDeSerialize<WorkerState>
+public partial class WorkerState(WorkerDefinition workerDefinition) : Resource, ICopy<WorkerState>, IDeSerialize<WorkerState>
 {
     [Export]
-    public WorkerDefinition? WorkerDefinition { get; set; }
+    public WorkerDefinition WorkerDefinition { get; set; } = workerDefinition;
 
     [Export]
     public uint DestinationRoomId { get; set; }
@@ -32,7 +32,7 @@ public partial class WorkerState : Resource, ICopy<WorkerState>, IDeSerialize<Wo
     [Export]
     public uint PayloadAmount { get; set; }
 
-    public WorkerState Copy() => new();
+    public WorkerState Copy() => new(WorkerDefinition);
 
     public WorkerState Deserialize(Dictionary<string, Variant> dict)
     {

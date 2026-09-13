@@ -30,6 +30,18 @@ public static partial class WorkerEvents {
         e.Source = source; 
         return EnteringTransport.InvokeSafely(e); 
     }    
+    public static Event<WorkerReachedCheckpointEvent> ReachedCheckpoint { get; set; } = new();
+    public static WorkerReachedCheckpointEvent OnReachedCheckpoint(WorkerReachedCheckpointEvent e) => ReachedCheckpoint.InvokeSafely(e);
+    public static WorkerReachedCheckpointEvent OnReachedCheckpoint(WorkerReachedCheckpointEvent e, BaseEvent source) { 
+        e.Source = source; 
+        return ReachedCheckpoint.InvokeSafely(e); 
+    }    
+    public static Event<WorkerReachingCheckpointEvent> ReachingCheckpoint { get; set; } = new();
+    public static WorkerReachingCheckpointEvent OnReachingCheckpoint(WorkerReachingCheckpointEvent e) => ReachingCheckpoint.InvokeSafely(e);
+    public static WorkerReachingCheckpointEvent OnReachingCheckpoint(WorkerReachingCheckpointEvent e, BaseEvent source) { 
+        e.Source = source; 
+        return ReachingCheckpoint.InvokeSafely(e); 
+    }    
     public static bool TryDispatching(WorkerDispatchingEvent pre, [NotNullWhen(true)] out WorkerDispatchedEvent? e) {
         e = null;
         if (OnDispatching(pre).IsAllowed) {
@@ -41,6 +53,14 @@ public static partial class WorkerEvents {
     public static bool TryEnteringTransport(WorkerEnteringTransportEvent pre, [NotNullWhen(true)] out WorkerEnteredTransportEvent? e) {
         e = null;
         if (OnEnteringTransport(pre).IsAllowed) {
+            e = pre.Into();
+            return true;
+        }
+        return false;
+    }    
+    public static bool TryReachingCheckpoint(WorkerReachingCheckpointEvent pre, [NotNullWhen(true)] out WorkerReachedCheckpointEvent? e) {
+        e = null;
+        if (OnReachingCheckpoint(pre).IsAllowed) {
             e = pre.Into();
             return true;
         }

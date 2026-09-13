@@ -4,8 +4,10 @@ using Godot;
 using MEC;
 using wizardtower.actions;
 using wizardtower.events.handlers;
+using wizardtower.events.interfaces;
 using wizardtower.events.Room;
 using wizardtower.events.Room.ui;
+using wizardtower.events.Worker;
 using wizardtower.resource_types;
 using wizardtower.state;
 using wizardtower.UIs.room_details;
@@ -174,7 +176,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         {
             // this implements a priority approach to choosing destinations. those earlier in the list have priority for delieveries.
             foreach (var dest in destinations)
-                _tryDistributeResources(dest);
+                _tryDistributeResources(dest, ev);
         }
     }
 
@@ -186,7 +188,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
             if (State.WorkerPaths.FirstOrDefault(wp => wp.TargetRoomId == ev.RoomState.Id && ev.Amount.ContainsKey(wp.ItemDefinition)) is RoomStateWorkerPath dest)
             {
                 yield return Timing.WaitForSeconds(0.5);
-                _tryDistributeResources(dest);
+                _tryDistributeResources(dest, ev);
             }
         }
     }
@@ -241,7 +243,7 @@ public partial class RoomScript(TowerScript tower) : Node3D
         }
     }
 
-    private void _tryDistributeResources(RoomStateWorkerPath wp)
+    private void _tryDistributeResources(RoomStateWorkerPath wp, IEvent source)
     {
         var targetRoom = Tower.State.Rooms[wp.TargetRoomId];
         var avgTime = wp.TimeTakenRecords.Average();
@@ -259,8 +261,8 @@ public partial class RoomScript(TowerScript tower) : Node3D
             {
                 var amount = System.Math.Min(requiredAmount, State.StoredItems.GetOrDefault(item));
 
-                RoomActions.ConsumeResources(new(Tower.State, State, new() { [item] = amount }));
-                RoomActions.SpawnWorkerWithPayload(Tower.State, State, targetRoom, item, amount, convertDef.WorkerKind);
+                RoomActions.ResourcesDiminish(source.RoomResourcesDiminishingEvent(Tower.State, State, new() { [item] = amount }));
+                WorkerActions.Dispatch(source.WorkerDispatchingEvent(Tower.State, State, targetRoom, item, amount, convertDef.WorkerKind));
             }
         }
     }

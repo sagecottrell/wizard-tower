@@ -8,6 +8,9 @@ using wizardtower.state;
 
 namespace wizardtower.events.Room;
 
+/// <summary>
+/// When a room consumes resources to convert into something else
+/// </summary>
 public class RoomConsumingResourcesEvent(TowerState towerState, RoomState roomState, NumericDict<ItemDefinition, uint> amount) : BaseEvent, IDeniableEvent, ITowerEvent, IRoomEvent
 {
     public bool IsAllowed { get; set; } = true;

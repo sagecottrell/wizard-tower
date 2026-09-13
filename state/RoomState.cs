@@ -76,6 +76,8 @@ public partial class RoomState : Resource, ICopy<RoomState>, IDeSerialize<RoomSt
 
     public Vector3 Vec3Position(float z = 0, Vector3 offset = default) => new Vector3(FloorPosition, Elevation, z) + offset;
 
+    public RoomStateWorkerPath? GetPathTo(RoomState destination) => WorkerPaths?.FirstOrDefault(path => path.TargetRoomId == destination.Id);
+
     public bool Compare(RoomState? other)
     {
         if (ReferenceEquals(this, other)) return true;
